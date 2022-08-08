@@ -10,4 +10,8 @@
         select * from user order by id
     </select>
 
+    <update id="updateOne">
+        update user set name = #{name} where id =1
+    </update>
+
 </mapper>

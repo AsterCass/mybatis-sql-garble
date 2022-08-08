@@ -12,7 +12,7 @@ import java.util.List;
 public class BaseTest {
 
     @Test
-    public void baseTest() {
+    public void queryBase() {
         SqlSession sqlSession = MybatisHelper.getSqlSession();
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
@@ -22,6 +22,20 @@ public class BaseTest {
         } finally {
             sqlSession.close();
         }
+    }
 
+    @Test
+    public void updateBase() {
+        SqlSession sqlSession = MybatisHelper.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        try {
+            userMapper.updateOne("张老大");
+            sqlSession.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            sqlSession.close();
+        }
     }
 }
