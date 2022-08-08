@@ -40,13 +40,13 @@
 <!--    </typeAliases>-->
 
     <plugins>
-        <plugin interceptor="com.github.aster.plugin.garble.interceptor.QueryInterceptor">
+        <plugin interceptor="com.github.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
 <!--            &lt;!&ndash; 支持通过Mapper接口参数来传递分页参数 &ndash;&gt;-->
 <!--            <property name="helperDialect" value="mysql"/>-->
 <!--            <property name="supportMethodsArguments" value="true"/>-->
 <!--            <property name="rowBoundsWithCount" value="true"/>-->
         </plugin>
-        <plugin interceptor="com.github.aster.plugin.garble.interceptor.UpdateInterceptor">
+        <plugin interceptor="com.github.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
         </plugin>
     </plugins>
 

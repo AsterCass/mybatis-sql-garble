@@ -12,9 +12,9 @@ import java.util.Properties;
 @Slf4j
 @Intercepts({
         @Signature(type = Executor.class, method = "update",
-                args = {MappedStatement.class, Object.class}),
+                args = {MappedStatement.class, Object.class})
 })
-public class UpdateInterceptor implements Interceptor {
+public class GarbleUpdateInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -24,8 +24,9 @@ public class UpdateInterceptor implements Interceptor {
             Object parameterObject = args[1];
             BoundSql boundSql = ms.getBoundSql(parameterObject);
             String sql = boundSql.getSql();
-            String lowerLetterSql =
-                    sql.toLowerCase().replace("\n", " ").replace("\t", " ");
+            String lowerLetterSql = sql.toLowerCase()
+                    .replace("\n", " ")
+                    .replace("\t", " ");
             log.info(lowerLetterSql);
             return invocation.proceed();
         }

@@ -19,7 +19,7 @@ import java.util.Properties;
                                 CacheKey.class, BoundSql.class})
         }
 )
-public class QueryInterceptor implements Interceptor {
+public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
