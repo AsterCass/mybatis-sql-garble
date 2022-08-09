@@ -36,6 +36,7 @@ public abstract class MonitoredWork {
         for (String table : monitoredTableList) {
             String reg = "^ *update +" + table + " +.*";
             if (sql.matches(reg)) {
+                this.table = table;
                 return true;
             }
         }
@@ -53,8 +54,8 @@ public abstract class MonitoredWork {
     }
 
     public String run() {
-        if (monitoredTableCondition(monitoredTableList) &&
-                notExcludedTableCondition(invocation, excludedMapperPath)) {
+        if (notExcludedTableCondition(invocation, excludedMapperPath) &&
+                (monitoredTableCondition(monitoredTableList))) {
             return exec();
         }
         return "";

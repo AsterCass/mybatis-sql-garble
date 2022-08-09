@@ -30,7 +30,7 @@ public class BaseTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
         try {
-            userMapper.updateOne("张老大");
+            userMapper.updateOne("张老大大");
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();

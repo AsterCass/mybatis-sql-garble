@@ -8,6 +8,7 @@ import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 @Slf4j
@@ -23,8 +24,8 @@ public class GarbleUpdateInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
 
 
-        MonitoredWork monitoredWork = new MonitoredUpdateSql(invocation, null,
-                null, null);
+        MonitoredWork monitoredWork = new MonitoredUpdateSql(invocation,
+                "id", Arrays.asList("user"), "dsafdsa");
         monitoredWork.run();
 
         return invocation.proceed();
