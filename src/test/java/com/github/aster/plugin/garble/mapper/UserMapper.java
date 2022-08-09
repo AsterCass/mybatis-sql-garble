@@ -11,7 +11,7 @@ public interface UserMapper {
     List<UserEntity> selectAll();
 
 
-    int updateOne(@Param("name") String name);
+    int updateOne(@Param("name") String name, @Param("py") String py);
 
     @Insert("insert into user (id, `name`, py) values (#{id},#{name},#{py})")
     int insertOne(UserEntity userEntity);

@@ -5,10 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/mapper/MonitorExcludeMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/mybatis/MybatisGarbleSessionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/MonitorExcludeMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mybatis/mybatis-config.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,29 +42,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;Z:/workspace/home/garble-mv/mybatis-sql-garble/src/test/resources/mapper&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "Z:/workspace/home/garble-mv/mybatis-sql-garble/src/main/resources",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\main\resources" />
+      <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\main\resources\mapper" />
       <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\test\resources\mapper" />
       <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\test\resources\mysql" />
       <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\main\java\com\github\aster\plugin\garble" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\main\resources\mybatis" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.github.aster.plugin.garble.mapper" />
       <recent name="com.github.aster.plugin.garble.util" />
     </key>
   </component>
@@ -115,7 +128,7 @@
       <updated>1659508428539</updated>
       <workItem from="1659508430339" duration="14336000" />
       <workItem from="1659931172544" duration="10708000" />
-      <workItem from="1660011214182" duration="12496000" />
+      <workItem from="1660011214182" duration="18987000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -138,7 +151,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660035211491</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="add: 测试通过">
+      <created>1660036317957</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1660036317957</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,25 +179,26 @@
     <MESSAGE value="test:" />
     <MESSAGE value="add: garble interceptor" />
     <MESSAGE value="add: 初始化父类和单个继承类" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 初始化父类和单个继承类" />
+    <MESSAGE value="add: 测试通过" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: 测试通过" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java</url>
-          <line>27</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java</url>
+          <line>34</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java</url>
-          <line>35</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java</url>
+          <line>71</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java</url>
-          <line>46</line>
-          <option name="timeStamp" value="17" />
+          <url>jar://$MAVEN_REPOSITORY$/org/mybatis/mybatis/3.5.10/mybatis-3.5.10.jar!/org/apache/ibatis/plugin/Invocation.class</url>
+          <line>34</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
