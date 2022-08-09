@@ -1,9 +1,10 @@
 package com.github.aster.plugin.garble.interceptor;
 
+import com.github.aster.plugin.garble.work.MonitoredUpdateSql;
+import com.github.aster.plugin.garble.work.MonitoredWork;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 
@@ -16,22 +17,20 @@ import java.util.Properties;
 })
 public class GarbleUpdateInterceptor implements Interceptor {
 
+    private Properties prop;
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            final Object[] args = invocation.getArgs();
-            MappedStatement ms = (MappedStatement) args[0];
-            Object parameterObject = args[1];
-            BoundSql boundSql = ms.getBoundSql(parameterObject);
-            String sql = boundSql.getSql();
-            String lowerLetterSql = sql.toLowerCase()
-                    .replace("\n", " ")
-                    .replace("\t", " ");
-            log.info(lowerLetterSql);
-            return invocation.proceed();
-        }
+
+
+        MonitoredWork monitoredWork = new MonitoredUpdateSql(invocation, null,
+                null, null);
+        monitoredWork.run();
+
         return invocation.proceed();
+
     }
+
 
     @Override
     public Object plugin(Object target) {
@@ -41,6 +40,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties prop) {
+        this.prop = prop;
     }
 
 
