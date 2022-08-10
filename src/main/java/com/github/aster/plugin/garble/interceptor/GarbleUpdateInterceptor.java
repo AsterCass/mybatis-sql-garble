@@ -15,7 +15,7 @@ import java.util.Properties;
 @Slf4j
 @Intercepts({
         @Signature(type = Executor.class, method = "update",
-                args = {MappedStatement.class, Object.class})
+                args = {MappedStatement.class, Object.class}),
 })
 public class GarbleUpdateInterceptor implements Interceptor {
 
