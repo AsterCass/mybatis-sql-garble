@@ -1,5 +1,6 @@
 package com.github.aster.plugin.garble.work;
 
+import com.github.aster.plugin.garble.parser.UpdateSqlParser;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -45,11 +46,12 @@ public abstract class MonitoredWork {
     }
 
     private boolean monitoredTableCondition(List<String> monitoredTableList) {
-        for (String table : monitoredTableList) {
-            String reg = "^ *update +" + table + " +.*";
-            if (sql.matches(reg)) {
-                this.table = table;
-                return true;
+        List<String> tableList = UpdateSqlParser.getUpdateTable(sql);
+        for (String monitoredTable : monitoredTableList) {
+            for (String table : tableList) {
+                if (table.toLowerCase().equals(monitoredTable.toLowerCase())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -61,7 +63,7 @@ public abstract class MonitoredWork {
         Object parameterObject = args[1];
         BoundSql boundSql = ms.getBoundSql(parameterObject);
         String sql = boundSql.getSql();
-        this.sql = sql.toLowerCase().replace("\n", " ").replace("\t", " ");
+        this.sql = sql.replace("\n", " ").replace("\t", " ");
         return !ms.getId().contains(excludedMapperPath + ".");
     }
 

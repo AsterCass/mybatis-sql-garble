@@ -27,9 +27,13 @@ public class MonitoredUpdateSql extends MonitoredWork {
 
     @Override
     public List<String> exec() {
+
+        //todo use JSqlP
         Pattern setPat = Pattern.compile(TARGET_REGEX);
         Matcher sqlMatcher = setPat.matcher(sql);
         String newSql = sqlMatcher.replaceFirst(TARGET_REGEX + table + "."+updateFlagVolName+"=1, ");
+
+
         final Object[] args2 = invocation.getArgs();
         MappedStatement statement = (MappedStatement) args2[0];
         Object parameterObject2 = args2[1];

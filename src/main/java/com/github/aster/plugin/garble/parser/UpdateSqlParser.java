@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UpdateSqlParser {
 
-    public List<String> getUpdateTable(String sql) {
+    public static List<String> getUpdateTable(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
             Update updateStatement = (Update) statement;

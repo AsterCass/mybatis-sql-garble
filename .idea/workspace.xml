@@ -5,17 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/MappedStatementUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/mybatis/MybatisGarbleSessionFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +71,7 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BaseTest.updateBase">
+  <component name="RunManager" selected="JUnit.BaseTest.testJSql">
     <configuration name="BaseTest.queryBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -86,6 +83,22 @@
       <option name="PACKAGE_NAME" value="com.github.aster.plugin.garble.test" />
       <option name="MAIN_CLASS_NAME" value="com.github.aster.plugin.garble.test.BaseTest" />
       <option name="METHOD_NAME" value="queryBase" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BaseTest.testJSql" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="mybatis-sql-garble" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.github.aster.plugin.garble.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.github.aster.plugin.garble.test" />
+      <option name="MAIN_CLASS_NAME" value="com.github.aster.plugin.garble.test.BaseTest" />
+      <option name="METHOD_NAME" value="testJSql" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -108,11 +121,13 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="JUnit.BaseTest.testJSql" />
       <item itemvalue="JUnit.BaseTest.queryBase" />
       <item itemvalue="JUnit.BaseTest.updateBase" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BaseTest.testJSql" />
         <item itemvalue="JUnit.BaseTest.updateBase" />
         <item itemvalue="JUnit.BaseTest.queryBase" />
       </list>
@@ -131,7 +146,7 @@
       <workItem from="1660011214182" duration="18987000" />
       <workItem from="1660116753412" duration="8636000" />
       <workItem from="1660128359826" duration="789000" />
-      <workItem from="1660186820841" duration="20410000" />
+      <workItem from="1660186820841" duration="24556000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -168,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660123919825</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add: 获取更新数据测试通过">
+      <created>1660213703365</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1660213703365</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,7 +213,8 @@
     <MESSAGE value="add: 初始化父类和单个继承类" />
     <MESSAGE value="add: 测试通过" />
     <MESSAGE value="add: 自动上传到maven仓库" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 自动上传到maven仓库" />
+    <MESSAGE value="add: 获取更新数据测试通过" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: 获取更新数据测试通过" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

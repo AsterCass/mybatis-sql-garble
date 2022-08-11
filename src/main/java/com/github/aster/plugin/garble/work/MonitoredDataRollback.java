@@ -29,21 +29,23 @@ public class MonitoredDataRollback extends MonitoredWork {
     public List<String> exec() {
         try {
 
+            //获取更新行
             String newSql = "select id from " + table + "  where " + updateFlagVolName + " = 1";
-
             BoundSql newBoundSql = new BoundSql(mappedStatement.getConfiguration(), newSql, new ArrayList<>(), new Object());
-
             ResultMap newResultMap = new ResultMap.Builder(mappedStatement.getConfiguration(),
                     mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
                     String.class, new ArrayList<>()).build();
-
-
             MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
                     mappedStatement, mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
                     new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                     SqlCommandType.UPDATE);
-
-            return ExecutorUtil.executeAutoCount(newSql, executor, getUpdatedRowsMs, newBoundSql, null);
+            List<String> resultList = ExecutorUtil.executeUpdatedRow(
+                    newSql, executor, getUpdatedRowsMs, newBoundSql, null);
+            //标记回滚
+            if(null != resultList && 0 != resultList.size()) {
+                //todo roll back
+            }
+            return resultList;
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<>();

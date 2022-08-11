@@ -27,14 +27,14 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             MonitoredWork updateSql = new MonitoredUpdateSql(invocation,
-                    "update_record", Arrays.asList("hr_room"), "dsafdsa");
+                    "id", Arrays.asList("user"), "dsafdsa");
             updateSql.run();
         }
         try {
             return invocation.proceed();
         } finally {
             MonitoredWork rollbackData = new MonitoredDataRollback(invocation,
-                    "update_record", Arrays.asList("hr_room"), "dsafdsa");
+                    "id", Arrays.asList("user"), "dsafdsa");
             List<String> list = rollbackData.run();
             log.info(list.toString());
         }
