@@ -10,6 +10,8 @@ public interface UserMapper {
 
     List<UserEntity> selectAll();
 
+    List<String> selectAllPri();
+
 
     int updateOne(@Param("name") String name, @Param("py") String py);
 

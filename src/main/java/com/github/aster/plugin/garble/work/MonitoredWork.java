@@ -1,12 +1,16 @@
 package com.github.aster.plugin.garble.work;
 
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MonitoredWork {
+
+    protected MappedStatement mappedStatement;
 
     protected String table;
 
@@ -20,6 +24,8 @@ public abstract class MonitoredWork {
 
     protected String excludedMapperPath;
 
+    protected Executor executor;
+
     public MonitoredWork() {
 
     }
@@ -30,6 +36,12 @@ public abstract class MonitoredWork {
         this.updateFlagVolName = updateFlagVolName;
         this.monitoredTableList = monitoredTableList;
         this.excludedMapperPath = excludedMapperPath;
+        if (invocation.getTarget() instanceof Executor) {
+            this.executor = (Executor) invocation.getTarget();
+        }
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
+        }
     }
 
     private boolean monitoredTableCondition(List<String> monitoredTableList) {
@@ -53,14 +65,14 @@ public abstract class MonitoredWork {
         return !ms.getId().contains(excludedMapperPath + ".");
     }
 
-    public String run() {
+    public List<String> run() {
         if (notExcludedTableCondition(invocation, excludedMapperPath) &&
                 (monitoredTableCondition(monitoredTableList))) {
             return exec();
         }
-        return "";
+        return new ArrayList<>();
     }
 
-    protected abstract String exec();
+    protected abstract List<String> exec();
 
 }

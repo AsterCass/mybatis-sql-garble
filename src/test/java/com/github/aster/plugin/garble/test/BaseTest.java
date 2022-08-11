@@ -17,7 +17,7 @@ public class BaseTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
         try {
-            List<UserEntity> list = userMapper.selectAll();
+            List<String> list = userMapper.selectAllPri();
             System.out.println(JSON.toJSONString(list.get(0)));
         } finally {
             sqlSession.close();
@@ -30,7 +30,8 @@ public class BaseTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
         try {
-            userMapper.updateOne("张老", "ZLD");
+            //这里的测试并不能获得正确的测试结果，因为session没有commit到sql内，所以无法获取更新个数
+            userMapper.updateOne("张老大", "ZLD");
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();

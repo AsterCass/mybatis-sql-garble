@@ -1,80 +1,52 @@
 package com.github.aster.plugin.garble.work;
 
-import com.alibaba.fastjson.JSON;
-import com.github.aster.plugin.garble.mapper.MonitorExcludeMapper;
-import com.github.aster.plugin.garble.mybatis.MybatisGarbleSessionFactory;
+import com.github.aster.plugin.garble.util.ExecutorUtil;
+import com.github.aster.plugin.garble.util.MappedStatementUtil;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.session.SqlSession;
 
-import javax.annotation.Resource;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MonitoredDataRollback extends MonitoredWork {
 
-    @Resource
-    MonitorExcludeMapper monitorExcludeMapper;
 
-    public MonitoredDataRollback() {
+    private MonitoredDataRollback() {
         super();
     }
 
     public MonitoredDataRollback(Invocation invocation, String updateFlagVolName,
-                              List<String> monitoredTableList, String excludedMapperPath) {
+                                 List<String> monitoredTableList, String excludedMapperPath) {
         super(invocation, updateFlagVolName, monitoredTableList, excludedMapperPath);
     }
 
 
-
     @Override
-    public String exec() {
+    public List<String> exec() {
         try {
 
-//            Class<?> monitorExcludeMapperClass = MonitorExcludeMapper.class;
-//            Object monitorObject = SpringUtil.getBean("monitorExcludeMapper");
-//
-//            //get updated rows
-//            Method monitorMethod = monitorExcludeMapperClass.getDeclaredMethod (
-//                    "selectUpdatedRecord", String.class, String.class);
-//            String list = JSON.toJSONString(monitorMethod.invoke(
-//                    monitorObject, table, MONITOR_ID_MAP.get(table)));
+            String newSql = "select id from " + table + "  where " + updateFlagVolName + " = 1";
 
-//            Class<?> monitorExcludeMapperClass = MonitorExcludeMapper.class;
-//            Method[] monitorExcludeMapperMethods = monitorExcludeMapperClass.getDeclaredMethods();
-//            List<Method> methodList = Arrays.stream(monitorExcludeMapperMethods)
-//                    .filter(cell -> cell.getName().equals("selectUpdatedRecord")).collect(Collectors.toList());
-//            if(0 != methodList.size()) {
-//                methodList.get(0).invoke(, )
-//            }
-            SqlSession sqlSession = MybatisGarbleSessionFactory.getSqlSession();
-            MonitorExcludeMapper monitorExcludeMapper = sqlSession.getMapper(MonitorExcludeMapper.class);
-            List<String> ids = monitorExcludeMapper.selectUpdatedRecord(table, "id", updateFlagVolName);
+            BoundSql newBoundSql = new BoundSql(mappedStatement.getConfiguration(), newSql, new ArrayList<>(), new Object());
 
-            //List<String> ids = monitorExcludeMapper.selectUpdatedRecord(table, "id", updateFlagVolName);
-
-            //monitorExcludeMapper.selectUpdatedRecord(table, "id", updateFlagVolName);
+            ResultMap newResultMap = new ResultMap.Builder(mappedStatement.getConfiguration(),
+                    mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
+                    String.class, new ArrayList<>()).build();
 
 
-            //roll back
-//            List<String> idList = JSON.parseArray(list, String.class);
-//            if(!CollectionUtils.isEmpty(idList)) {
-//                Method rollBackMethod = monitorExcludeMapperClass.getMethod(
-//                        "rollBackUpdatedRecord", String.class, String.class, List.class);
-//                rollBackMethod.invoke(monitorObject, table, MONITOR_ID_MAP.get(table), idList);
-//            }
-//
-//
-//            log.info("[op:getUpdatedMonitorRows] update pri = {}", list);
+            MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
+                    mappedStatement, mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
+                    new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                    SqlCommandType.UPDATE);
 
-            return "abc";
+            return ExecutorUtil.executeAutoCount(newSql, executor, getUpdatedRowsMs, newBoundSql, null);
         } catch (Exception ex) {
-//            log.error("[op:getUpdatedMonitorRows] ex = " + ex.getMessage());
-//            log.error("[op:getUpdatedMonitorRows] exInfo = {}", JSON.toJSONString(ex.getStackTrace()));
             ex.printStackTrace();
-            return "";
+            return new ArrayList<>();
         }
     }
 }

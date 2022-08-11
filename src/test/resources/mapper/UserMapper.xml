@@ -10,6 +10,10 @@
         select * from user order by id
     </select>
 
+    <select id="selectAllPri" resultType="java.lang.String">
+        select id from user order by id
+    </select>
+
     <update id="updateOne">
         update user set name = #{name} where py = #{py}
     </update>
