@@ -12,6 +12,7 @@ import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class MonitoredUpdateSql extends MonitoredWork {
     }
 
     @Override
-    public List<String> exec() {
+    public Map<String, List<String>> exec() {
 
         String newSql = UpdateSqlCube.addUpdateSet(sql, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, defaultFlagColName);
@@ -45,7 +46,7 @@ public class MonitoredUpdateSql extends MonitoredWork {
                 new DefaultReflectorFactory());
         msObject.setValue("sqlSource.boundSql.sql", newSql);
         args2[0] = newStatement;
-        return new ArrayList<>();
+        return new HashMap<>();
     }
 
     /**

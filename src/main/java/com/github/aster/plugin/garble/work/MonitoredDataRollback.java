@@ -24,7 +24,7 @@ public class MonitoredDataRollback extends MonitoredWork {
 
 
     @Override
-    public List<String> exec() {
+    public Map<String, List<String>> exec() {
         try {
 
             //获取更新行
@@ -50,10 +50,10 @@ public class MonitoredDataRollback extends MonitoredWork {
 //            if(null != resultList && 0 != resultList.size()) {
 //                //todo roll back
 //            }
-            return null;
+            return updatedColMap;
         } catch (Exception ex) {
             ex.printStackTrace();
-            return new ArrayList<>();
+            return new HashMap<>();
         }
     }
 }

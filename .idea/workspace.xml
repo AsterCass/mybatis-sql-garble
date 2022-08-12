@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/SelectSqlCube.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/mapper/MonitorExcludeMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/MonitorExcludeMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mybatis/mybatis-config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +144,7 @@
       <workItem from="1660116753412" duration="8636000" />
       <workItem from="1660128359826" duration="789000" />
       <workItem from="1660186820841" duration="24556000" />
-      <workItem from="1660270773015" duration="22903000" />
+      <workItem from="1660270773015" duration="24046000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -195,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660213703365</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="modify: 更改使用JSql测试通过">
+      <created>1660301140111</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1660301140111</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -219,7 +219,8 @@
     <MESSAGE value="add: 测试通过" />
     <MESSAGE value="add: 自动上传到maven仓库" />
     <MESSAGE value="add: 获取更新数据测试通过" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 获取更新数据测试通过" />
+    <MESSAGE value="modify: 更改使用JSql测试通过" />
+    <option name="LAST_COMMIT_MESSAGE" value="modify: 更改使用JSql测试通过" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -240,9 +241,9 @@
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java</url>
-          <line>52</line>
-          <option name="timeStamp" value="24" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

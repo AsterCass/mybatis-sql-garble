@@ -137,14 +137,14 @@ public abstract class MonitoredWork {
     /**
      * 判断是否需要拦截
      */
-    public List<String> run() {
+    public Map<String, List<String>> run() {
         if (notExcludedTableCondition(invocation, excludedMapperPath) &&
                 (monitoredTableCondition(monitoredTableList))) {
             return exec();
         }
-        return new ArrayList<>();
+        return new HashMap<>();
     }
 
-    protected abstract List<String> exec();
+    protected abstract Map<String, List<String>> exec();
 
 }

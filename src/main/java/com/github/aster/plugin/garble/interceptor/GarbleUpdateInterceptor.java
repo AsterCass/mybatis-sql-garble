@@ -40,7 +40,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
         } finally {
             MonitoredWork rollbackData = new MonitoredDataRollback(
                     invocation, "id", monitoredTableMap, new HashMap<>(), "dsafdsa");
-            List<String> list = rollbackData.run();
+            Map<String, List<String>> list = rollbackData.run();
             log.info(list.toString());
         }
 
