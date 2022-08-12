@@ -1,5 +1,6 @@
 package com.github.aster.plugin.garble.work;
 
+import com.github.aster.plugin.garble.sql.UpdateSqlCube;
 import com.github.aster.plugin.garble.util.MappedStatementUtil;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -12,28 +13,24 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 public class MonitoredUpdateSql extends MonitoredWork {
 
-    private static final String TARGET_REGEX = " set ";
 
-
-    public MonitoredUpdateSql(Invocation invocation, String updateFlagVolName,
-                              List<String> monitoredTableList, String excludedMapperPath) {
-        super(invocation, updateFlagVolName, monitoredTableList, excludedMapperPath);
+    public MonitoredUpdateSql(Invocation invocation, String updateFlagColName,
+                              Map<String, String> monitoredTableMap,
+                              Map<String, String> monitoredTableUpdateFlagColMap,
+                              String excludedMapperPath) {
+        super(invocation, updateFlagColName, monitoredTableMap,
+                monitoredTableUpdateFlagColMap, excludedMapperPath);
     }
 
     @Override
     public List<String> exec() {
 
-        //todo use JSqlP
-        Pattern setPat = Pattern.compile(TARGET_REGEX);
-        Matcher sqlMatcher = setPat.matcher(sql);
-        String newSql = sqlMatcher.replaceFirst(TARGET_REGEX + table + "."+updateFlagVolName+"=1, ");
-
-
+        String newSql = UpdateSqlCube.addUpdateSet(sql, monitoredTableMap,
+                monitoredTableUpdateFlagColMap, defaultFlagColName);
         final Object[] args2 = invocation.getArgs();
         MappedStatement statement = (MappedStatement) args2[0];
         Object parameterObject2 = args2[1];

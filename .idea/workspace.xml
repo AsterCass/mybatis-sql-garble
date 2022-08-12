@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/SelectSqlCube.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/mapper/MonitorExcludeMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/parser/UpdateSqlParser.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/MonitorExcludeMapper.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mybatis/mybatis-config.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +75,7 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BaseTest.testJSql">
+  <component name="RunManager" selected="JUnit.BaseTest.updateBase">
     <configuration name="BaseTest.queryBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -127,8 +131,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.BaseTest.testJSql" />
         <item itemvalue="JUnit.BaseTest.updateBase" />
+        <item itemvalue="JUnit.BaseTest.testJSql" />
         <item itemvalue="JUnit.BaseTest.queryBase" />
       </list>
     </recent_temporary>
@@ -147,6 +151,7 @@
       <workItem from="1660116753412" duration="8636000" />
       <workItem from="1660128359826" duration="789000" />
       <workItem from="1660186820841" duration="24556000" />
+      <workItem from="1660270773015" duration="22903000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -217,10 +222,36 @@
     <option name="LAST_COMMIT_MESSAGE" value="add: 获取更新数据测试通过" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/4.5/jsqlparser-4.5.jar!/net/sf/jsqlparser/statement/select/Join.class</url>
+          <line>247</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/4.5/jsqlparser-4.5.jar!/net/sf/jsqlparser/statement/select/Join.class</url>
+          <line>201</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/4.5/jsqlparser-4.5.jar!/net/sf/jsqlparser/statement/select/Join.class</url>
+          <line>229</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
+        <PinnedItemInfo parentTag="net.sf.jsqlparser.statement.update.Update" memberName="updateSets" />
         <PinnedItemInfo parentTag="com.sun.proxy.$Proxy14" memberName="h" />
         <PinnedItemInfo parentTag="java.util.HashMap$Node" memberName="value" />
+        <PinnedItemInfo parentTag="net.sf.jsqlparser.statement.update.UpdateSet" memberName="columns" />
       </pinned-members>
     </pin-to-top-manager>
   </component>
