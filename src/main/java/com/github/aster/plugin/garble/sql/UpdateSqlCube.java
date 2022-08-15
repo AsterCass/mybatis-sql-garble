@@ -2,6 +2,7 @@ package com.github.aster.plugin.garble.sql;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -23,18 +24,21 @@ public class UpdateSqlCube {
     public static List<String> getUpdateTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
-            Update updateStatement = (Update) statement;
-            //TablesNamesFinder getTableList 会获取 database schema 等信息，不好匹配
-            List<String> nameList = new ArrayList<>();
-            nameList.add(updateStatement.getTable().getName());
-            if (null != updateStatement.getStartJoins() && 0 != updateStatement.getStartJoins().size()) {
-                for (Join join : updateStatement.getStartJoins()) {
-                    if (join.getRightItem() instanceof Table) {
-                        nameList.add(((Table) join.getRightItem()).getName());
+            //拦截器拦截update也是会拦击insert，目前不拦截insert
+            if (statement instanceof Update) {
+                Update updateStatement = (Update) statement;
+                //TablesNamesFinder getTableList 会获取 database schema 等信息，不好匹配
+                List<String> nameList = new ArrayList<>();
+                nameList.add(updateStatement.getTable().getName());
+                if (null != updateStatement.getStartJoins() && 0 != updateStatement.getStartJoins().size()) {
+                    for (Join join : updateStatement.getStartJoins()) {
+                        if (join.getRightItem() instanceof Table) {
+                            nameList.add(((Table) join.getRightItem()).getName());
+                        }
                     }
                 }
+                return nameList;
             }
-            return nameList;
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
         }
@@ -119,6 +123,46 @@ public class UpdateSqlCube {
             jsqlParserException.printStackTrace();
         }
         return sql;
+    }
+
+    public static Map<String, String> getFlagRollBackList(Map<String, List<String>> updatedColMap,
+                                                          Map<String, String> monitoredTableMap,
+                                                          Map<String, String> monitoredTableUpdateFlagColMap,
+                                                          String defaultFlagColName) {
+        //这里查询暂时没有支持不同schema和数据库的配置
+        Map<String, String> sqlMap = new HashMap<>();
+        if (null != updatedColMap && 0 != updatedColMap.size()) {
+            for (String table : updatedColMap.keySet()) {
+                putMap(updatedColMap, monitoredTableMap, monitoredTableUpdateFlagColMap,
+                        defaultFlagColName, sqlMap, table);
+            }
+        }
+        return sqlMap;
+
+    }
+
+    private static void putMap(Map<String, List<String>> updatedColMap, Map<String, String> monitoredTableMap,
+                               Map<String, String> monitoredTableUpdateFlagColMap, String defaultFlagColName,
+                               Map<String, String> sqlMap, String table) {
+        if (null != updatedColMap.get(table) && 0 != updatedColMap.get(table).size()) {
+            for (String whereValue : updatedColMap.get(table)) {
+                String whereColName = monitoredTableMap.get(table);
+                String flagColName = monitoredTableUpdateFlagColMap.get(table);
+                if (null == flagColName) {
+                    flagColName = defaultFlagColName;
+                }
+                Update update = new Update();
+                update.setTable(new Table(table));
+                update.addUpdateSet(new Column(flagColName), new StringValue("0"));
+
+                Column column = new Column().withColumnName(whereColName);
+                EqualsTo equalsTo = new EqualsTo().withLeftExpression(column);
+                equalsTo.withRightExpression(new StringValue(whereValue));
+                update.setWhere(equalsTo);
+
+                sqlMap.put(table, update.toString());
+            }
+        }
     }
 
 

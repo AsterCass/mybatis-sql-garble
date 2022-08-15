@@ -25,25 +25,31 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
         Map<String, String> monitoredTableMap = new HashMap<String, String>() {{
             put("user", "id");
+            put("hr_room", "id");
+            put("hr_house_pr", "id");
         }};
 
-        Map<String, String> monitoredTableUpdateFlagColMap = new HashMap<>();
+        Map<String, String> monitoredTableUpdateFlagColMap = new HashMap<String, String>() {{
+            put("user", "id");
+            put("hr_room", "update_record");
+            put("hr_house_pr", "update_record");
+        }};
 
         List<String> excludedMapperPath = new ArrayList<>();
 
-        String updateFlagColName = "id";
+        String defaultFlagColName = "id";
 
 
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             MonitoredWork updateSql = new MonitoredUpdateSql(
-                    invocation, updateFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
+                    invocation, defaultFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
             updateSql.run();
         }
         try {
             return invocation.proceed();
         } finally {
             MonitoredWork rollbackData = new MonitoredDataRollback(
-                    invocation, updateFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
+                    invocation, defaultFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
             Map<String, List<String>> list = rollbackData.run();
             log.info(list.toString());
         }

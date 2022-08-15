@@ -18,11 +18,11 @@ import java.util.Map;
 public class MonitoredUpdateSql extends MonitoredWork {
 
 
-    public MonitoredUpdateSql(Invocation invocation, String updateFlagColName,
+    public MonitoredUpdateSql(Invocation invocation, String defaultFlagColName,
                               Map<String, String> monitoredTableMap,
                               Map<String, String> monitoredTableUpdateFlagColMap,
                               List<String> excludedMapperPath) {
-        super(invocation, updateFlagColName, monitoredTableMap,
+        super(invocation, defaultFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }
 

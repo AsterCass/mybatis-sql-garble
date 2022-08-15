@@ -1,6 +1,7 @@
 package com.github.aster.plugin.garble.work;
 
 import com.github.aster.plugin.garble.sql.SelectSqlCube;
+import com.github.aster.plugin.garble.sql.UpdateSqlCube;
 import com.github.aster.plugin.garble.util.ExecutorUtil;
 import com.github.aster.plugin.garble.util.MappedStatementUtil;
 import org.apache.ibatis.mapping.BoundSql;
@@ -14,11 +15,11 @@ import java.util.*;
 public class MonitoredDataRollback extends MonitoredWork {
 
 
-    public MonitoredDataRollback(Invocation invocation, String updateFlagColName,
+    public MonitoredDataRollback(Invocation invocation, String defaultFlagColName,
                                  Map<String, String> monitoredTableMap,
                                  Map<String, String> monitoredTableUpdateFlagColMap,
                                  List<String> excludedMapperPath) {
-        super(invocation, updateFlagColName, monitoredTableMap,
+        super(invocation, defaultFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }
 
@@ -27,14 +28,32 @@ public class MonitoredDataRollback extends MonitoredWork {
     public Map<String, List<String>> exec() {
         try {
 
-            //获取更新行
-
+            //获取查询更新行语句
             Map<String, String> sqlMap = SelectSqlCube.getUpdatedRowListSql(crossTableList, monitoredTableMap,
                     monitoredTableUpdateFlagColMap, defaultFlagColName);
+            //获取更新行
             Map<String, List<String>> updatedColMap = new HashMap<>();
             for (String table : sqlMap.keySet()) {
                 BoundSql newBoundSql = new BoundSql(
                         mappedStatement.getConfiguration(), sqlMap.get(table), new ArrayList<>(), new Object());
+                ResultMap newResultMap = new ResultMap.Builder(mappedStatement.getConfiguration(),
+                        mappedStatement.getId() + MappedStatementUtil.SELECT,
+                        String.class, new ArrayList<>()).build();
+                MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
+                        mappedStatement, mappedStatement.getId() + MappedStatementUtil.SELECT,
+                        new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                        SqlCommandType.SELECT);
+                List<String> resultList = ExecutorUtil.executeSelectRow(
+                        sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
+                updatedColMap.put(table, resultList);
+            }
+            //获取回滚语句
+            Map<String, String> rollBackMap = UpdateSqlCube.getFlagRollBackList(updatedColMap,
+                    monitoredTableMap, monitoredTableUpdateFlagColMap, defaultFlagColName);
+            //数据回滚
+            for (String table : rollBackMap.keySet()) {
+                BoundSql newBoundSql = new BoundSql(
+                        mappedStatement.getConfiguration(), rollBackMap.get(table), new ArrayList<>(), new Object());
                 ResultMap newResultMap = new ResultMap.Builder(mappedStatement.getConfiguration(),
                         mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
                         String.class, new ArrayList<>()).build();
@@ -42,14 +61,9 @@ public class MonitoredDataRollback extends MonitoredWork {
                         mappedStatement, mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
                         new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                         SqlCommandType.UPDATE);
-                List<String> resultList = ExecutorUtil.executeUpdatedRow(
-                        sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
-                updatedColMap.put(table, resultList);
+                ExecutorUtil.executeUpdatedRow(rollBackMap.get(table), executor, getUpdatedRowsMs);
             }
-            //标记回滚
-//            if(null != resultList && 0 != resultList.size()) {
-//                //todo roll back
-//            }
+
             return updatedColMap;
         } catch (Exception ex) {
             ex.printStackTrace();

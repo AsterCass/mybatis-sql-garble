@@ -36,7 +36,10 @@ import java.util.List;
  */
 public class MappedStatementUtil {
 
+    public static final String SELECT = "_select";
+
     public static final String ROLLBACK = "_rollback";
+
 
     /**
      * 构建新map

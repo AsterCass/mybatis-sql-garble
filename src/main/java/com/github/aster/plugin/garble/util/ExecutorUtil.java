@@ -41,10 +41,10 @@ import java.util.List;
 public class ExecutorUtil {
 
     /**
-     * 更新数据查询
+     * 查询更新数据
      */
-    public static List<String> executeUpdatedRow(String selectUpdatedRowsSql, Executor executor, MappedStatement ms,
-                                                 BoundSql boundSql, ResultHandler resultHandler) {
+    public static List<String> executeSelectRow(String selectUpdatedRowsSql, Executor executor, MappedStatement ms,
+                                                BoundSql boundSql, ResultHandler resultHandler) {
         try {
             CacheKey countKey = executor.createCacheKey(ms, new Object(), RowBounds.DEFAULT, boundSql);
             BoundSql countBoundSql = new BoundSql(ms.getConfiguration(), selectUpdatedRowsSql,
@@ -55,6 +55,15 @@ public class ExecutorUtil {
             sqlException.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public static void executeUpdatedRow(String selectUpdatedRowsSql, Executor executor,
+                                         MappedStatement ms) {
+        try {
+            executor.update(ms, selectUpdatedRowsSql);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
 }
