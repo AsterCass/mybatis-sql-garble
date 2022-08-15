@@ -8,10 +8,7 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 @Slf4j
 @Intercepts({
@@ -30,16 +27,23 @@ public class GarbleUpdateInterceptor implements Interceptor {
             put("user", "id");
         }};
 
+        Map<String, String> monitoredTableUpdateFlagColMap = new HashMap<>();
+
+        List<String> excludedMapperPath = new ArrayList<>();
+
+        String updateFlagColName = "id";
+
+
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             MonitoredWork updateSql = new MonitoredUpdateSql(
-                    invocation, "id", monitoredTableMap, new HashMap<>(), "dsafdsa");
+                    invocation, updateFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
             updateSql.run();
         }
         try {
             return invocation.proceed();
         } finally {
             MonitoredWork rollbackData = new MonitoredDataRollback(
-                    invocation, "id", monitoredTableMap, new HashMap<>(), "dsafdsa");
+                    invocation, updateFlagColName, monitoredTableMap, monitoredTableUpdateFlagColMap, excludedMapperPath);
             Map<String, List<String>> list = rollbackData.run();
             log.info(list.toString());
         }

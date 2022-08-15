@@ -11,7 +11,6 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class MonitoredUpdateSql extends MonitoredWork {
     public MonitoredUpdateSql(Invocation invocation, String updateFlagColName,
                               Map<String, String> monitoredTableMap,
                               Map<String, String> monitoredTableUpdateFlagColMap,
-                              String excludedMapperPath) {
+                              List<String> excludedMapperPath) {
         super(invocation, updateFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }

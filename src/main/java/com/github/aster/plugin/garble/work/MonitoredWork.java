@@ -61,7 +61,7 @@ public abstract class MonitoredWork {
     /**
      * 在此map中的的sql不受到监控，即使包含监控表
      */
-    protected String excludedMapperPath;
+    protected List<String> excludedMapperPath;
 
     /**
      * builder
@@ -69,7 +69,7 @@ public abstract class MonitoredWork {
     public MonitoredWork(Invocation invocation, String defaultFlagColName,
                          Map<String, String> monitoredTableMap,
                          Map<String, String> monitoredTableUpdateFlagColMap,
-                         String excludedMapperPath) {
+                         List<String> excludedMapperPath) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         //这里全部转小写，后面各种操作，大小写不太方便
@@ -123,7 +123,7 @@ public abstract class MonitoredWork {
     /**
      * 判断是否需要排除
      */
-    private boolean notExcludedTableCondition(Invocation invocation, String excludedMapperPath) {
+    private boolean notExcludedTableCondition(Invocation invocation, List<String> excludedMapperPath) {
         final Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         Object parameterObject = args[1];
@@ -131,7 +131,16 @@ public abstract class MonitoredWork {
         String sql = boundSql.getSql();
         //这里全部转小写，后面各种操作，大小写不太方便
         this.sql = sql.toLowerCase();
-        return !ms.getId().contains(excludedMapperPath + ".");
+        boolean toGarble = true;
+        if (null != excludedMapperPath && 0 != excludedMapperPath.size()) {
+            for (String path : excludedMapperPath) {
+                if (ms.getId().contains(path + ".")) {
+                    toGarble = false;
+                    break;
+                }
+            }
+        }
+        return toGarble;
     }
 
     /**

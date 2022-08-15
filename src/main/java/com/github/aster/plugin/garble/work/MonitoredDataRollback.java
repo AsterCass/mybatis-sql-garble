@@ -17,7 +17,7 @@ public class MonitoredDataRollback extends MonitoredWork {
     public MonitoredDataRollback(Invocation invocation, String updateFlagColName,
                                  Map<String, String> monitoredTableMap,
                                  Map<String, String> monitoredTableUpdateFlagColMap,
-                                 String excludedMapperPath) {
+                                 List<String> excludedMapperPath) {
         super(invocation, updateFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }
