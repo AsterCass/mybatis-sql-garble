@@ -5,13 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/service/DealWithUpdated.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/service/DealWithUpdatedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/753e791f-89a6-4cdb-99ba-fe10a1e6a6f7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/753e791f-89a6-4cdb-99ba-fe10a1e6a6f7.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/MappedStatementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/MappedStatementUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/verify/ConfigVerify.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/verify/ConfigVerify.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/mysql/mysql.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mysql/mysql.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +29,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -70,7 +78,7 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BaseTest.updateBase">
+  <component name="RunManager" selected="JUnit.BaseTest.queryBase">
     <configuration name="BaseTest.queryBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -126,9 +134,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BaseTest.queryBase" />
         <item itemvalue="JUnit.BaseTest.updateBase" />
         <item itemvalue="JUnit.BaseTest.testJSql" />
-        <item itemvalue="JUnit.BaseTest.queryBase" />
       </list>
     </recent_temporary>
   </component>
@@ -147,7 +155,7 @@
       <workItem from="1660128359826" duration="789000" />
       <workItem from="1660186820841" duration="24556000" />
       <workItem from="1660270773015" duration="25199000" />
-      <workItem from="1660529106293" duration="7054000" />
+      <workItem from="1660529106293" duration="17376000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -212,7 +220,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660530437855</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="add: 数据回滚">
+      <created>1660537083459</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1660537083459</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,7 +254,8 @@
     <MESSAGE value="modify: 更改使用JSql测试通过" />
     <MESSAGE value="modify: 修改返回数据结构" />
     <MESSAGE value="add: 排除类支持多个" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 排除类支持多个" />
+    <MESSAGE value="add: 数据回滚" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: 数据回滚" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

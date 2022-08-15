@@ -15,7 +15,7 @@
     </select>
 
     <update id="updateOne">
-        update user set name = #{name} where py = #{py}
+        update user set name = #{name} where ext = #{ext}
     </update>
 
 </mapper>

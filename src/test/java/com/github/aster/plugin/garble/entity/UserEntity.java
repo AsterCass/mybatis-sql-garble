@@ -13,6 +13,6 @@ public class UserEntity {
 
     private String name;
 
-    private String py;
+    private String ext;
 
 }

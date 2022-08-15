@@ -34,7 +34,7 @@
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
     <column id="10" parent="9" name="id">
-      <AutoIncrement>184</AutoIncrement>
+      <AutoIncrement>9</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -43,11 +43,16 @@
       <DataType>varchar(50)|0s</DataType>
       <Position>2</Position>
     </column>
-    <column id="12" parent="9" name="py">
+    <column id="12" parent="9" name="ext">
       <DataType>varchar(50)|0s</DataType>
       <Position>3</Position>
     </column>
-    <key id="13" parent="9" name="PRIMARY">
+    <column id="13" parent="9" name="update_record">
+      <DataType>int|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <Position>4</Position>
+    </column>
+    <key id="14" parent="9" name="PRIMARY">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
