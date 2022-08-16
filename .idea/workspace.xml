@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,7 +164,7 @@
       <workItem from="1660186820841" duration="24556000" />
       <workItem from="1660270773015" duration="25199000" />
       <workItem from="1660529106293" duration="28366000" />
-      <workItem from="1660628789561" duration="8792000" />
+      <workItem from="1660628789561" duration="10232000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -279,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660636445055</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="add: 兼容mybatis-config和yml文件的配置">
+      <created>1660640726830</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1660640726830</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -312,7 +318,8 @@
     <MESSAGE value="add: 增加获取更新行的后续处理逻辑" />
     <MESSAGE value="add: 测试通过" />
     <MESSAGE value="version:" />
-    <option name="LAST_COMMIT_MESSAGE" value="version:" />
+    <MESSAGE value="add: 兼容mybatis-config和yml文件的配置" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: 兼容mybatis-config和yml文件的配置" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

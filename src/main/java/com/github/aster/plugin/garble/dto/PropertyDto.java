@@ -1,12 +1,10 @@
 package com.github.aster.plugin.garble.dto;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
