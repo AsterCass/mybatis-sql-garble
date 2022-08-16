@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface DealWithUpdated {
 
+    int priority() default 0;
 
 }

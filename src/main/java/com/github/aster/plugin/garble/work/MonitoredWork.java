@@ -73,7 +73,11 @@ public abstract class MonitoredWork {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         //这里全部转小写，后面各种操作，大小写不太方便
-        this.defaultFlagColName = defaultFlagColName.toLowerCase();
+        if (null != defaultFlagColName) {
+            this.defaultFlagColName = defaultFlagColName.toLowerCase();
+        } else {
+            this.defaultFlagColName = "";
+        }
         if (null != monitoredTableMap && 0 != monitoredTableMap.size()) {
             Map<String, String> lowerMonitoredTableMap = new HashMap<>();
             for (Map.Entry<String, String> entry : monitoredTableMap.entrySet()) {

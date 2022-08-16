@@ -1,9 +1,13 @@
 package com.github.aster.plugin.garble.dto;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Data
 public class PropertyDto {
@@ -30,6 +34,47 @@ public class PropertyDto {
     List<String> excludedMapperPath;
 
 
+    public static PropertyDto build(Properties prop) {
+        PropertyDto propertyDto = new PropertyDto();
+        if (null != prop && 0 != prop.size()) {
+            Field[] declaredFields = PropertyDto.class.getDeclaredFields();
+            for (Field property : declaredFields) {
+                String name = property.getName();
+                String type = property.getGenericType().toString();
+                property.setAccessible(true);
+                String firstUpperName = firstUpperCase(name);
+                try {
+                    if (type.equals("class java.lang.String")) {
+                        Method Method = propertyDto.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, String.class);
+                        Method.invoke(propertyDto, (String) prop.get(name));
+                    }
+
+                    if (type.equals("java.util.Map<java.lang.String, java.lang.String>")) {
+                        Method Method = propertyDto.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, Map.class);
+                        Map strMap = JSON.parseObject(prop.get(name).toString(), Map.class);
+                        Method.invoke(propertyDto, strMap);
+                    }
+
+                    if (type.equals("java.util.List<java.lang.String>")) {
+                        Method Method = propertyDto.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, List.class);
+                        List<String> strList = JSON.parseArray(prop.get(name).toString(), String.class);
+                        Method.invoke(propertyDto, strList);
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return propertyDto;
+    }
+
+    private static String firstUpperCase(String str) {
+        return str.replaceFirst(str.substring(0, 1), str.substring(0, 1).toUpperCase());
+    }
 
 
 }
