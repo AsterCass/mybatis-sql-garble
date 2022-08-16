@@ -10,6 +10,10 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.Properties;
 
+/**
+ * 功能
+ * 1. 支持数据鉴权代码无感
+ */
 @Intercepts(
         {
                 @Signature(type = Executor.class, method = "query", args =

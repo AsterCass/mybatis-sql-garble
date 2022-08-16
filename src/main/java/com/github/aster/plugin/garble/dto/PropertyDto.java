@@ -33,6 +33,11 @@ public class PropertyDto {
      */
     List<String> excludedMapperPath;
 
+    /**
+     * 需要的功能
+     */
+    List<Integer> garbleFunctionList;
+
 
     public static PropertyDto build(Properties prop) {
         PropertyDto propertyDto = new PropertyDto();
@@ -75,6 +80,20 @@ public class PropertyDto {
                         List<String> strList = JSON.parseArray(listStr, String.class);
                         method.invoke(propertyDto, strList);
                     }
+
+                    if (type.equals("java.util.List<java.lang.Integer>")) {
+                        Method method = propertyDto.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, List.class);
+                        String listStr;
+                        if(prop.get(name) instanceof String) {
+                            listStr = prop.get(name).toString();
+                        } else {
+                            listStr = JSON.toJSONString(prop.get(name));
+                        }
+                        List<Integer> strList = JSON.parseArray(listStr, Integer.class);
+                        method.invoke(propertyDto, strList);
+                    }
+
 
                 } catch (Exception ex) {
                     ex.printStackTrace();

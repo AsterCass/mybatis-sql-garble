@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/enums/GarbleFunctionEnum.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +169,7 @@
       <workItem from="1660186820841" duration="24556000" />
       <workItem from="1660270773015" duration="25199000" />
       <workItem from="1660529106293" duration="28366000" />
-      <workItem from="1660628789561" duration="10232000" />
+      <workItem from="1660628789561" duration="13523000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -285,7 +290,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660640726830</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="format:">
+      <created>1660644888674</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1660644888674</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,7 +331,8 @@
     <MESSAGE value="add: 测试通过" />
     <MESSAGE value="version:" />
     <MESSAGE value="add: 兼容mybatis-config和yml文件的配置" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 兼容mybatis-config和yml文件的配置" />
+    <MESSAGE value="format:" />
+    <option name="LAST_COMMIT_MESSAGE" value="format:" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -338,6 +351,11 @@
           <url>jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/4.5/jsqlparser-4.5.jar!/net/sf/jsqlparser/statement/select/Join.class</url>
           <line>229</line>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

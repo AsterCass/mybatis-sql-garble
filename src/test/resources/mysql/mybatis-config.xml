@@ -46,6 +46,7 @@
             <property name="defaultFlagColName" value="update_record"/>
             <property name="excludedMapperPath" value="['abc','efg','hij']"/>
             <property name="monitoredTableMap" value="{'user':'id'}"/>
+            <property name="garbleFunctionList" value="[1]"/>
             <property name="monitoredTableUpdateFlagColMap" value="{'user':'update_record'}"/>
         </plugin>
     </plugins>
