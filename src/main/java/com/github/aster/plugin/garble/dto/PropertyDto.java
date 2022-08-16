@@ -1,10 +1,12 @@
 package com.github.aster.plugin.garble.dto;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -45,23 +47,35 @@ public class PropertyDto {
                 String firstUpperName = firstUpperCase(name);
                 try {
                     if (type.equals("class java.lang.String")) {
-                        Method Method = propertyDto.getClass()
+                        Method method = propertyDto.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, String.class);
-                        Method.invoke(propertyDto, (String) prop.get(name));
+                        method.invoke(propertyDto, (String) prop.get(name));
                     }
-
                     if (type.equals("java.util.Map<java.lang.String, java.lang.String>")) {
-                        Method Method = propertyDto.getClass()
+                        Method method = propertyDto.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, Map.class);
-                        Map strMap = JSON.parseObject(prop.get(name).toString(), Map.class);
-                        Method.invoke(propertyDto, strMap);
+                        String mapStr;
+                        //这里if判断是兼容mybatis-config和yml文件的配置，mybatis的配置value值只能输入String格式，下同
+                        if(prop.get(name) instanceof String) {
+                            mapStr = prop.get(name).toString();
+                        } else {
+                            mapStr = JSON.toJSONString(prop.get(name));
+                        }
+                        Map strMap = JSON.parseObject(mapStr, Map.class);
+                        method.invoke(propertyDto, strMap);
                     }
 
                     if (type.equals("java.util.List<java.lang.String>")) {
-                        Method Method = propertyDto.getClass()
+                        Method method = propertyDto.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, List.class);
-                        List<String> strList = JSON.parseArray(prop.get(name).toString(), String.class);
-                        Method.invoke(propertyDto, strList);
+                        String listStr;
+                        if(prop.get(name) instanceof String) {
+                            listStr = prop.get(name).toString();
+                        } else {
+                            listStr = JSON.toJSONString(prop.get(name));
+                        }
+                        List<String> strList = JSON.parseArray(listStr, String.class);
+                        method.invoke(propertyDto, strList);
                     }
 
                 } catch (Exception ex) {
