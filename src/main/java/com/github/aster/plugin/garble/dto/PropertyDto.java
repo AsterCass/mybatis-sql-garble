@@ -1,6 +1,7 @@
 package com.github.aster.plugin.garble.dto;
 
 import com.alibaba.fastjson.JSON;
+import com.github.aster.plugin.garble.enums.GarbleFunctionEnum;
 import lombok.Data;
 
 import java.lang.reflect.Field;
@@ -35,6 +36,7 @@ public class PropertyDto {
 
     /**
      * 需要的功能
+     * {@link GarbleFunctionEnum}
      */
     List<Integer> garbleFunctionList;
 
