@@ -51,7 +51,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
                             .priority())).collect(Collectors.toList());
             if (0 != methods.size()) {
                 for (Method method : sortedMethodList) {
-                    //
+                    method.invoke(method.getDeclaringClass().newInstance(), list);
                 }
             }
         }
