@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/enums/GarbleFunctionEnum.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,25 +34,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "Z:/workspace/home/garble/sql-garble-spring-boot",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "MavenSettings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;Z:/workspace/home/garble/sql-garble-spring-boot&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="Z:\workspace\home\garble-mv\mybatis-sql-garble\src\main\resources" />
@@ -169,7 +165,10 @@
       <workItem from="1660186820841" duration="24556000" />
       <workItem from="1660270773015" duration="25199000" />
       <workItem from="1660529106293" duration="28366000" />
-      <workItem from="1660628789561" duration="13523000" />
+      <workItem from="1660628789561" duration="13833000" />
+      <workItem from="1660710428666" duration="1555000" />
+      <workItem from="1660712485220" duration="600000" />
+      <workItem from="1660716172140" duration="749000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -297,7 +296,21 @@
       <option name="project" value="LOCAL" />
       <updated>1660644888674</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="add: 支持功能选择，准备支持查询鉴权">
+      <created>1660649639567</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1660649639567</updated>
+    </task>
+    <task id="LOCAL-00020" summary="add: 支持功能选择，准备支持查询鉴权">
+      <created>1660649818508</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1660649818508</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,7 +345,8 @@
     <MESSAGE value="version:" />
     <MESSAGE value="add: 兼容mybatis-config和yml文件的配置" />
     <MESSAGE value="format:" />
-    <option name="LAST_COMMIT_MESSAGE" value="format:" />
+    <MESSAGE value="add: 支持功能选择，准备支持查询鉴权" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: 支持功能选择，准备支持查询鉴权" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -351,11 +365,6 @@
           <url>jar://$MAVEN_REPOSITORY$/com/github/jsqlparser/jsqlparser/4.5/jsqlparser-4.5.jar!/net/sf/jsqlparser/statement/select/Join.class</url>
           <line>229</line>
           <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
