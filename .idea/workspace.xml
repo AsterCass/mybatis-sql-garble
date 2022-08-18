@@ -4,34 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="version:">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/service/DealWithUpdatedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/property/QueryProperty.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/dto/PropertyDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/dto/PropertyDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/enums/GarbleFunctionEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/enums/GarbleFunctionEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/service/DealWithUpdated.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/service/DealWithUpdated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/service/DealWithUpdatedInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/service/DealWithUpdatedInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/service/DealWithUpdatedService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/SelectSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/SelectSqlCube.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/ExecutorUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/util/ExecutorUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/util/MappedStatementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/util/MappedStatementUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredDataRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/work/MonitoredDataRollback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredUpdateSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/work/MonitoredUpdateSql.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/github/aster/plugin/garble/work/MonitoredWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/work/MonitoredWork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/entity/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/UpdatedOneService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/UpdatedOneService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/test/UpdatedTwoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/UpdatedTwoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/util/MybatisHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/util/MybatisHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/github/aster/plugin/garble/util/TestUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/util/TestUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mapper/UserMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/mysql/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/dto/PropertyDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/property/UpdateProperty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleQueryInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +74,23 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.BaseTest.insertTest">
+    <configuration name="BaseTest.insertTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="mybatis-sql-garble" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.aster.plugin.garble.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.aster.plugin.garble.test" />
+      <option name="MAIN_CLASS_NAME" value="com.aster.plugin.garble.test.BaseTest" />
+      <option name="METHOD_NAME" value="insertTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="BaseTest.updateBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -113,6 +109,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BaseTest.insertTest" />
         <item itemvalue="JUnit.BaseTest.updateBase" />
       </list>
     </recent_temporary>
@@ -137,7 +134,7 @@
       <workItem from="1660710428666" duration="1555000" />
       <workItem from="1660712485220" duration="600000" />
       <workItem from="1660716172140" duration="8397000" />
-      <workItem from="1660789163557" duration="11743000" />
+      <workItem from="1660789163557" duration="23744000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -286,7 +283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660720684375</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="modify: 修改路径，增加快速快速定位更新后续处理的注解property">
+      <created>1660803116875</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1660803116875</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,7 +326,8 @@
     <MESSAGE value="format:" />
     <MESSAGE value="add: 支持功能选择，准备支持查询鉴权" />
     <MESSAGE value="version:" />
-    <option name="LAST_COMMIT_MESSAGE" value="version:" />
+    <MESSAGE value="modify: 修改路径，增加快速快速定位更新后续处理的注解property" />
+    <option name="LAST_COMMIT_MESSAGE" value="modify: 修改路径，增加快速快速定位更新后续处理的注解property" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -347,6 +352,11 @@
           <line>53</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java</url>
+          <line>183</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
@@ -357,6 +367,12 @@
         <PinnedItemInfo parentTag="net.sf.jsqlparser.statement.update.UpdateSet" memberName="columns" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="insert1.select.selectBody" />
+        <watch expression="insert" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

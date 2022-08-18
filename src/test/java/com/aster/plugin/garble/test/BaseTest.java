@@ -1,16 +1,21 @@
 package com.aster.plugin.garble.test;
 
 import com.alibaba.fastjson.JSON;
-import com.aster.plugin.garble.mapper.UserMapper;
 import com.aster.plugin.garble.entity.UserEntity;
+import com.aster.plugin.garble.mapper.UserMapper;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.RowConstructor;
 import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
@@ -122,6 +127,62 @@ public class BaseTest {
         UpdateSqlCube.getUpdateTableList(sql);
 
         System.out.println(sql);
+
+    }
+
+
+    @Test
+    public void insertTest() throws Exception {
+        String insertSql1 = "INSERT into user (id,name,ext, update_record) " +
+                "VALUES (8,'张老八','hhh', 0), (7,'张老七','ggg',0)";
+
+        String insertSql2 = "INSERT into user (id,name,ext) VALUES (9,'张老九','iii')";
+
+
+        String insertSql3 = "INSERT into user (id,name,ext) " +
+                "VALUES (8,'张老八','hhh'), (7,'张老七','ggg')";
+
+        String insertSql4 = "INSERT into user (id,name,ext, update_record) VALUES (9,'张老九','iii', 0)";
+
+
+        Insert insert = (Insert) CCJSqlParserUtil.parse(insertSql4);
+
+        boolean containFlag = false;
+        for (int count = 0; count < insert.getColumns().size(); ++count) {
+            if (insert.getColumns().get(count).getColumnName().equals("update_record")) {
+                containFlag = true;
+                ExpressionList exp = insert.getItemsList(ExpressionList.class);
+                List<Expression> expressionList = exp.getExpressions();
+                //兼容普通插入和List插入
+                if (expressionList.get(0) instanceof RowConstructor) {
+                    for (Expression expression : expressionList) {
+                        RowConstructor rowCon = (RowConstructor) expression;
+                        rowCon.getExprList().getExpressions().set(count, new LongValue(1));
+                    }
+                } else {
+                    expressionList.set(count, new LongValue(1));
+                }
+            }
+        }
+        if (!containFlag) {
+            insert.addColumns(new Column("update_record"));
+            ExpressionList exp = insert.getItemsList(ExpressionList.class);
+            List<Expression> expressionList = exp.getExpressions();
+            //兼容普通插入和List插入
+            if (expressionList.get(0) instanceof RowConstructor) {
+                for (Expression expression : expressionList) {
+                    RowConstructor rowCon = (RowConstructor) expression;
+                    rowCon.getExprList().addExpressions(new LongValue(1));
+                }
+            } else {
+                expressionList.add(new LongValue(1));
+            }
+
+        }
+
+
+        System.out.println(insert.toString());
+
 
     }
 

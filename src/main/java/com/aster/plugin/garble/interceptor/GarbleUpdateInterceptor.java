@@ -1,11 +1,11 @@
 package com.aster.plugin.garble.interceptor;
 
-import com.aster.plugin.garble.dto.PropertyDto;
+import com.aster.plugin.garble.enums.GarbleFunctionEnum;
+import com.aster.plugin.garble.property.UpdateProperty;
 import com.aster.plugin.garble.service.DealWithUpdated;
 import com.aster.plugin.garble.service.DealWithUpdatedService;
 import com.aster.plugin.garble.work.MonitoredDataRollback;
 import com.aster.plugin.garble.work.MonitoredUpdateSql;
-import com.aster.plugin.garble.enums.GarbleFunctionEnum;
 import com.aster.plugin.garble.work.MonitoredWork;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
@@ -33,7 +33,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
     /**
      * 传入配置
      */
-    private PropertyDto prop;
+    private UpdateProperty prop;
 
     /**
      * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
@@ -90,7 +90,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties prop) {
-        this.prop = PropertyDto.build(prop);
+        this.prop = UpdateProperty.build(prop);
         this.postMethodForUpdatedRows = DealWithUpdatedService
                 .loadBySubTypes(this.prop.getDealWithUpdatedPath());
     }

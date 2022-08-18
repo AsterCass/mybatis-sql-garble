@@ -7,6 +7,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
@@ -38,6 +39,10 @@ public class UpdateSqlCube {
                     }
                 }
                 return nameList;
+            }
+            if (statement instanceof Insert) {
+                Insert insertStatement = (Insert) statement;
+                //todo
             }
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
@@ -93,31 +98,40 @@ public class UpdateSqlCube {
             Map<String, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(sql);
             //sql解析
             Statement statement = CCJSqlParserUtil.parse(sql);
-            Update updateStatement = (Update) statement;
-            //添加set
-            if (null != updateStatement.getUpdateSets() && 0 != updateStatement.getUpdateSets().size()) {
-                List<UpdateSet> updateVol = new ArrayList<>();
-                for (UpdateSet updateSet : updateStatement.getUpdateSets()) {
-                    for (int count = 0; count < updateSet.getColumns().size(); ++count) {
-                        Table table = updateSet.getColumns().get(count).getTable();
-                        //getName方法只取表名不取schema名
-                        String name = null == table ? updateStatement.getTable().getName() : table.getName();
-                        String fullTableName = nameAliasMap.get(name);
-                        if (tableList.contains(fullTableName)) {
-                            String updateFlagColName = monitoredTableUpdateFlagColMap.get(fullTableName);
-                            updateFlagColName = null == updateFlagColName ? defaultFlagColName : updateFlagColName;
+            if (statement instanceof Update) {
+                Update updateStatement = (Update) statement;
+                //添加set
+                if (null != updateStatement.getUpdateSets() && 0 != updateStatement.getUpdateSets().size()) {
+                    List<UpdateSet> updateVol = new ArrayList<>();
+                    for (UpdateSet updateSet : updateStatement.getUpdateSets()) {
+                        for (int count = 0; count < updateSet.getColumns().size(); ++count) {
+                            Table table = updateSet.getColumns().get(count).getTable();
+                            //getName方法只取表名不取schema名
+                            String name = null == table ? updateStatement.getTable().getName() : table.getName();
+                            String fullTableName = nameAliasMap.get(name);
+                            if (tableList.contains(fullTableName)) {
+                                String updateFlagColName = monitoredTableUpdateFlagColMap.get(fullTableName);
+                                updateFlagColName = null == updateFlagColName ? defaultFlagColName : updateFlagColName;
 
-                            updateVol.add(new UpdateSet(
-                                    new Column(new Table(name), updateFlagColName),
-                                    new StringValue("1")));
-                            //防止由于多字段更新，导致的多次更新标志位
-                            tableList.remove(fullTableName);
+                                updateVol.add(new UpdateSet(
+                                        new Column(new Table(name), updateFlagColName),
+                                        new StringValue("1")));
+                                //防止由于多字段更新，导致的多次更新标志位
+                                tableList.remove(fullTableName);
+                            }
                         }
                     }
+                    updateStatement.getUpdateSets().addAll(updateVol);
                 }
-                updateStatement.getUpdateSets().addAll(updateVol);
+                return updateStatement.toString();
             }
-            return updateStatement.toString();
+
+            if (statement instanceof Insert) {
+                Insert insertStatement = (Insert) statement;
+                //todo
+
+            }
+
 
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();

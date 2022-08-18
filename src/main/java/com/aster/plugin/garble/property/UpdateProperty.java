@@ -1,4 +1,4 @@
-package com.aster.plugin.garble.dto;
+package com.aster.plugin.garble.property;
 
 import com.alibaba.fastjson.JSON;
 import com.aster.plugin.garble.enums.GarbleFunctionEnum;
@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Properties;
 
 @Data
-public class PropertyDto {
+public class UpdateProperty {
 
     /**
-     * 标记实现DealWithUpdatedInterface接口的方法路径，加快加快初始化速度
+     * 标记实现DealWithUpdatedInterface接口的方法路径，加快加快初始化速度，可以不赋值
      */
     String dealWithUpdatedPath;
 
@@ -45,10 +45,10 @@ public class PropertyDto {
     List<Integer> garbleFunctionList;
 
 
-    public static PropertyDto build(Properties prop) {
-        PropertyDto propertyDto = new PropertyDto();
+    public static UpdateProperty build(Properties prop) {
+        UpdateProperty updateProperty = new UpdateProperty();
         if (null != prop && 0 != prop.size()) {
-            Field[] declaredFields = PropertyDto.class.getDeclaredFields();
+            Field[] declaredFields = UpdateProperty.class.getDeclaredFields();
             for (Field property : declaredFields) {
                 String name = property.getName();
                 String type = property.getGenericType().toString();
@@ -56,12 +56,12 @@ public class PropertyDto {
                 String firstUpperName = firstUpperCase(name);
                 try {
                     if (type.equals("class java.lang.String")) {
-                        Method method = propertyDto.getClass()
+                        Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, String.class);
-                        method.invoke(propertyDto, (String) prop.get(name));
+                        method.invoke(updateProperty, (String) prop.get(name));
                     }
                     if (type.equals("java.util.Map<java.lang.String, java.lang.String>")) {
-                        Method method = propertyDto.getClass()
+                        Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, Map.class);
                         String mapStr;
                         //这里if判断是兼容mybatis-config和yml文件的配置，mybatis的配置value值只能输入String格式，下同
@@ -71,11 +71,11 @@ public class PropertyDto {
                             mapStr = JSON.toJSONString(prop.get(name));
                         }
                         Map strMap = JSON.parseObject(mapStr, Map.class);
-                        method.invoke(propertyDto, strMap);
+                        method.invoke(updateProperty, strMap);
                     }
 
                     if (type.equals("java.util.List<java.lang.String>")) {
-                        Method method = propertyDto.getClass()
+                        Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, List.class);
                         String listStr;
                         if(prop.get(name) instanceof String) {
@@ -84,11 +84,11 @@ public class PropertyDto {
                             listStr = JSON.toJSONString(prop.get(name));
                         }
                         List<String> strList = JSON.parseArray(listStr, String.class);
-                        method.invoke(propertyDto, strList);
+                        method.invoke(updateProperty, strList);
                     }
 
                     if (type.equals("java.util.List<java.lang.Integer>")) {
-                        Method method = propertyDto.getClass()
+                        Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, List.class);
                         String listStr;
                         if(prop.get(name) instanceof String) {
@@ -97,7 +97,7 @@ public class PropertyDto {
                             listStr = JSON.toJSONString(prop.get(name));
                         }
                         List<Integer> strList = JSON.parseArray(listStr, Integer.class);
-                        method.invoke(propertyDto, strList);
+                        method.invoke(updateProperty, strList);
                     }
 
 
@@ -106,7 +106,7 @@ public class PropertyDto {
                 }
             }
         }
-        return propertyDto;
+        return updateProperty;
     }
 
     private static String firstUpperCase(String str) {
