@@ -3,10 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.github.aster.plugin.garble.mapper.UserMapper">
+<mapper namespace="com.aster.plugin.garble.mapper.UserMapper">
 
 
-    <select id="selectAll" resultType="com.github.aster.plugin.garble.entity.UserEntity">
+    <select id="selectAll" resultType="com.aster.plugin.garble.entity.UserEntity">
         select * from user order by id
     </select>
 
