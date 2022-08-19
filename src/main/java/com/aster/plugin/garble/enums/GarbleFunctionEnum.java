@@ -3,6 +3,9 @@ package com.aster.plugin.garble.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @author astercasc
+ */
 @Getter
 @AllArgsConstructor
 public enum GarbleFunctionEnum {

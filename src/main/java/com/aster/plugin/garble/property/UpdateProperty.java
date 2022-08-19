@@ -10,39 +10,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * @author astercasc
+ */
 @Data
 public class UpdateProperty {
 
     /**
      * 标记实现DealWithUpdatedInterface接口的方法路径，加快加快初始化速度，可以不赋值
      */
-    String dealWithUpdatedPath;
+    private String dealWithUpdatedPath;
 
     /**
      * 监控表和监控返回字段的Map，一般为主键，("user", "id")
      */
-    Map<String, String> monitoredTableMap;
+    private Map<String, String> monitoredTableMap;
 
     /**
      * 监控表和更新标记字段Map ("user", "update_record")
      */
-    Map<String, String> monitoredTableUpdateFlagColMap;
+    private Map<String, String> monitoredTableUpdateFlagColMap;
 
     /**
      * 默认更新标记字段，如果监控表无法在更新标记字段Map中取得，则会使用默认更新标记字段
      */
-    String defaultFlagColName;
+    private String defaultFlagColName;
 
     /**
      * 不拦截的sql的路径
      */
-    List<String> excludedMapperPath;
+    private List<String> excludedMapperPath;
 
     /**
      * 需要的功能
      * {@link GarbleFunctionEnum}
      */
-    List<Integer> garbleFunctionList;
+    private List<Integer> garbleFunctionList;
 
 
     public static UpdateProperty build(Properties prop) {
@@ -55,12 +58,12 @@ public class UpdateProperty {
                 property.setAccessible(true);
                 String firstUpperName = firstUpperCase(name);
                 try {
-                    if (type.equals("class java.lang.String")) {
+                    if ("class java.lang.String".equals(type)) {
                         Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, String.class);
                         method.invoke(updateProperty, (String) prop.get(name));
                     }
-                    if (type.equals("java.util.Map<java.lang.String, java.lang.String>")) {
+                    if ("java.util.Map<java.lang.String, java.lang.String>".equals(type)) {
                         Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, Map.class);
                         String mapStr;
@@ -74,7 +77,7 @@ public class UpdateProperty {
                         method.invoke(updateProperty, strMap);
                     }
 
-                    if (type.equals("java.util.List<java.lang.String>")) {
+                    if ("java.util.List<java.lang.String>".equals(type)) {
                         Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, List.class);
                         String listStr;
@@ -87,7 +90,7 @@ public class UpdateProperty {
                         method.invoke(updateProperty, strList);
                     }
 
-                    if (type.equals("java.util.List<java.lang.Integer>")) {
+                    if ("java.util.List<java.lang.Integer>".equals(type)) {
                         Method method = updateProperty.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, List.class);
                         String listStr;

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author liuzenghui
+ * @author astercasc
  */
 public class ExecutorUtil {
 

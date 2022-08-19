@@ -13,6 +13,7 @@ import java.util.Properties;
 /**
  * 功能
  * 1. 支持数据鉴权代码无感
+ * @author astercasc
  */
 @Intercepts(
         {

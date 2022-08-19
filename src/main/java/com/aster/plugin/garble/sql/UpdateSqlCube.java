@@ -1,8 +1,12 @@
 package com.aster.plugin.garble.sql;
 
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.RowConstructor;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -12,11 +16,11 @@ import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * @author astercasc
+ */
 public class UpdateSqlCube {
 
     /**
@@ -42,7 +46,7 @@ public class UpdateSqlCube {
             }
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
-                //todo
+                return Collections.singletonList(insertStatement.getTable().getName());
             }
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
@@ -56,30 +60,32 @@ public class UpdateSqlCube {
     public static Map<String, String> getUpdateTableAliasMap(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
-            Update updateStatement = (Update) statement;
-            Map<String, String> nameAliasMap = new HashMap<>();
-            if (null == updateStatement.getTable().getAlias()) {
-                nameAliasMap.put(updateStatement.getTable().getName(),
-                        updateStatement.getTable().getName());
-            } else {
-                nameAliasMap.put(updateStatement.getTable().getAlias().getName(),
-                        updateStatement.getTable().getName());
-            }
-            if (null != updateStatement.getStartJoins() && 0 != updateStatement.getStartJoins().size()) {
-                for (Join join : updateStatement.getStartJoins()) {
-                    Table rightTable = new Table();
-                    if (join.getRightItem() instanceof Table) {
-                        rightTable = (Table) join.getRightItem();
-                    }
-                    if (null == rightTable.getAlias()) {
-                        nameAliasMap.put(rightTable.getName(), rightTable.getName());
-                    } else {
-                        nameAliasMap.put(rightTable.getAlias().getName(), rightTable.getName());
-                    }
-
+            if (statement instanceof Update) {
+                Update updateStatement = (Update) statement;
+                Map<String, String> nameAliasMap = new HashMap<>();
+                if (null == updateStatement.getTable().getAlias()) {
+                    nameAliasMap.put(updateStatement.getTable().getName(),
+                            updateStatement.getTable().getName());
+                } else {
+                    nameAliasMap.put(updateStatement.getTable().getAlias().getName(),
+                            updateStatement.getTable().getName());
                 }
+                if (null != updateStatement.getStartJoins() && 0 != updateStatement.getStartJoins().size()) {
+                    for (Join join : updateStatement.getStartJoins()) {
+                        Table rightTable = new Table();
+                        if (join.getRightItem() instanceof Table) {
+                            rightTable = (Table) join.getRightItem();
+                        }
+                        if (null == rightTable.getAlias()) {
+                            nameAliasMap.put(rightTable.getName(), rightTable.getName());
+                        } else {
+                            nameAliasMap.put(rightTable.getAlias().getName(), rightTable.getName());
+                        }
+
+                    }
+                }
+                return nameAliasMap;
             }
-            return nameAliasMap;
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
         }
@@ -128,10 +134,49 @@ public class UpdateSqlCube {
 
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
-                //todo
-
+                boolean containFlag = false;
+                String flagColName = defaultFlagColName;
+                if (tableList.contains(insertStatement.getTable().getName())) {
+                    String mapFlagColName =
+                            monitoredTableUpdateFlagColMap.get(insertStatement.getTable().getName());
+                    if (null != mapFlagColName) {
+                        flagColName = mapFlagColName;
+                    }
+                } else {
+                    return sql;
+                }
+                for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
+                    if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {
+                        containFlag = true;
+                        ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
+                        List<Expression> expressionList = exp.getExpressions();
+                        //兼容普通插入和List插入
+                        if (expressionList.get(0) instanceof RowConstructor) {
+                            for (Expression expression : expressionList) {
+                                RowConstructor rowCon = (RowConstructor) expression;
+                                rowCon.getExprList().getExpressions().set(count, new LongValue(1));
+                            }
+                        } else {
+                            expressionList.set(count, new LongValue(1));
+                        }
+                    }
+                }
+                if (!containFlag) {
+                    insertStatement.addColumns(new Column(flagColName));
+                    ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
+                    List<Expression> expressionList = exp.getExpressions();
+                    //兼容普通插入和List插入
+                    if (expressionList.get(0) instanceof RowConstructor) {
+                        for (Expression expression : expressionList) {
+                            RowConstructor rowCon = (RowConstructor) expression;
+                            rowCon.getExprList().addExpressions(new LongValue(1));
+                        }
+                    } else {
+                        expressionList.add(new LongValue(1));
+                    }
+                }
+                return insertStatement.toString();
             }
-
 
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();

@@ -33,6 +33,7 @@ import java.util.List;
 
 /**
  * for new
+ * @author astercasc
  */
 public class MappedStatementUtil {
 

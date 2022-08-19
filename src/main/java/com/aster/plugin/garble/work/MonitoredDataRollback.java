@@ -1,9 +1,9 @@
 package com.aster.plugin.garble.work;
 
 import com.aster.plugin.garble.sql.SelectSqlCube;
+import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.ExecutorUtil;
 import com.aster.plugin.garble.util.MappedStatementUtil;
-import com.aster.plugin.garble.sql.UpdateSqlCube;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
@@ -12,6 +12,9 @@ import org.apache.ibatis.plugin.Invocation;
 
 import java.util.*;
 
+/**
+ * @author astercasc
+ */
 public class MonitoredDataRollback extends MonitoredWork {
 
 
@@ -45,7 +48,9 @@ public class MonitoredDataRollback extends MonitoredWork {
                         SqlCommandType.SELECT);
                 List<String> resultList = ExecutorUtil.executeSelectRow(
                         sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
-                updatedColMap.put(table, resultList);
+                if (null != resultList && 0 != resultList.size()) {
+                    updatedColMap.put(table, resultList);
+                }
             }
             //获取回滚语句
             Map<String, String> rollBackMap = UpdateSqlCube.getFlagRollBackList(updatedColMap,
