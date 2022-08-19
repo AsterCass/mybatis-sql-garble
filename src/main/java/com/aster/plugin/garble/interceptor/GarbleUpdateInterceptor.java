@@ -68,13 +68,15 @@ public class GarbleUpdateInterceptor implements Interceptor {
                         prop.getExcludedMapperPath());
                 Map<String, List<String>> list = rollbackData.run();
                 //后续操作
-                List<Method> sortedMethodList =
-                        postMethodForUpdatedRows.stream().sorted(Comparator.comparing(
-                                method -> method.getAnnotation(DealWithUpdated.class)
-                                        .priority())).collect(Collectors.toList());
-                if (0 != postMethodForUpdatedRows.size()) {
-                    for (Method method : sortedMethodList) {
-                        method.invoke(method.getDeclaringClass().newInstance(), list);
+                if (null != list && 0 != list.size()) {
+                    List<Method> sortedMethodList =
+                            postMethodForUpdatedRows.stream().sorted(Comparator.comparing(
+                                    method -> method.getAnnotation(DealWithUpdated.class)
+                                            .priority())).collect(Collectors.toList());
+                    if (0 != postMethodForUpdatedRows.size()) {
+                        for (Method method : sortedMethodList) {
+                            method.invoke(method.getDeclaringClass().newInstance(), list);
+                        }
                     }
                 }
             }
