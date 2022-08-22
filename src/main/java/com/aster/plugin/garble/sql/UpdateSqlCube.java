@@ -1,7 +1,9 @@
 package com.aster.plugin.garble.sql;
 
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.ValueListExpression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -131,53 +133,6 @@ public class UpdateSqlCube {
                     updateStatement.getUpdateSets().addAll(updateVol);
                 }
                 return updateStatement.toString();
-            }
-
-            if (statement instanceof Insert) {
-
-//                Insert insertStatement = (Insert) statement;
-//                boolean containFlag = false;
-//                String flagColName = defaultFlagColName;
-//                if (tableList.contains(insertStatement.getTable().getName())) {
-//                    String mapFlagColName =
-//                            monitoredTableUpdateFlagColMap.get(insertStatement.getTable().getName());
-//                    if (null != mapFlagColName) {
-//                        flagColName = mapFlagColName;
-//                    }
-//                } else {
-//                    return sql;
-//                }
-//                for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
-//                    if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {
-//                        containFlag = true;
-//                        ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
-//                        List<Expression> expressionList = exp.getExpressions();
-//                        //兼容普通插入和List插入
-//                        if (expressionList.get(0) instanceof RowConstructor) {
-//                            for (Expression expression : expressionList) {
-//                                RowConstructor rowCon = (RowConstructor) expression;
-//                                rowCon.getExprList().getExpressions().set(count, new LongValue(1));
-//                            }
-//                        } else {
-//                            expressionList.set(count, new LongValue(1));
-//                        }
-//                    }
-//                }
-//                if (!containFlag) {
-//                    insertStatement.addColumns(new Column(flagColName));
-//                    ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
-//                    List<Expression> expressionList = exp.getExpressions();
-//                    //兼容普通插入和List插入
-//                    if (expressionList.get(0) instanceof RowConstructor) {
-//                        for (Expression expression : expressionList) {
-//                            RowConstructor rowCon = (RowConstructor) expression;
-//                            rowCon.getExprList().addExpressions(new LongValue(1));
-//                        }
-//                    } else {
-//                        expressionList.add(new LongValue(1));
-//                    }
-//                }
-//                return insertStatement.toString();
             }
 
         } catch (JSQLParserException jsqlParserException) {

@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/service/UpdateFlagCol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/InsertSqlCube.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
@@ -18,8 +20,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="AnnotationType" />
         <option value="Interface" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -167,7 +169,7 @@
       <workItem from="1660716172140" duration="8397000" />
       <workItem from="1660789163557" duration="24092000" />
       <workItem from="1660875878351" duration="12172000" />
-      <workItem from="1661136064667" duration="11734000" />
+      <workItem from="1661136064667" duration="17676000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -351,7 +353,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661140971704</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="fix: 临时修复添加行问题">
+      <created>1661156139310</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1661156139310</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +402,8 @@
     <MESSAGE value="add: 插入也返回为监控表的更新" />
     <MESSAGE value="fix: 修复rollback只能更新一条记录的bug" />
     <MESSAGE value="fix: 如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响" />
+    <MESSAGE value="fix: 临时修复添加行问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 临时修复添加行问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -417,11 +427,6 @@
           <url>file://$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/util/TestUtil.java</url>
           <line>53</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/work/MonitoredUpdateSql.java</url>
-          <line>113</line>
-          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
