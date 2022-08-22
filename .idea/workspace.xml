@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/SelectSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/SelectSqlCube.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +69,7 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BaseTest.updateBase">
+  <component name="RunManager" selected="JUnit.BaseTest.testJSql">
     <configuration name="BaseTest.insert" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -104,6 +102,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BaseTest.testJSql" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="mybatis-sql-garble" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.aster.plugin.garble.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.aster.plugin.garble.test" />
+      <option name="MAIN_CLASS_NAME" value="com.aster.plugin.garble.test.BaseTest" />
+      <option name="METHOD_NAME" value="testJSql" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="BaseTest.updateBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -122,6 +136,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BaseTest.testJSql" />
         <item itemvalue="JUnit.BaseTest.updateBase" />
         <item itemvalue="JUnit.BaseTest.insert" />
         <item itemvalue="JUnit.BaseTest.insertTest" />
@@ -150,7 +165,7 @@
       <workItem from="1660716172140" duration="8397000" />
       <workItem from="1660789163557" duration="24092000" />
       <workItem from="1660875878351" duration="12172000" />
-      <workItem from="1661136064667" duration="882000" />
+      <workItem from="1661136064667" duration="2742000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -320,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660904626084</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="fix: 修复rollback只能更新一条记录的bug">
+      <created>1661137069999</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1661137069999</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -360,7 +382,8 @@
     <MESSAGE value="test: 插入监控测试" />
     <MESSAGE value="add: 支持插入提示更新" />
     <MESSAGE value="add: 插入也返回为监控表的更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: 插入也返回为监控表的更新" />
+    <MESSAGE value="fix: 修复rollback只能更新一条记录的bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 修复rollback只能更新一条记录的bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -384,21 +407,6 @@
           <url>file://$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/util/TestUtil.java</url>
           <line>53</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
-          <line>227</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
-          <line>190</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
-          <line>195</line>
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

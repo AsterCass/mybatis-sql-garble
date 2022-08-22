@@ -108,6 +108,7 @@ public class UpdateSqlCube {
                     List<UpdateSet> updateVol = new ArrayList<>();
                     for (UpdateSet updateSet : updateStatement.getUpdateSets()) {
                         for (int count = 0; count < updateSet.getColumns().size(); ++count) {
+                            //包含默认
                             Table table = updateSet.getColumns().get(count).getTable();
                             //getName方法只取表名不取schema名
                             String name = null == table ? updateStatement.getTable().getName() : table.getName();
@@ -115,7 +116,10 @@ public class UpdateSqlCube {
                             if (tableList.contains(fullTableName)) {
                                 String updateFlagColName = monitoredTableUpdateFlagColMap.get(fullTableName);
                                 updateFlagColName = null == updateFlagColName ? defaultFlagColName : updateFlagColName;
-
+                                //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
+                                if(updateSet.getColumns().get(count).getColumnName().equals(updateFlagColName)) {
+                                    return sql;
+                                }
                                 updateVol.add(new UpdateSet(
                                         new Column(new Table(name), updateFlagColName),
                                         new LongValue(1)));
