@@ -134,49 +134,50 @@ public class UpdateSqlCube {
             }
 
             if (statement instanceof Insert) {
-                Insert insertStatement = (Insert) statement;
-                boolean containFlag = false;
-                String flagColName = defaultFlagColName;
-                if (tableList.contains(insertStatement.getTable().getName())) {
-                    String mapFlagColName =
-                            monitoredTableUpdateFlagColMap.get(insertStatement.getTable().getName());
-                    if (null != mapFlagColName) {
-                        flagColName = mapFlagColName;
-                    }
-                } else {
-                    return sql;
-                }
-                for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
-                    if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {
-                        containFlag = true;
-                        ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
-                        List<Expression> expressionList = exp.getExpressions();
-                        //兼容普通插入和List插入
-                        if (expressionList.get(0) instanceof RowConstructor) {
-                            for (Expression expression : expressionList) {
-                                RowConstructor rowCon = (RowConstructor) expression;
-                                rowCon.getExprList().getExpressions().set(count, new LongValue(1));
-                            }
-                        } else {
-                            expressionList.set(count, new LongValue(1));
-                        }
-                    }
-                }
-                if (!containFlag) {
-                    insertStatement.addColumns(new Column(flagColName));
-                    ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
-                    List<Expression> expressionList = exp.getExpressions();
-                    //兼容普通插入和List插入
-                    if (expressionList.get(0) instanceof RowConstructor) {
-                        for (Expression expression : expressionList) {
-                            RowConstructor rowCon = (RowConstructor) expression;
-                            rowCon.getExprList().addExpressions(new LongValue(1));
-                        }
-                    } else {
-                        expressionList.add(new LongValue(1));
-                    }
-                }
-                return insertStatement.toString();
+
+//                Insert insertStatement = (Insert) statement;
+//                boolean containFlag = false;
+//                String flagColName = defaultFlagColName;
+//                if (tableList.contains(insertStatement.getTable().getName())) {
+//                    String mapFlagColName =
+//                            monitoredTableUpdateFlagColMap.get(insertStatement.getTable().getName());
+//                    if (null != mapFlagColName) {
+//                        flagColName = mapFlagColName;
+//                    }
+//                } else {
+//                    return sql;
+//                }
+//                for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
+//                    if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {
+//                        containFlag = true;
+//                        ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
+//                        List<Expression> expressionList = exp.getExpressions();
+//                        //兼容普通插入和List插入
+//                        if (expressionList.get(0) instanceof RowConstructor) {
+//                            for (Expression expression : expressionList) {
+//                                RowConstructor rowCon = (RowConstructor) expression;
+//                                rowCon.getExprList().getExpressions().set(count, new LongValue(1));
+//                            }
+//                        } else {
+//                            expressionList.set(count, new LongValue(1));
+//                        }
+//                    }
+//                }
+//                if (!containFlag) {
+//                    insertStatement.addColumns(new Column(flagColName));
+//                    ExpressionList exp = insertStatement.getItemsList(ExpressionList.class);
+//                    List<Expression> expressionList = exp.getExpressions();
+//                    //兼容普通插入和List插入
+//                    if (expressionList.get(0) instanceof RowConstructor) {
+//                        for (Expression expression : expressionList) {
+//                            RowConstructor rowCon = (RowConstructor) expression;
+//                            rowCon.getExprList().addExpressions(new LongValue(1));
+//                        }
+//                    } else {
+//                        expressionList.add(new LongValue(1));
+//                    }
+//                }
+//                return insertStatement.toString();
             }
 
         } catch (JSQLParserException jsqlParserException) {
