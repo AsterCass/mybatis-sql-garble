@@ -14,7 +14,7 @@ public enum GarbleFunctionEnum {
     /**
      * 获取更新数据，并处理
      */
-    GET_UPDATED_DATA(1, "获取更新数据"),
+    UPDATED_DATA_MSG(1, "获取更新数据"),
 
 
     /**

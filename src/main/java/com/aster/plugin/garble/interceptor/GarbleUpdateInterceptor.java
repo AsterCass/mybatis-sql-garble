@@ -4,9 +4,9 @@ import com.aster.plugin.garble.enums.GarbleFunctionEnum;
 import com.aster.plugin.garble.property.UpdateProperty;
 import com.aster.plugin.garble.service.DealWithUpdated;
 import com.aster.plugin.garble.service.DealWithUpdatedService;
-import com.aster.plugin.garble.work.MonitoredDataRollback;
-import com.aster.plugin.garble.work.MonitoredUpdateSql;
-import com.aster.plugin.garble.work.MonitoredWork;
+import com.aster.plugin.garble.work.UpdatedDataMsgGetUpdated;
+import com.aster.plugin.garble.work.UpdatedDataMsgGarbleSql;
+import com.aster.plugin.garble.work.UpdatedDataMsgAbstract;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -47,8 +47,8 @@ public class GarbleUpdateInterceptor implements Interceptor {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             //更改更新sql 获取更新行
             if (null != prop.getGarbleFunctionList() &&
-                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.GET_UPDATED_DATA.getCode())) {
-                MonitoredWork updateSql = new MonitoredUpdateSql(
+                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.UPDATED_DATA_MSG.getCode())) {
+                UpdatedDataMsgAbstract updateSql = new UpdatedDataMsgGarbleSql(
                         invocation, prop.getDefaultFlagColName(),
                         prop.getMonitoredTableMap(), prop.getMonitoredTableUpdateFlagColMap(),
                         prop.getExcludedMapperPath());
@@ -61,8 +61,8 @@ public class GarbleUpdateInterceptor implements Interceptor {
         } finally {
             //获取更新行
             if (null != prop.getGarbleFunctionList() &&
-                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.GET_UPDATED_DATA.getCode())) {
-                MonitoredWork rollbackData = new MonitoredDataRollback(
+                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.UPDATED_DATA_MSG.getCode())) {
+                UpdatedDataMsgAbstract rollbackData = new UpdatedDataMsgGetUpdated(
                         invocation, prop.getDefaultFlagColName(),
                         prop.getMonitoredTableMap(), prop.getMonitoredTableUpdateFlagColMap(),
                         prop.getExcludedMapperPath());

@@ -15,13 +15,13 @@ import java.util.*;
 /**
  * @author astercasc
  */
-public class MonitoredDataRollback extends MonitoredWork {
+public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
 
 
-    public MonitoredDataRollback(Invocation invocation, String defaultFlagColName,
-                                 Map<String, String> monitoredTableMap,
-                                 Map<String, String> monitoredTableUpdateFlagColMap,
-                                 List<String> excludedMapperPath) {
+    public UpdatedDataMsgGetUpdated(Invocation invocation, String defaultFlagColName,
+                                    Map<String, String> monitoredTableMap,
+                                    Map<String, String> monitoredTableUpdateFlagColMap,
+                                    List<String> excludedMapperPath) {
         super(invocation, defaultFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }
@@ -44,7 +44,7 @@ public class MonitoredDataRollback extends MonitoredWork {
                         String.class, new ArrayList<>()).build();
                 MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
                         mappedStatement, mappedStatement.getId() + MappedStatementUtil.SELECT,
-                        new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                        new UpdatedDataMsgGarbleSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                         SqlCommandType.SELECT);
                 List<String> resultList = ExecutorUtil.executeSelectRow(
                         sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
@@ -64,7 +64,7 @@ public class MonitoredDataRollback extends MonitoredWork {
                         String.class, new ArrayList<>()).build();
                 MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
                         mappedStatement, mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
-                        new MonitoredUpdateSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                        new UpdatedDataMsgGarbleSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                         SqlCommandType.UPDATE);
                 ExecutorUtil.executeUpdatedRow(rollBackMap.get(table), executor, getUpdatedRowsMs);
             }

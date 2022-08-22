@@ -23,13 +23,13 @@ import java.util.Map;
 /**
  * @author astercasc
  */
-public class MonitoredUpdateSql extends MonitoredWork {
+public class UpdatedDataMsgGarbleSql extends UpdatedDataMsgAbstract {
 
 
-    public MonitoredUpdateSql(Invocation invocation, String defaultFlagColName,
-                              Map<String, String> monitoredTableMap,
-                              Map<String, String> monitoredTableUpdateFlagColMap,
-                              List<String> excludedMapperPath) {
+    public UpdatedDataMsgGarbleSql(Invocation invocation, String defaultFlagColName,
+                                   Map<String, String> monitoredTableMap,
+                                   Map<String, String> monitoredTableUpdateFlagColMap,
+                                   List<String> excludedMapperPath) {
         super(invocation, defaultFlagColName, monitoredTableMap,
                 monitoredTableUpdateFlagColMap, excludedMapperPath);
     }

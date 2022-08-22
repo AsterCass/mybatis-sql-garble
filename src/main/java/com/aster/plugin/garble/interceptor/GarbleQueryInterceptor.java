@@ -49,6 +49,7 @@ public class GarbleQueryInterceptor implements Interceptor {
 
         //todo
 
+
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 
@@ -59,6 +60,7 @@ public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
+        //
     }
 
 

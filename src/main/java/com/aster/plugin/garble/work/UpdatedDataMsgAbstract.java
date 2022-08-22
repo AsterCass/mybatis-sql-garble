@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author astercasc
  */
-public abstract class MonitoredWork {
+public abstract class UpdatedDataMsgAbstract {
 
     /**
      * mybatis拦截信息
@@ -69,10 +69,10 @@ public abstract class MonitoredWork {
     /**
      * builder
      */
-    public MonitoredWork(Invocation invocation, String defaultFlagColName,
-                         Map<String, String> monitoredTableMap,
-                         Map<String, String> monitoredTableUpdateFlagColMap,
-                         List<String> excludedMapperPath) {
+    public UpdatedDataMsgAbstract(Invocation invocation, String defaultFlagColName,
+                                  Map<String, String> monitoredTableMap,
+                                  Map<String, String> monitoredTableUpdateFlagColMap,
+                                  List<String> excludedMapperPath) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         //这里全部转小写，后面各种操作，大小写不太方便
