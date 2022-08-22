@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2976edfa-ccbc-4417-9305-cabbbf92e8cb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/interceptor/GarbleUpdateInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/SelectSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/SelectSqlCube.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/test/BaseTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +71,7 @@
       <recent name="com.github.aster.plugin.garble.mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BaseTest.insert">
+  <component name="RunManager" selected="JUnit.BaseTest.updateBase">
     <configuration name="BaseTest.insert" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis-sql-garble" />
       <extension name="coverage">
@@ -120,9 +122,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BaseTest.updateBase" />
         <item itemvalue="JUnit.BaseTest.insert" />
         <item itemvalue="JUnit.BaseTest.insertTest" />
-        <item itemvalue="JUnit.BaseTest.updateBase" />
       </list>
     </recent_temporary>
   </component>
@@ -148,6 +150,7 @@
       <workItem from="1660716172140" duration="8397000" />
       <workItem from="1660789163557" duration="24092000" />
       <workItem from="1660875878351" duration="12172000" />
+      <workItem from="1661136064667" duration="882000" />
     </task>
     <task id="LOCAL-00001" summary="test:">
       <created>1659937829915</created>
@@ -381,6 +384,21 @@
           <url>file://$PROJECT_DIR$/src/test/java/com/aster/plugin/garble/util/TestUtil.java</url>
           <line>53</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
+          <line>227</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
+          <line>190</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/aster/plugin/garble/sql/UpdateSqlCube.java</url>
+          <line>195</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

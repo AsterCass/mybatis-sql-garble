@@ -9,7 +9,6 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.RowConstructor;
-import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
@@ -114,7 +113,7 @@ public class BaseTest {
 
                         updateVol.add(new UpdateSet(
                                 new Column(new Table(name), updateFlagVolName),
-                                new StringValue("1")));
+                                new LongValue(1)));
                         //防止由于多字段更新，导致的多次更新标志位
                         tableList.remove(fullTableName);
                     }

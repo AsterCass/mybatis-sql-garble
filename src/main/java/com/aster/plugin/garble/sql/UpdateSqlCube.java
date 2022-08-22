@@ -1,12 +1,9 @@
 package com.aster.plugin.garble.sql;
 
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.RowConstructor;
-import net.sf.jsqlparser.expression.StringValue;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
+import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -121,7 +118,7 @@ public class UpdateSqlCube {
 
                                 updateVol.add(new UpdateSet(
                                         new Column(new Table(name), updateFlagColName),
-                                        new StringValue("1")));
+                                        new LongValue(1)));
                                 //防止由于多字段更新，导致的多次更新标志位
                                 tableList.remove(fullTableName);
                             }
@@ -204,23 +201,27 @@ public class UpdateSqlCube {
                                Map<String, String> monitoredTableUpdateFlagColMap, String defaultFlagColName,
                                Map<String, String> sqlMap, String table) {
         if (null != updatedColMap.get(table) && 0 != updatedColMap.get(table).size()) {
-            for (String whereValue : updatedColMap.get(table)) {
-                String whereColName = monitoredTableMap.get(table);
-                String flagColName = monitoredTableUpdateFlagColMap.get(table);
-                if (null == flagColName) {
-                    flagColName = defaultFlagColName;
-                }
-                Update update = new Update();
-                update.setTable(new Table(table));
-                update.addUpdateSet(new Column(flagColName), new StringValue("0"));
-
-                Column column = new Column().withColumnName(whereColName);
-                EqualsTo equalsTo = new EqualsTo().withLeftExpression(column);
-                equalsTo.withRightExpression(new StringValue(whereValue));
-                update.setWhere(equalsTo);
-
-                sqlMap.put(table, update.toString());
+            String whereColName = monitoredTableMap.get(table);
+            String flagColName = monitoredTableUpdateFlagColMap.get(table);
+            if (null == flagColName) {
+                flagColName = defaultFlagColName;
             }
+            Update update = new Update();
+            update.setTable(new Table(table));
+            update.addUpdateSet(new Column(flagColName), new LongValue(0));
+
+            Column column = new Column().withColumnName(whereColName);
+            InExpression in = new InExpression().withLeftExpression(column);
+            ExpressionList list = new ExpressionList();
+            for (String whereValue : updatedColMap.get(table)) {
+                list.addExpressions(new StringValue(whereValue));
+            }
+            in.withRightExpression(new ValueListExpression().withExpressionList(list));
+            update.setWhere(in);
+
+
+            sqlMap.put(table, update.toString());
+
         }
     }
 

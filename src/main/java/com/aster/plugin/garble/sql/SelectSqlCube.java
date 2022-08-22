@@ -1,6 +1,6 @@
 package com.aster.plugin.garble.sql;
 
-import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -42,7 +42,7 @@ public class SelectSqlCube {
 
                 Column column = new Column().withColumnName(flagColName);
                 EqualsTo equalsTo = new EqualsTo().withLeftExpression(column);
-                equalsTo.withRightExpression(new StringValue("1"));
+                equalsTo.withRightExpression(new LongValue(1));
 
                 plainSelect.setWhere(equalsTo);
 
