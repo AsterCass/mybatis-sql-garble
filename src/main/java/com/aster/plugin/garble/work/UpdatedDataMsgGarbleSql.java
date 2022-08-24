@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.work;
 
+import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.InsertSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
@@ -26,12 +27,8 @@ import java.util.Map;
 public class UpdatedDataMsgGarbleSql extends UpdatedDataMsgAbstract {
 
 
-    public UpdatedDataMsgGarbleSql(Invocation invocation, String defaultFlagColName,
-                                   Map<String, String> monitoredTableMap,
-                                   Map<String, String> monitoredTableUpdateFlagColMap,
-                                   List<String> excludedMapperPath) {
-        super(invocation, defaultFlagColName, monitoredTableMap,
-                monitoredTableUpdateFlagColMap, excludedMapperPath);
+    public UpdatedDataMsgGarbleSql(Invocation invocation, UpdatedDataMsgProperty property) {
+        super(invocation, property);
     }
 
     @Override

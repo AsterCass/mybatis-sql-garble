@@ -148,7 +148,7 @@ public class BaseTest {
         }
 
 
-        UpdateSqlCube.getUpdateTableList(sql);
+        new UpdateSqlCube().getTableList(sql);
 
         System.out.println(sql);
 

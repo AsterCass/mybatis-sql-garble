@@ -21,13 +21,16 @@ import java.util.*;
 /**
  * @author astercasc
  */
-public class SelectSqlCube {
-
+public class SelectSqlCube extends BaseSqlCube {
 
     /**
-     * 获取所有查询表
+     * 获取所有表名
+     *
+     * @param sql sql
+     * @return 简单表名，不包含schema
      */
-    public static List<String> getSelectTableList(String sql) {
+    @Override
+    public List<String> getTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
             //这里和update不同,使用TablesNamesFinder查询sql所含的table，因为手动取select类sql所含table确实太麻烦了

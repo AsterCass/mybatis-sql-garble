@@ -21,7 +21,8 @@ import java.util.Map;
 /**
  * @author astercasc
  */
-public class InsertSqlCube {
+public class InsertSqlCube extends BaseSqlCube {
+
 
     /**
      * 新增默认添加标记位为1，如果单纯使用xml文件更新，则无法检测到

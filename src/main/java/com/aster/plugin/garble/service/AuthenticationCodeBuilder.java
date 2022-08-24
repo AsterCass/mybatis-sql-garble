@@ -1,6 +1,6 @@
 package com.aster.plugin.garble.service;
 
-import com.aster.plugin.garble.enums.AuthenticationBehaviorEnum;
+import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 public @interface AuthenticationCodeBuilder {
 
     /**
-     * {@link AuthenticationBehaviorEnum}
+     * {@link AuthenticationStrategyEnum}
      */
     int function();
 

@@ -84,7 +84,7 @@ public class GarbleQueryInterceptor implements Interceptor {
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
             this.methodForAuthCodeSelect = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
-                    this.authenticationFilterSelectProperty.getDealWithUpdatedPath(),
+                    this.authenticationFilterSelectProperty.getAuthCodePath(),
                     AuthenticationTypeEnum.SELECT
             );
         }

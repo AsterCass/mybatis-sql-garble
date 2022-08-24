@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AuthenticationBehaviorEnum {
+public enum AuthenticationStrategyEnum {
 
 
     /**

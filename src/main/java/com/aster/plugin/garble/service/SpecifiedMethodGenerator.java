@@ -2,6 +2,7 @@ package com.aster.plugin.garble.service;
 
 
 import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
+import com.aster.plugin.garble.exception.GarbleParamException;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
@@ -42,9 +43,8 @@ public class SpecifiedMethodGenerator {
 
     /**
      * 更新数据获取的后置处理模块方法载入
-     * todo 需要抽象一下
      */
-    public static List<Method> loadBySubTypes(String path) {
+    public static List<Method> loadUpdatedMsgBySubTypes(String path) {
         path = null == path ? "" : path;
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .forPackages(path)
@@ -70,8 +70,7 @@ public class SpecifiedMethodGenerator {
     }
 
     /**
-     * 查询鉴权的鉴权方法载入
-     * todo 区分查询鉴权和更新鉴权
+     * 查询鉴权的鉴权code载入
      */
     public static List<Method> loadAuthCodeBySubTypes(String path, AuthenticationTypeEnum typeEnum) {
         path = null == path ? "" : path;
@@ -97,6 +96,9 @@ public class SpecifiedMethodGenerator {
                     }
                 }
             }
+        }
+        if (0 == methodList.size()) {
+            throw new GarbleParamException("添加鉴权需求但是未检测到鉴权code获取方法");
         }
         return methodList;
     }

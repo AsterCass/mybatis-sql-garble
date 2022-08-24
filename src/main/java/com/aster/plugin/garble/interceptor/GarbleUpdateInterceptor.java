@@ -48,10 +48,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
             //更改更新sql 获取更新行
             if (null != updatedDataMsgProperty) {
                 UpdatedDataMsgAbstract updateSql = new UpdatedDataMsgGarbleSql(
-                        invocation, updatedDataMsgProperty.getDefaultFlagColName(),
-                        updatedDataMsgProperty.getMonitoredTableMap(),
-                        updatedDataMsgProperty.getMonitoredTableUpdateFlagColMap(),
-                        updatedDataMsgProperty.getExcludedMapperPath());
+                        invocation, updatedDataMsgProperty);
                 updateSql.run();
             }
 
@@ -62,10 +59,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
             //获取更新行
             if (null != updatedDataMsgProperty) {
                 UpdatedDataMsgAbstract rollbackData = new UpdatedDataMsgGetUpdated(
-                        invocation, updatedDataMsgProperty.getDefaultFlagColName(),
-                        updatedDataMsgProperty.getMonitoredTableMap(),
-                        updatedDataMsgProperty.getMonitoredTableUpdateFlagColMap(),
-                        updatedDataMsgProperty.getExcludedMapperPath());
+                        invocation, updatedDataMsgProperty);
                 Map<String, List<String>> list = rollbackData.run();
                 //后续操作
                 if (null != list && 0 != list.size()) {
@@ -102,7 +96,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
         this.updatedDataMsgProperty = PropertyUtil.propertyToObject(prop, UpdatedDataMsgProperty.class);
         if (null != updatedDataMsgProperty) {
             this.postMethodForUpdatedRows = SpecifiedMethodGenerator
-                    .loadBySubTypes(this.updatedDataMsgProperty.getDealWithUpdatedPath());
+                    .loadUpdatedMsgBySubTypes(this.updatedDataMsgProperty.getDealWithUpdatedPath());
         }
     }
 

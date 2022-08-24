@@ -20,12 +20,16 @@ import java.util.*;
 /**
  * @author astercasc
  */
-public class UpdateSqlCube {
+public class UpdateSqlCube extends BaseSqlCube {
 
     /**
-     * 获取所有更新表
+     * 获取所有表名
+     *
+     * @param sql sql
+     * @return 简单表名，不包含schema
      */
-    public static List<String> getUpdateTableList(String sql) {
+    @Override
+    public List<String> getTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
             //拦截器拦截update也是会拦截insert
