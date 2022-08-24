@@ -1,12 +1,12 @@
 package com.aster.plugin.garble.interceptor;
 
-import com.aster.plugin.garble.enums.GarbleFunctionEnum;
-import com.aster.plugin.garble.property.UpdateProperty;
+import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.service.DealWithUpdated;
-import com.aster.plugin.garble.service.DealWithUpdatedService;
-import com.aster.plugin.garble.work.UpdatedDataMsgGetUpdated;
-import com.aster.plugin.garble.work.UpdatedDataMsgGarbleSql;
+import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
+import com.aster.plugin.garble.util.PropertyUtil;
 import com.aster.plugin.garble.work.UpdatedDataMsgAbstract;
+import com.aster.plugin.garble.work.UpdatedDataMsgGarbleSql;
+import com.aster.plugin.garble.work.UpdatedDataMsgGetUpdated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -34,7 +34,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
     /**
      * 传入配置
      */
-    private UpdateProperty prop;
+    private UpdatedDataMsgProperty updatedDataMsgProperty;
 
     /**
      * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
@@ -46,12 +46,12 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             //更改更新sql 获取更新行
-            if (null != prop.getGarbleFunctionList() &&
-                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.UPDATED_DATA_MSG.getCode())) {
+            if (null != updatedDataMsgProperty) {
                 UpdatedDataMsgAbstract updateSql = new UpdatedDataMsgGarbleSql(
-                        invocation, prop.getDefaultFlagColName(),
-                        prop.getMonitoredTableMap(), prop.getMonitoredTableUpdateFlagColMap(),
-                        prop.getExcludedMapperPath());
+                        invocation, updatedDataMsgProperty.getDefaultFlagColName(),
+                        updatedDataMsgProperty.getMonitoredTableMap(),
+                        updatedDataMsgProperty.getMonitoredTableUpdateFlagColMap(),
+                        updatedDataMsgProperty.getExcludedMapperPath());
                 updateSql.run();
             }
 
@@ -60,12 +60,12 @@ public class GarbleUpdateInterceptor implements Interceptor {
             return invocation.proceed();
         } finally {
             //获取更新行
-            if (null != prop.getGarbleFunctionList() &&
-                    prop.getGarbleFunctionList().contains(GarbleFunctionEnum.UPDATED_DATA_MSG.getCode())) {
+            if (null != updatedDataMsgProperty) {
                 UpdatedDataMsgAbstract rollbackData = new UpdatedDataMsgGetUpdated(
-                        invocation, prop.getDefaultFlagColName(),
-                        prop.getMonitoredTableMap(), prop.getMonitoredTableUpdateFlagColMap(),
-                        prop.getExcludedMapperPath());
+                        invocation, updatedDataMsgProperty.getDefaultFlagColName(),
+                        updatedDataMsgProperty.getMonitoredTableMap(),
+                        updatedDataMsgProperty.getMonitoredTableUpdateFlagColMap(),
+                        updatedDataMsgProperty.getExcludedMapperPath());
                 Map<String, List<String>> list = rollbackData.run();
                 //后续操作
                 if (null != list && 0 != list.size()) {
@@ -75,7 +75,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
                                             .priority())).collect(Collectors.toList());
                     if (0 != postMethodForUpdatedRows.size()) {
                         for (Method method : sortedMethodList) {
-                            method.invoke(method.getDeclaringClass().newInstance(), list);
+                            method.invoke(method.getDeclaringClass().getDeclaredConstructor().newInstance(), list);
                         }
                     }
                 }
@@ -93,9 +93,17 @@ public class GarbleUpdateInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties prop) {
-        this.prop = UpdateProperty.build(prop);
-        this.postMethodForUpdatedRows = DealWithUpdatedService
-                .loadBySubTypes(this.prop.getDealWithUpdatedPath());
+    }
+
+    /**
+     * 设置更新数据回调的相关属性
+     */
+    public void setUpdatedDataMsgProperty(Properties prop) {
+        this.updatedDataMsgProperty = PropertyUtil.propertyToObject(prop, UpdatedDataMsgProperty.class);
+        if (null != updatedDataMsgProperty) {
+            this.postMethodForUpdatedRows = SpecifiedMethodGenerator
+                    .loadBySubTypes(this.updatedDataMsgProperty.getDealWithUpdatedPath());
+        }
     }
 
 

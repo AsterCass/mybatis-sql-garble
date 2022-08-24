@@ -3,8 +3,11 @@ package com.aster.plugin.garble.test;
 import com.alibaba.fastjson.JSON;
 import com.aster.plugin.garble.entity.UserEntity;
 import com.aster.plugin.garble.mapper.UserMapper;
+import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
+import com.aster.plugin.garble.sql.SelectSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
+import com.aster.plugin.garble.util.PropertyUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -21,10 +24,7 @@ import net.sf.jsqlparser.statement.update.UpdateSet;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseTest {
 
@@ -55,6 +55,31 @@ public class BaseTest {
         } finally {
             sqlSession.close();
         }
+    }
+
+    @Test
+    public void propertyTest() {
+        Properties properties = new Properties();
+        properties.put("defaultFlagColName", "update_record");
+        properties.put("excludedMapperPath", "['abc','efg','hij']");
+        properties.put("monitoredTableMap", "{'user':'id'}");
+        UpdatedDataMsgProperty property = PropertyUtil.propertyToObject(properties, UpdatedDataMsgProperty.class);
+        System.out.println(property);
+    }
+
+    @Test
+    public void queryTest() throws JSQLParserException {
+
+
+        String sql = "select * from sch1.user us join sch2.per pe on per.co1 = user.col2 " +
+                "where us.update_record = 0 and pe.status = 0";
+        String sql1 = "select us.id  from garble.`user` us where us.per_id in (select id from garble.per pe where ext < 50)";
+        String sql2 = "select * from user, per where user.id = per.user_id";
+
+        Map<String, String> nameAliasMap = SelectSqlCube.getSelectTableAliasMap(sql1);
+
+
+        System.out.println(111);
     }
 
     @Test
@@ -136,7 +161,7 @@ public class BaseTest {
 
         try {
             //这里的测试并不能获得正确的测试结果，因为session没有commit到sql内，所以无法获取更新个数
-            userMapper.insertOne(new UserEntity(123, "张先生", "zzz"));
+            //userMapper.insertOne(new UserEntity(123, "张先生", "zzz"));
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();

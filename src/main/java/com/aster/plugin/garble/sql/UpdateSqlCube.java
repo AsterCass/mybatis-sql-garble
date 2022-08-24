@@ -28,7 +28,7 @@ public class UpdateSqlCube {
     public static List<String> getUpdateTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
-            //拦截器拦截update也是会拦击insert，目前不拦截insert
+            //拦截器拦截update也是会拦截insert
             if (statement instanceof Update) {
                 Update updateStatement = (Update) statement;
                 //TablesNamesFinder getTableList 会获取 database schema 等信息，不好匹配

@@ -8,19 +8,19 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum GarbleFunctionEnum {
+public enum AuthenticationBehaviorEnum {
 
 
     /**
-     * 获取更新数据，并处理
+     * 当传入鉴权code和数据库相应字段按位&大于0时
      */
-    UPDATED_DATA_MSG(1, "更新数据回调"),
+    BOOLEAN_AND(1, "按位与"),
 
 
     /**
-     * 查询根据指定字段鉴权
+     * 当传入鉴权code和数据库相应字段相等时
      */
-    SELECT_AUTHENTICATION(2, "查询鉴权"),
+    EQUAL(2, "相等"),
 
 
 
@@ -30,5 +30,6 @@ public enum GarbleFunctionEnum {
     private final Integer code;
 
     private final String desc;
+
 
 }

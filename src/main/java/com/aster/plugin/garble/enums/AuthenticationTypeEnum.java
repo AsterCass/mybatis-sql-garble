@@ -6,21 +6,22 @@ import lombok.Getter;
 /**
  * @author astercasc
  */
+
 @Getter
 @AllArgsConstructor
-public enum GarbleFunctionEnum {
+public enum AuthenticationTypeEnum {
 
 
     /**
-     * 获取更新数据，并处理
+     * 更新鉴权
      */
-    UPDATED_DATA_MSG(1, "更新数据回调"),
+    UPDATE(1, "更新鉴权"),
 
 
     /**
-     * 查询根据指定字段鉴权
+     * 查询鉴权
      */
-    SELECT_AUTHENTICATION(2, "查询鉴权"),
+    SELECT(2, "查询鉴权"),
 
 
 
@@ -30,5 +31,6 @@ public enum GarbleFunctionEnum {
     private final Integer code;
 
     private final String desc;
+
 
 }

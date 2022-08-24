@@ -1,5 +1,9 @@
 package com.aster.plugin.garble.interceptor;
 
+import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
+import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
+import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
+import com.aster.plugin.garble.util.PropertyUtil;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -8,6 +12,8 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,6 +31,16 @@ import java.util.Properties;
         }
 )
 public class GarbleQueryInterceptor implements Interceptor {
+
+    /**
+     * 传入配置
+     */
+    private AuthenticationFilterSelectProperty authenticationFilterSelectProperty;
+
+    /**
+     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
+     */
+    private List<Method> methodForAuthCodeSelect;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -50,6 +66,7 @@ public class GarbleQueryInterceptor implements Interceptor {
         //todo
 
 
+
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 
@@ -60,7 +77,17 @@ public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
-        //
+    }
+
+    public void setAuthenticationFilterSelectProperty(Properties prop) {
+        this.authenticationFilterSelectProperty =
+                PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
+        if (null != authenticationFilterSelectProperty) {
+            this.methodForAuthCodeSelect = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                    this.authenticationFilterSelectProperty.getDealWithUpdatedPath(),
+                    AuthenticationTypeEnum.SELECT
+            );
+        }
     }
 
 
