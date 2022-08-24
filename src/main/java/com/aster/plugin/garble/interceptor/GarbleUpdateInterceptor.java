@@ -47,9 +47,9 @@ public class GarbleUpdateInterceptor implements Interceptor {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             //更改更新sql 获取更新行
             if (null != updatedDataMsgProperty) {
-                UpdatedDataMsgAbstract updateSql = new UpdatedDataMsgGarbleSql(
+                UpdatedDataMsgAbstract garbleSql = new UpdatedDataMsgGarbleSql(
                         invocation, updatedDataMsgProperty);
-                updateSql.run();
+                garbleSql.run();
             }
 
         }

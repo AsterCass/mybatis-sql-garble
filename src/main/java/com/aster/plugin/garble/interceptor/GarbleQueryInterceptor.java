@@ -4,6 +4,8 @@ import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
 import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
 import com.aster.plugin.garble.util.PropertyUtil;
+import com.aster.plugin.garble.work.AuthenticationFilterAbstract;
+import com.aster.plugin.garble.work.AuthenticationFilterGarbleSql;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -65,6 +67,12 @@ public class GarbleQueryInterceptor implements Interceptor {
 
         //todo
 
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            //添加
+            AuthenticationFilterAbstract garbleSql = new AuthenticationFilterGarbleSql(
+                    invocation, authenticationFilterSelectProperty);
+            garbleSql.run();
+        }
 
 
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);

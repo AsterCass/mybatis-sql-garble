@@ -72,6 +72,11 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
         return new HashMap<>();
     }
 
+    /**
+     * execute
+     *
+     * @return 监控表和变动数据map
+     */
     protected abstract Map<String, List<String>> exec();
 
 }

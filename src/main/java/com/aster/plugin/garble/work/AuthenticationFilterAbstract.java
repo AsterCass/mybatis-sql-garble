@@ -1,11 +1,8 @@
 package com.aster.plugin.garble.work;
 
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
+import com.aster.plugin.garble.sql.SelectSqlCube;
 import org.apache.ibatis.plugin.Invocation;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author astercasc
@@ -15,7 +12,8 @@ public abstract class AuthenticationFilterAbstract extends AuthenticationFilterS
     /**
      * builder
      */
-    public AuthenticationFilterAbstract(Invocation invocation, AuthenticationFilterSelectProperty property) {
+    public AuthenticationFilterAbstract(
+            Invocation invocation, AuthenticationFilterSelectProperty property) {
 
 
     }
@@ -24,15 +22,17 @@ public abstract class AuthenticationFilterAbstract extends AuthenticationFilterS
     /**
      * 判断是否需要拦截
      */
-    public Map<String, List<String>> run() {
-//        if (notExcludedTableCondition(invocation, excludedMapperPath) &&
-//                (monitoredTableCondition(monitoredTableList))) {
-//            return exec();
-//        }
-        return new HashMap<>();
+    public void run() {
+        if (notExcludedTableCondition(invocation, excludedMapperPath) &&
+                (monitoredTableCondition(monitoredTableList, new SelectSqlCube()))) {
+            exec();
+        }
     }
 
-    protected abstract Map<String, List<String>> exec();
+    /**
+     * execute
+     */
+    protected abstract void exec();
 
 
 }
