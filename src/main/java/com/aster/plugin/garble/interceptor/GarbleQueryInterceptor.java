@@ -65,13 +65,12 @@ public class GarbleQueryInterceptor implements Interceptor {
             boundSql = (BoundSql) args[5];
         }
 
-        //todo
-
         if (invocation.getArgs()[0] instanceof MappedStatement) {
-            //添加
-            AuthenticationFilterAbstract garbleSql = new AuthenticationFilterGarbleSql(
-                    invocation, authenticationFilterSelectProperty);
-            garbleSql.run();
+            if (null != authenticationFilterSelectProperty) {
+                AuthenticationFilterAbstract garbleSql = new AuthenticationFilterGarbleSql(
+                        invocation, authenticationFilterSelectProperty, methodForAuthCodeSelect);
+                garbleSql.run();
+            }
         }
 
 

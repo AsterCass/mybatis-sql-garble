@@ -29,7 +29,7 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
         } else {
             this.defaultFlagColName = "";
         }
-        if (null != monitoredTableMap && 0 != property.getMonitoredTableMap().size()) {
+        if (null != property.getMonitoredTableMap() && 0 != property.getMonitoredTableMap().size()) {
             Map<String, String> lowerMonitoredTableMap = new HashMap<>();
             for (Map.Entry<String, String> entry : property.getMonitoredTableMap().entrySet()) {
                 lowerMonitoredTableMap.put(entry.getKey().toLowerCase(), entry.getValue().toLowerCase());
