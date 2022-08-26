@@ -1,11 +1,17 @@
 package com.aster.plugin.garble.property;
 
 import com.aster.plugin.garble.sql.BaseSqlCube;
+import com.aster.plugin.garble.util.MappedStatementUtil;
 import lombok.Data;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
 import java.util.List;
 
@@ -85,6 +91,45 @@ public class MybatisRuntimeProperty {
             }
         }
         return inMonitored;
+    }
+
+    /**
+     * 新sql导入invocation
+     */
+    protected void newSqlBuilder(String newSql) {
+        final Object[] args2 = invocation.getArgs();
+        MappedStatement statement = (MappedStatement) args2[0];
+        Object parameterObject2 = args2[1];
+
+        BoundSql newBoundSql = statement.getBoundSql(parameterObject2);
+        MappedStatement newStatement = MappedStatementUtil.newMappedStatement(
+                statement, statement.getId(), new BoundSqlSqlSource(newBoundSql),
+                statement.getResultMaps(), mappedStatement.getSqlCommandType());
+        MetaObject msObject = MetaObject.forObject(
+                newStatement,
+                new DefaultObjectFactory(),
+                new DefaultObjectWrapperFactory(),
+                new DefaultReflectorFactory());
+        msObject.setValue("sqlSource.boundSql.sql", newSql);
+        args2[0] = newStatement;
+    }
+
+    /**
+     * 定义一个内部辅助类，作用是包装sq
+     */
+    protected static class BoundSqlSqlSource implements SqlSource {
+
+        private final BoundSql boundSql;
+
+        public BoundSqlSqlSource(BoundSql boundSql) {
+            this.boundSql = boundSql;
+        }
+
+        @Override
+        public BoundSql getBoundSql(Object parameterObject) {
+            return boundSql;
+        }
+
     }
 
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.aster.plugin.garble.entity.UserEntity;
 import com.aster.plugin.garble.mapper.UserMapper;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
-import com.aster.plugin.garble.sql.SelectSqlCube;
+import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
 import com.aster.plugin.garble.util.PropertyUtil;
@@ -73,13 +73,32 @@ public class BaseTest {
 
         String sql = "select * from sch1.user us join sch2.per pe on per.co1 = user.col2 " +
                 "where us.update_record = 0 and pe.status = 0";
-        String sql1 = "select us.id  from garble.`user` us where us.per_id in (select id from garble.per pe where ext < 50)";
+        String sql1 = "select us.id  from garble.`user` us join testTable on testTable.id = us.t_id where " +
+                "testTable.code = us.code+1 or us.per_id in (select id from garble.per where ext < 50 and status = 0) and stat = 1";
         String sql2 = "select * from user, per where user.id = per.user_id";
 
-        Map<String, String> nameAliasMap = SelectSqlCube.getSelectTableAliasMap(sql1);
+        String newSql = new SelectAuthFilterSqlCube(
+                Arrays.asList("user", "per", "testTable"),
+                new HashMap<String, String>() {{
+                    put("user", "perCol");
+                    put("per", "perCol");
+                    put("testTable", "perCol");
+                }},
+                new HashMap<String, Integer>() {{
+                    put("user", 1);
+                    put("per", 1);
+                    put("testTable", 2);
+                }},
+                new HashMap<String, String>() {{
+                    put("user", "123");
+                    put("per", "123");
+                    put("testTable", "7");
+                }}
+
+        ).addAuthCode(sql1);
 
 
-        System.out.println(111);
+        System.out.println(newSql);
     }
 
     @Test

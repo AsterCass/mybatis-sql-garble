@@ -41,7 +41,7 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
                         String.class, new ArrayList<>()).build();
                 MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
                         mappedStatement, mappedStatement.getId() + MappedStatementUtil.SELECT,
-                        new UpdatedDataMsgGarbleSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                        new BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                         SqlCommandType.SELECT);
                 List<String> resultList = ExecutorUtil.executeSelectRow(
                         sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
@@ -61,7 +61,7 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
                         String.class, new ArrayList<>()).build();
                 MappedStatement getUpdatedRowsMs = MappedStatementUtil.newMappedStatement(
                         mappedStatement, mappedStatement.getId() + MappedStatementUtil.ROLLBACK,
-                        new UpdatedDataMsgGarbleSql.BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
+                        new BoundSqlSqlSource(newBoundSql), Collections.singletonList(newResultMap),
                         SqlCommandType.UPDATE);
                 ExecutorUtil.executeUpdatedRow(rollBackMap.get(table), executor, getUpdatedRowsMs);
             }

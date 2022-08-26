@@ -100,9 +100,6 @@ public class SpecifiedMethodGenerator {
         if (0 == methodList.size()) {
             throw new GarbleParamException("添加鉴权需求但是未检测到鉴权code获取方法");
         }
-        if (methodList.size() > 1) {
-            throw new GarbleParamException("存在多个相同type鉴权code获取方法");
-        }
         return methodList;
     }
 

@@ -1,6 +1,7 @@
 package com.aster.plugin.garble.work;
 
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
+import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
@@ -20,12 +21,14 @@ public class AuthenticationFilterGarbleSql extends AuthenticationFilterAbstract 
 
 
     @Override
-    protected void exec(String authCode) {
-
-
-
-
-
-
+    protected void exec() {
+        String newSql = new SelectAuthFilterSqlCube(
+                monitoredTableList, monitoredTableAuthColMap,
+                monitoredTableAuthStrategyMap, monitoredTableAuthCodeMap)
+                .addAuthCode(sql);
+        newSqlBuilder(newSql);
     }
+
+
+
 }
