@@ -166,6 +166,9 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                 AndExpression andExp = new AndExpression();
                 if (count + 1 == expressionList.size()) {
                     andExpression.setLeftExpression(expressionList.get(count));
+                    if (null == andExpression.getRightExpression()) {
+                        andExpression.setRightExpression(expressionList.get(count - 1));
+                    }
                 } else {
                     andExp.setLeftExpression(expressionList.get(count));
                     if (null == andExpression.getRightExpression()) {
@@ -237,6 +240,8 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                             } else {
                                 throw new GarbleParamException("查询语句Body解析失败");
                             }
+                        } else if (obj instanceof Expression) {
+                            getSubTableInWhere((Expression) obj);
                         }
                     } catch (InvocationTargetException | IllegalAccessException ex) {
                         throw new GarbleParamException("查询语句InWhere方法调用失败");
