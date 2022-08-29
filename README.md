@@ -18,7 +18,8 @@
 
 ### 数据表搭建
 
-加入项目需要增加col, 这里使用 update_record 为例, 具体增加字段可以在配置文件中指定
+引入该依赖需要增加希望监控表的数据列,
+这里使用 update_record 为例, 具体增加字段名可以在配置文件中指定
 
 ```sql
 CREATE DATABASE `garble` DEFAULT CHARACTER SET utf8mb4;
@@ -51,7 +52,7 @@ insert into user(id, name, ext)
 values ('6', '张老六', 'fff');
 ```
 
-### 配置
+### 配置（根据项目选用spring boot配置还是maven配置, gradle同理）
 
 #### spring boot 配置
 
@@ -63,13 +64,13 @@ pom.xml
 <dependencies>
    <dependency>
       <groupId>com.astercasc</groupId>
-      <artifactId>mybatis-sql-garble</artifactId>
+      <artifactId>sql-garble-spring-boot-starter</artifactId>
       <version>${version}</version>
    </dependency>
    <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.2.2</version>
+      <version>${version}</version>
    </dependency>
 </dependencies>
 ```
@@ -92,7 +93,7 @@ garble:
 
 ```
 
-#### maven
+#### maven配置
 
 pom.xml
 
