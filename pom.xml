@@ -11,7 +11,7 @@
 
     <name>mybatis-sql-garble</name>
     <description>Mybatis Sql Garble</description>
-    <url>https://astercasc.com</url>
+    <url>https://github.com/AsterCass/mybatis-sql-garble</url>
 
     <licenses>
         <license>
@@ -21,10 +21,10 @@
     </licenses>
 
     <scm>
-        <connection>scm:https://gitlab.com/sql-garble/mybatis-sql-garble.git</connection>
-        <developerConnection>scm:https://gitlab.com/sql-garble/mybatis-sql-garble.git
+        <connection>scm:https://github.com/AsterCass/mybatis-sql-garble.git</connection>
+        <developerConnection>scm:https://github.com/AsterCass/mybatis-sql-garble.git
         </developerConnection>
-        <url>https://gitlab.com/sql-garble/mybatis-sql-garble</url>
+        <url>https://github.com/AsterCass/mybatis-sql-garble</url>
     </scm>
 
 
