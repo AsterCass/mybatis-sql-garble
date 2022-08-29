@@ -47,6 +47,15 @@ public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            if (null != authenticationFilterSelectProperty) {
+                AuthenticationFilterAbstract garbleSql = new AuthenticationFilterGarbleSql(
+                        invocation, authenticationFilterSelectProperty, methodForAuthCodeSelect);
+                garbleSql.run();
+            }
+        }
+
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         Object parameter = args[1];
@@ -65,15 +74,6 @@ public class GarbleQueryInterceptor implements Interceptor {
             cacheKey = (CacheKey) args[4];
             boundSql = (BoundSql) args[5];
         }
-
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            if (null != authenticationFilterSelectProperty) {
-                AuthenticationFilterAbstract garbleSql = new AuthenticationFilterGarbleSql(
-                        invocation, authenticationFilterSelectProperty, methodForAuthCodeSelect);
-                garbleSql.run();
-            }
-        }
-
 
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }

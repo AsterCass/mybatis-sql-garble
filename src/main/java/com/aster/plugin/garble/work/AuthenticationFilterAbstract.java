@@ -60,7 +60,8 @@ public abstract class AuthenticationFilterAbstract extends AuthenticationFilterS
             this.monitoredTableAuthColMap = new HashMap<>();
             this.monitoredTableAuthStrategyMap = new HashMap<>();
             for (String table : monitoredTableList) {
-                if (null != property.getMonitoredTableAuthColMap().get(table)) {
+                if (null != property.getMonitoredTableAuthColMap() &&
+                        null != property.getMonitoredTableAuthColMap().get(table)) {
                     monitoredTableAuthColMap.put(table, property.getMonitoredTableAuthColMap().get(table));
                 } else if ("".equals(defaultAuthColName)) {
                     throw new GarbleParamException(
@@ -70,7 +71,8 @@ public abstract class AuthenticationFilterAbstract extends AuthenticationFilterS
                     monitoredTableAuthColMap.put(table, defaultAuthColName);
                 }
 
-                if (null != property.getMonitoredTableAuthStrategyMap().get(table)) {
+                if (null != property.getMonitoredTableAuthStrategyMap() &&
+                        null != property.getMonitoredTableAuthStrategyMap().get(table)) {
                     monitoredTableAuthStrategyMap.put(table, property.getMonitoredTableAuthStrategyMap().get(table));
                 } else if (0 == defaultAuthStrategy) {
                     throw new GarbleParamException(

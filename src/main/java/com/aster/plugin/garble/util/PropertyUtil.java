@@ -37,11 +37,23 @@ public class PropertyUtil {
                                 .getDeclaredMethod("set" + firstUpperName, String.class);
                         method.invoke(propertyInstance, (String) prop.get(name));
                     }
+                    if ("class java.lang.Integer".equals(type)) {
+                        Method method = propertyInstance.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, Integer.class);
+                        //这里if判断是兼容mybatis-config和yml文件的配置，mybatis的配置value值只能输入String格式，下同
+                        Integer intStr;
+                        if (prop.get(name) instanceof String) {
+                            intStr = JSON.parseObject((String) prop.get(name), Integer.class);
+                        } else {
+                            intStr = (Integer) prop.get(name);
+                        }
+                        method.invoke(propertyInstance, intStr);
+                    }
                     if ("java.util.Map<java.lang.String, java.lang.String>".equals(type)) {
                         Method method = propertyInstance.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, Map.class);
                         String mapStr;
-                        //这里if判断是兼容mybatis-config和yml文件的配置，mybatis的配置value值只能输入String格式，下同
+                        //兼容mybatis-config和yml文件的配置
                         if (prop.get(name) instanceof String) {
                             mapStr = prop.get(name).toString();
                         } else {

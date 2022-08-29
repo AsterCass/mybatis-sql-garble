@@ -41,6 +41,9 @@
 
     <plugins>
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
+            <property name="auth.select.monitoredTableList" value="['user']"/>
+            <property name="auth.select.defaultAuthColName" value="auth_code"/>
+            <property name="auth.select.defaultAuthStrategy" value="1"/>
         </plugin>
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
             <property name="updated-data-msg.defaultFlagColName" value="update_record"/>

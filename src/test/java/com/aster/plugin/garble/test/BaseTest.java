@@ -35,7 +35,7 @@ public class BaseTest {
 
         try {
             List<UserEntity> list = userMapper.selectAll();
-            System.out.println(JSON.toJSONString(list.get(0)));
+            System.out.println(JSON.toJSONString(list));
         } finally {
             sqlSession.close();
         }
@@ -68,7 +68,7 @@ public class BaseTest {
     }
 
     @Test
-    public void queryTest() throws JSQLParserException {
+    public void queryTest() {
 
 
         String sql = "select * from sch1.user us join sch2.per pe on per.co1 = user.col2 " +
@@ -241,7 +241,7 @@ public class BaseTest {
         }
 
 
-        System.out.println(insert.toString());
+        System.out.println(insert);
 
 
     }

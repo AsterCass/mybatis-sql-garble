@@ -227,18 +227,145 @@ garble:
       monitored-table-map: { 'user_table': 'id', 'log_table': 'id' }
       #监控表和更新标记字段的对应关系
       monitored-table-update-flag-col-map: { 'user_table': 'update_record_col1', 'log_table': 'update_record_col2' }
+   #鉴权   
+   auth:
+      #查询鉴权
+      select:
+         #标记实现AuthenticationCodeInterface接口的方法路径，加快加快初始化速度，可以不赋值
+         auth-code-path: "com.baidu"
+         #监控表列表
+         monitored-table-list:
+            - "user"
+         #监控表和权限标记列
+         monitored-table-auth-col-map: { 'user_table': 'auth_code_o', 'log_table': 'auth_code_t' }
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code"
+         #监控表和权限策略
+         monitored-table-auth-strategy-map: { 'user_table': 1, 'log_table': 2 }
+         #监控表和权限策略，当monitored-table-auth-strategy-map无法查询到需要监控表的权限策略的时候，使用默认权限测率
+         default-auth-strategy: 1
+         #在此map中的的sql不受到监控，即使包含监控表
+         excluded-mapper-path:
+            - "com.aster.mapper.ExcludeMapperRed"
 ```
 
 ## 注意事项
 
 1. 目前只支持mysql
 2. 对于多schema的场景需要完善
+3. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
 
 ## 功能简述
 
 ### 返回更新数据
 
+使用方法参照【快速开始】, 这里简述一下原理
+
+使用拦截器拦截含监控表经过mybatis的相关sql, 增加set条件update_recode = 1 (update_record 字段可以在配置中自定义)
+此时会把所有更新行的update_record设置为1
+
+然后在mybatis执行完成后再次拦截, update_record = 1 的数据统计起来, 执行查询sql获取指定列
+
+最后将之前行重置回 update_record = 0, 并且找到继承 DealWithUpdatedInterface 的方法回调将跟新行返回
+
+也就是说在更新监控表内执行sql, 其实相当于执行了3此sql, 一次查询以及两次更新,
+如果希望提高更新效率首先将monitored-table-map的value值配置为主键, 再者依据update_record建立索引
+
 ### 数据查询鉴权
+
+```sql
+CREATE TABLE your_schema.your_table
+(
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   -- your cols
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+
+ALTER TABLE your_schema.your_table
+   ADD your_auth_code varchar(50) NULL COMMENT '权限标识code';
+```
+
+在配置文件配置完成, sql列增加完成后, 还需要继承AuthenticationCodeInterface
+实现authenticationCodeBuilder方法以及增加@AuthenticationCodeBuilder注解.
+在该功能在配置文件中被声明需要时, 继承AuthenticationCodeInterface的文件被扫描,
+查询实时获取鉴权code, 根据用户定义策略方法进行匹配
+
+```java
+import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
+
+public class QueryAuthService implements AuthenticationCodeInterface {
+   /**
+    * 获取鉴权code，用于和配置字段相比较
+    * {@link AuthenticationStrategyEnum}
+    * 如果使用的是AuthenticationStrategyEnum.BOOLEAN_AND需要传入的为纯数字的字符串
+    * 方法将会在查询监控表的时候依据指定的及authentication strategy，根据此方法的的返回值进行鉴权
+    *
+    * @return 鉴权code
+    */
+   @Override
+   @AuthenticationCodeBuilder(type = 2, tables = {"user"})
+   public String authenticationCodeBuilder() {
+      return "12345";
+   }
+}
+```
+
+这里展示使用等式鉴权的配置
+
+```yaml
+garble:
+   #是否开启拦截器
+   valid: true
+   #拦截器所含功能 GarbleFunctionEnum
+   garble-function-list:
+      - 2
+   #鉴权   
+   auth:
+      #查询鉴权
+      select:
+         #监控表列表
+         monitored-table-list:
+            - "user"
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code"
+         #监控表和权限策略，当monitored-table-auth-strategy-map无法查询到需要监控表的权限策略的时候，使用默认权限测率
+         default-auth-strategy: 1
+```
+
+数据库状态
+
+```text
+id |name|ext|update_record|auth_code|
+---+----+---+-------------+---------+
+  1|张老大 |11 |            0|         |
+  2|张老二 |22 |            0|12345    |
+  3|张老三 |33 |            0|         |
+  4|张老四 |44 |            0|         |
+  5|张老五 |55 |            0|         |
+  6|张老六 |66 |            0|         |
+  7|张老七 |77 |            0|         |
+  8|张老八 |88 |            0|         |
+```
+
+查询全部数据
+
+```java
+public class BaseTest {
+   public void test() {
+      //get userMapper...
+      List<UserEntity> list = userMapper.selectAll();
+      System.out.println(JSON.toJSONString(list));
+   }
+}
+```
+
+结果
+
+```text
+[{"ext":"22","id":2,"name":"张老二"}]
+```
 
 ### 数据更新鉴权
 
