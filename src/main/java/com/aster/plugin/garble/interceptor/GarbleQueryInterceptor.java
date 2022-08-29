@@ -1,6 +1,7 @@
 package com.aster.plugin.garble.interceptor;
 
 import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
+import com.aster.plugin.garble.enums.GarbleFunctionEnum;
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
 import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
 import com.aster.plugin.garble.util.PropertyUtil;
@@ -84,6 +85,25 @@ public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
+        //这里是兼容maven配置调用, spring boot 直接会调用 setAuthenticationFilterSelectProperty 方法
+        if (null != properties) {
+            Properties authenticationFilterSelectMap = new Properties();
+
+            for (Object key : properties.keySet()) {
+                if (key instanceof String &&
+                        ((String) key).contains(GarbleFunctionEnum.SELECT_AUTHENTICATION.getPropertyPre())) {
+                    authenticationFilterSelectMap.put(
+                            ((String) key).replace(GarbleFunctionEnum.SELECT_AUTHENTICATION.getPropertyPre(),
+                                    ""),
+                            properties.get(key));
+                }
+
+            }
+            if (0 != authenticationFilterSelectMap.size()) {
+                setAuthenticationFilterSelectProperty(authenticationFilterSelectMap);
+            }
+
+        }
     }
 
     public void setAuthenticationFilterSelectProperty(Properties prop) {

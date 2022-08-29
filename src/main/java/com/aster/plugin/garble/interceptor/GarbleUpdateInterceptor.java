@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.interceptor;
 
+import com.aster.plugin.garble.enums.GarbleFunctionEnum;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.service.DealWithUpdated;
 import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
@@ -86,7 +87,26 @@ public class GarbleUpdateInterceptor implements Interceptor {
     }
 
     @Override
-    public void setProperties(Properties prop) {
+    public void setProperties(Properties properties) {
+        //这里是兼容maven配置调用, spring boot 直接会调用 setAuthenticationFilterSelectProperty 方法
+        if (null != properties) {
+            Properties updatedDataMsgProperty = new Properties();
+
+            for (Object key : properties.keySet()) {
+                if (key instanceof String &&
+                        ((String) key).contains(GarbleFunctionEnum.UPDATED_DATA_MSG.getPropertyPre())) {
+                    updatedDataMsgProperty.put(
+                            ((String) key).replace(GarbleFunctionEnum.UPDATED_DATA_MSG.getPropertyPre(),
+                                    ""),
+                            properties.get(key));
+                }
+
+            }
+            if (0 != updatedDataMsgProperty.size()) {
+                setUpdatedDataMsgProperty(updatedDataMsgProperty);
+            }
+
+        }
     }
 
     /**

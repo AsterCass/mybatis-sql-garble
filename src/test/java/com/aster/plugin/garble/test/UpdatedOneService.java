@@ -12,7 +12,7 @@ public class UpdatedOneService implements DealWithUpdatedInterface {
     @DealWithUpdated(priority = 1)
     @Override
     public void execute(Map<String, List<String>> updatedTableMap) {
-        System.out.println("1111 " + JSON.toJSONString(updatedTableMap));
+        System.out.println("1:" + JSON.toJSONString(updatedTableMap));
     }
 
     private void test() {

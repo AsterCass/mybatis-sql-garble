@@ -12,6 +12,6 @@ public class UpdatedTwoService implements DealWithUpdatedInterface {
     @DealWithUpdated(priority = 2)
     @Override
     public void execute(Map<String, List<String>> updatedTableMap) {
-        System.out.println("2222 " + JSON.toJSONString(updatedTableMap));
+        System.out.println("2:" + JSON.toJSONString(updatedTableMap));
     }
 }

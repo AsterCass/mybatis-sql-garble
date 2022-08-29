@@ -43,12 +43,12 @@
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
         </plugin>
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
-            <property name="defaultFlagColName" value="update_record"/>
-            <property name="excludedMapperPath" value="['abc','efg','hij']"/>
-            <property name="monitoredTableMap" value="{'user':'id'}"/>
-            <property name="garbleFunctionList" value="[1]"/>
-            <property name="dealWithUpdatedPath" value="com.aster.plugin.garble"/>
-            <property name="monitoredTableUpdateFlagColMap" value="{'user':'update_record'}"/>
+            <property name="updated-data-msg.defaultFlagColName" value="update_record"/>
+            <property name="updated-data-msg.excludedMapperPath" value="['abc','efg','hij']"/>
+            <property name="updated-data-msg.monitoredTableMap" value="{'user':'id'}"/>
+            <property name="updated-data-msg.garbleFunctionList" value="[1]"/>
+            <property name="updated-data-msg.dealWithUpdatedPath" value="com.aster.plugin.garble"/>
+            <property name="updated-data-msg.monitoredTableUpdateFlagColMap" value="{'user':'update_record'}"/>
         </plugin>
     </plugins>
 
