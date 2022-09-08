@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * @author astercasc
  */
-public class AuthenticationFilterGarbleSql extends AuthenticationFilterAbstract {
+public class AuthenticationFilterSelectGarbleSql extends AuthenticationFilterSelectAbstract {
 
 
-    public AuthenticationFilterGarbleSql(
+    public AuthenticationFilterSelectGarbleSql(
             Invocation invocation, AuthenticationFilterSelectProperty property,
             List<Method> methodForAuthCodeSelect) {
         super(invocation, property, methodForAuthCodeSelect);

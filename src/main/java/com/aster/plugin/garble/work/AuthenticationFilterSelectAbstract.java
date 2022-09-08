@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * @author astercasc
  */
-public abstract class AuthenticationFilterAbstract extends AuthenticationFilterSelectProperty {
+public abstract class AuthenticationFilterSelectAbstract extends AuthenticationFilterSelectProperty {
 
 
     /**
@@ -29,7 +29,7 @@ public abstract class AuthenticationFilterAbstract extends AuthenticationFilterS
     /**
      * builder
      */
-    public AuthenticationFilterAbstract(
+    public AuthenticationFilterSelectAbstract(
             Invocation invocation, AuthenticationFilterSelectProperty property,
             List<Method> methodForAuthCodeSelect) {
         this.invocation = invocation;

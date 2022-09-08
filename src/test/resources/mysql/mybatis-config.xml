@@ -44,14 +44,21 @@
             <property name="auth.select.monitoredTableList" value="['user']"/>
             <property name="auth.select.defaultAuthColName" value="auth_code"/>
             <property name="auth.select.defaultAuthStrategy" value="1"/>
+
+
         </plugin>
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
-            <property name="updated-data-msg.defaultFlagColName" value="update_record"/>
-            <property name="updated-data-msg.excludedMapperPath" value="['abc','efg','hij']"/>
-            <property name="updated-data-msg.monitoredTableMap" value="{'user':'id'}"/>
-            <property name="updated-data-msg.garbleFunctionList" value="[1]"/>
-            <property name="updated-data-msg.dealWithUpdatedPath" value="com.aster.plugin.garble"/>
-            <property name="updated-data-msg.monitoredTableUpdateFlagColMap" value="{'user':'update_record'}"/>
+
+            <property name="auth.insert.monitoredTableList" value="['user']"/>
+            <property name="auth.insert.defaultAuthColName" value="auth_code"/>
+
+
+<!--            <property name="updated-data-msg.defaultFlagColName" value="update_record"/>-->
+<!--            <property name="updated-data-msg.excludedMapperPath" value="['abc','efg','hij']"/>-->
+<!--            <property name="updated-data-msg.monitoredTableMap" value="{'user':'id'}"/>-->
+<!--            <property name="updated-data-msg.garbleFunctionList" value="[1]"/>-->
+<!--            <property name="updated-data-msg.dealWithUpdatedPath" value="com.aster.plugin.garble"/>-->
+<!--            <property name="updated-data-msg.monitoredTableUpdateFlagColMap" value="{'user':'update_record'}"/>-->
         </plugin>
     </plugins>
 

@@ -6,10 +6,10 @@
 2. 支持数据查询鉴权功能, 目前支持的鉴权方法
    1. 同值鉴权: 通过自定义方法回调获取鉴权code, 将code和指定列比较相同即为有该权限
    2. 比特与鉴权: 通过自定义方法回调鉴权code, 将code和指定列比较比特位取与如果大于0即为有该权限
+3. 支持数据插入自动写入权限
 
 ## 日程中功能
 
-1. 支持数据插入自动写入权限
 2. 支持数据更新鉴权
 3. 支持第三种鉴权方式, 交集鉴权, 传入String形式的List, 数据库中也为String形式的List, 如果有重合, 即为有权限
 4. 兼容不同schema相同数据表名的监控, 以及对于不同的schema的功能完整性测试
@@ -205,7 +205,7 @@ log:
 
 ## 配置介绍
 
-这里只展示yml文件的配置, mybatis-config 的配置相同, 但是需要增加功能前缀, 参考【快速开始】-【配置】
+这里只展示yml文件的配置, 如果不使用 spring boot 则需要配置 mybatis-config , 字段和yml配置相同, 但是需要增加功能前缀, 参考【快速开始】-【配置】
 
 ```yaml
 garble:
@@ -244,6 +244,20 @@ garble:
          monitored-table-auth-strategy-map: { 'user_table': 1, 'log_table': 2 }
          #监控表和权限策略，当monitored-table-auth-strategy-map无法查询到需要监控表的权限策略的时候，使用默认权限测率
          default-auth-strategy: 1
+         #在此map中的的sql不受到监控，即使包含监控表
+         excluded-mapper-path:
+            - "com.aster.mapper.ExcludeMapperRed"
+      #更新授权
+      insert:
+         #标记实现AuthenticationCodeInterface接口的方法路径，加快加快初始化速度，可以不赋值
+         auth-code-path: "com.baidu"
+         #监控表列表
+         monitored-table-list:
+            - "user"
+         #监控表和权限标记列
+         monitored-table-auth-col-map: { 'user_table': 'auth_code_o', 'log_table': 'auth_code_t' }
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code"
          #在此map中的的sql不受到监控，即使包含监控表
          excluded-mapper-path:
             - "com.aster.mapper.ExcludeMapperRed"
@@ -370,3 +384,61 @@ public class BaseTest {
 ### 数据更新鉴权
 
 ### 数据插入授权
+
+测速数据库配置信息和【数据查询鉴权】相同, 同样需要继承AuthenticationCodeInterface,
+实现authenticationCodeBuilder, type 使用 AuthenticationTypeEnum.INSERT 表明这个是插入的获取权限的方法,
+tables 为作用域, 需要保证在auth.insert配置文件中的每个table都有自己的作用域
+
+```java
+import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
+import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
+import com.aster.plugin.garble.service.AuthenticationCodeInterface;
+
+public class InsertAuthService implements AuthenticationCodeInterface {
+
+
+   /**
+    * 获取鉴权code，用于和配置字段相比较
+    * {@link AuthenticationStrategyEnum}
+    * 如果使用的是AuthenticationStrategyEnum.BOOLEAN_AND需要传入的为纯数字的字符串
+    * 方法将会在查询监控表的时候依据指定的及authentication strategy，根据此方法的的返回值进行鉴权
+    *
+    * @return 鉴权code
+    */
+   @Override
+   @AuthenticationCodeBuilder(type = 3, tables = {"user"})
+   public String authenticationCodeBuilder() {
+      return "1234";
+   }
+}
+
+```
+
+这里展示测试的yml配置
+
+```yaml
+garble:
+   #是否开启拦截器
+   valid: true
+   #拦截器所含功能 GarbleFunctionEnum
+   garble-function-list:
+      - 3
+   #鉴权   
+   auth:
+      #查询鉴权
+      select:
+         #监控表列表
+         monitored-table-list:
+            - "user"
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code"
+```
+
+此时插入所有监控表数据都会增加对于权限字段的授权譬如
+
+```text
+insert into user (id, `name`, ext) values (123,  'szss', 'sss')
+->
+insert into user (id, `name`, ext, auth_code) values (123,  'szss', 'sss', '1234')
+```
+

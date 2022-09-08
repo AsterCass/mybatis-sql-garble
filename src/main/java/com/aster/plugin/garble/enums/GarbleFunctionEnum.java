@@ -22,6 +22,11 @@ public enum GarbleFunctionEnum {
      */
     SELECT_AUTHENTICATION(2, "查询鉴权", "auth.select."),
 
+    /**
+     * 插入授权
+     */
+    INSERT_AUTHENTICATION(3, "插入鉴权", "auth.insert."),
+
 
     ;
 

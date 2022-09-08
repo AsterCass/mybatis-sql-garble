@@ -13,7 +13,6 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,29 +51,21 @@ public class InsertSqlCube extends BaseSqlCube {
      * 这种方法兼容性更强，兼容使用xml插入的方式，但是会报一个?和集合数量不匹配的异常，暂时没有找到解决方案
      * 奇怪的是update的时候，并不会报这个错误
      */
-    @Deprecated
-    public static String addInsertSet(String sql, Map<String, String> monitoredTableMap,
-                                      Map<String, String> monitoredTableUpdateFlagColMap,
-                                      String defaultFlagColName) {
+    public static String addInsertNumberSet(String sql, List<String> tableList,
+                                            Map<String, String> tableColMap,
+                                            Map<String, String> tableValueMap) {
         try {
-            //配置数据
-            List<String> tableList = new ArrayList<>(monitoredTableMap.keySet());
             //sql解析
             Statement statement = CCJSqlParserUtil.parse(sql);
 
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
                 boolean containFlag = false;
-                String flagColName = defaultFlagColName;
-                if (tableList.contains(insertStatement.getTable().getName())) {
-                    String mapFlagColName =
-                            monitoredTableUpdateFlagColMap.get(insertStatement.getTable().getName());
-                    if (null != mapFlagColName) {
-                        flagColName = mapFlagColName;
-                    }
-                } else {
+                if (!tableList.contains(insertStatement.getTable().getName())) {
                     return sql;
                 }
+                String flagColName = tableColMap.get(insertStatement.getTable().getName());
+                String value = tableValueMap.get(insertStatement.getTable().getName());
                 for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
                     if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {
                         containFlag = true;
@@ -84,10 +75,10 @@ public class InsertSqlCube extends BaseSqlCube {
                         if (expressionList.get(0) instanceof RowConstructor) {
                             for (Expression expression : expressionList) {
                                 RowConstructor rowCon = (RowConstructor) expression;
-                                rowCon.getExprList().getExpressions().set(count, new LongValue(1));
+                                rowCon.getExprList().getExpressions().set(count, new LongValue(value));
                             }
                         } else {
-                            expressionList.set(count, new LongValue(1));
+                            expressionList.set(count, new LongValue(value));
                         }
                     }
                 }
@@ -99,10 +90,10 @@ public class InsertSqlCube extends BaseSqlCube {
                     if (expressionList.get(0) instanceof RowConstructor) {
                         for (Expression expression : expressionList) {
                             RowConstructor rowCon = (RowConstructor) expression;
-                            rowCon.getExprList().addExpressions(new LongValue(1));
+                            rowCon.getExprList().addExpressions(new LongValue(value));
                         }
                     } else {
-                        expressionList.add(new LongValue(1));
+                        expressionList.add(new LongValue(value));
                     }
                 }
                 return insertStatement.toString();
