@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.sql;
 
+import com.alibaba.fastjson.JSON;
 import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.exception.GarbleParamException;
@@ -10,7 +11,9 @@ import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -145,6 +148,17 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                     greaterThan.setLeftExpression(bitwiseAnd);
                     greaterThan.setRightExpression(new LongValue(0));
                     expressionList.add(greaterThan);
+                } else if (AuthenticationStrategyEnum.INTERSECTION.getCode().equals(strategy)) {
+                    InExpression inExpression = new InExpression();
+                    inExpression.setLeftExpression(new Column(table.getTable(), col));
+
+                    List<String> codeList = JSON.parseArray(code, String.class);
+                    ExpressionList expressions = new ExpressionList();
+                    for (String inCode : codeList) {
+                        expressions.addExpressions(new StringValue(inCode));
+                    }
+                    inExpression.setRightItemsList(expressions);
+                    expressionList.add(inExpression);
                 } else {
                     throw new GarbleParamException(key + " 该表配置文件写入错误，参考AuthenticationStrategyEnum");
                 }

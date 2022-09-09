@@ -1,8 +1,11 @@
 package com.aster.plugin.garble.test;
 
+import com.alibaba.fastjson.JSON;
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.service.AuthenticationCodeInterface;
+
+import java.util.Arrays;
 
 public class QueryAuthService implements AuthenticationCodeInterface {
 
@@ -18,7 +21,7 @@ public class QueryAuthService implements AuthenticationCodeInterface {
     @Override
     @AuthenticationCodeBuilder(type = 2, tables = {"user"})
     public String authenticationCodeBuilder() {
-        return "12345";
+        return JSON.toJSONString(Arrays.asList("1234", "12345"));
     }
 
 }

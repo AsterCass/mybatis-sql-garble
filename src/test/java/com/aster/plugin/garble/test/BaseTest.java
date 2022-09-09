@@ -77,25 +77,31 @@ public class BaseTest {
                 "testTable.code = us.code+1 or us.per_id in (select id from garble.per where ext < 50 and status = 0) and stat = 1";
         String sql2 = "select * from user, per where user.id = per.user_id";
 
+        String sql3 = "select * from ping_ta where auth_code in (123, 34, 55323)";
+
         String newSql = new SelectAuthFilterSqlCube(
-                Arrays.asList("user", "per", "testTable"),
+                Arrays.asList("user", "per", "testTable", "ping_ta"),
                 new HashMap<String, String>() {{
                     put("user", "perCol");
                     put("per", "perCol");
                     put("testTable", "perCol");
+                    put("ping_ta", "auth_code");
                 }},
+
                 new HashMap<String, Integer>() {{
                     put("user", 1);
                     put("per", 1);
                     put("testTable", 2);
+                    put("ping_ta", 3);
                 }},
                 new HashMap<String, String>() {{
                     put("user", "123");
                     put("per", "123");
                     put("testTable", "7");
+                    put("ping_ta", JSON.toJSONString(Arrays.asList("123", "456")));
                 }}
 
-        ).addAuthCode(sql1);
+        ).addAuthCode(sql3);
 
 
         System.out.println(newSql);
