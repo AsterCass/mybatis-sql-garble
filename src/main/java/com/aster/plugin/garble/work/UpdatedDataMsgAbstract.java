@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.work;
 
+import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import org.apache.ibatis.executor.Executor;
@@ -23,12 +24,7 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
     public UpdatedDataMsgAbstract(Invocation invocation, UpdatedDataMsgProperty property) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
-        //这里全部转小写，后面各种操作，大小写不太方便
-        if (null != property.getDefaultFlagColName()) {
-            this.defaultFlagColName = property.getDefaultFlagColName().toLowerCase();
-        } else {
-            this.defaultFlagColName = "";
-        }
+
         if (null != property.getMonitoredTableMap() && 0 != property.getMonitoredTableMap().size()) {
             Map<String, String> lowerMonitoredTableMap = new HashMap<>();
             for (Map.Entry<String, String> entry : property.getMonitoredTableMap().entrySet()) {
@@ -37,19 +33,24 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
             this.monitoredTableMap = lowerMonitoredTableMap;
             this.monitoredTableList = new ArrayList<>(lowerMonitoredTableMap.keySet());
         } else {
-            this.monitoredTableList = new ArrayList<>();
-            this.monitoredTableMap = new HashMap<>();
+            throw new GarbleParamException("添加更新标记返回需求但是未检测到添加表信息配置");
         }
-        if (null != property.getMonitoredTableUpdateFlagColMap() &&
-                0 != property.getMonitoredTableUpdateFlagColMap().size()) {
-            Map<String, String> lowerMonitorTableUpdateFlagColMap = new HashMap<>();
-            for (Map.Entry<String, String> entry : property.getMonitoredTableUpdateFlagColMap().entrySet()) {
-                lowerMonitorTableUpdateFlagColMap.put(entry.getKey().toLowerCase(), entry.getValue().toLowerCase());
+
+        //这里全部转小写，后面各种操作，大小写不太方便
+        this.monitoredTableUpdateFlagColMap = new HashMap<>();
+        this.defaultFlagColName = property.getDefaultFlagColName();
+        for (String table : monitoredTableList) {
+            if (property.getMonitoredTableUpdateFlagColMap().containsKey(table)) {
+                String col = property.getMonitoredTableUpdateFlagColMap().get(table);
+                monitoredTableUpdateFlagColMap.put(table.toLowerCase(), col.toLowerCase());
+            } else if (null != defaultFlagColName && !"".equals(defaultFlagColName)) {
+                monitoredTableUpdateFlagColMap.put(table.toLowerCase(), defaultFlagColName.toLowerCase());
+            } else {
+                throw new GarbleParamException("【" + table + "】该表没有在monitoredTableUpdateFlagColMap中配置," +
+                        "也没有配置默认的更新标记列defaultFlagColName");
             }
-            this.monitoredTableUpdateFlagColMap = lowerMonitorTableUpdateFlagColMap;
-        } else {
-            this.monitoredTableUpdateFlagColMap = new HashMap<>();
         }
+
         this.excludedMapperPath = property.getExcludedMapperPath();
         if (invocation.getTarget() instanceof Executor) {
             this.executor = (Executor) invocation.getTarget();

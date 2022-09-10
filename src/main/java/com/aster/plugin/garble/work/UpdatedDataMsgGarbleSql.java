@@ -39,8 +39,13 @@ public class UpdatedDataMsgGarbleSql extends UpdatedDataMsgAbstract {
         }
 
         if (isUpdate) {
-            String newSql = UpdateSqlCube.addUpdateSet(sql, monitoredTableMap,
-                    monitoredTableUpdateFlagColMap, defaultFlagColName);
+            Map<String, String> monitoredTableUpdateColValueMap =
+                    new HashMap<>();
+            for (String table : crossTableList) {
+                monitoredTableUpdateColValueMap.put(table, "1");
+            }
+            String newSql = UpdateSqlCube.addUpdateSet(sql, crossTableList,
+                    monitoredTableUpdateFlagColMap, monitoredTableUpdateColValueMap);
             newSqlBuilder(newSql);
         } else if (isInsert) {
             InsertSqlCube.addInsertSet(invocation);

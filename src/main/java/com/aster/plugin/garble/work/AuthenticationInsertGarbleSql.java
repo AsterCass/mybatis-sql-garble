@@ -23,7 +23,7 @@ public class AuthenticationInsertGarbleSql extends AuthenticationInsertAbstract 
     @Override
     protected void exec() {
         String newSql = new InsertAuthSqlCube(
-                monitoredTableList, monitoredTableAuthColMap, monitoredTableAuthCodeMap)
+                crossTableList, monitoredTableAuthColMap, monitoredTableAuthCodeMap)
                 .addAuthCode(sql);
         newSqlBuilder(newSql);
     }

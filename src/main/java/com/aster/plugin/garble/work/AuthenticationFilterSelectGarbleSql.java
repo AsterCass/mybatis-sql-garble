@@ -23,7 +23,7 @@ public class AuthenticationFilterSelectGarbleSql extends AuthenticationFilterSel
     @Override
     protected void exec() {
         String newSql = new SelectAuthFilterSqlCube(
-                monitoredTableList, monitoredTableAuthColMap,
+                crossTableList, monitoredTableAuthColMap,
                 monitoredTableAuthStrategyMap, monitoredTableAuthCodeMap)
                 .addAuthCode(sql);
         newSqlBuilder(newSql);

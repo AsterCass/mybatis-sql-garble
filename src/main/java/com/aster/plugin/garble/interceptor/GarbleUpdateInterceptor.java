@@ -2,6 +2,7 @@ package com.aster.plugin.garble.interceptor;
 
 import com.aster.plugin.garble.enums.AuthenticationTypeEnum;
 import com.aster.plugin.garble.enums.GarbleFunctionEnum;
+import com.aster.plugin.garble.property.AuthenticationFilterUpdateProperty;
 import com.aster.plugin.garble.property.AuthenticationInsertProperty;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.service.DealWithUpdated;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 /**
  * 功能：
  * 1. 获取监控表的更新行，支持后续操作（非异步）
+ *
  * @author astercasc
  */
 @Slf4j
@@ -43,6 +45,11 @@ public class GarbleUpdateInterceptor implements Interceptor {
     private AuthenticationInsertProperty insertAuthProperty;
 
     /**
+     * 传入配置
+     */
+    private AuthenticationFilterUpdateProperty updateAuthProperty;
+
+    /**
      * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
      */
     private List<Method> postMethodForUpdatedRows;
@@ -51,6 +58,11 @@ public class GarbleUpdateInterceptor implements Interceptor {
      * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
      */
     private List<Method> methodForAuthCodeInsert;
+
+    /**
+     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
+     */
+    private List<Method> methodForAuthCodeUpdate;
 
 
     @Override
@@ -70,6 +82,14 @@ public class GarbleUpdateInterceptor implements Interceptor {
             if (null != insertAuthProperty) {
                 AuthenticationInsertAbstract garbleSql = new AuthenticationInsertGarbleSql(
                         invocation, insertAuthProperty, methodForAuthCodeInsert);
+                garbleSql.run();
+            }
+        }
+
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            if (null != updateAuthProperty) {
+                AuthenticationFilterUpdateAbstract garbleSql = new AuthenticationFilterUpdateGarbleSql(
+                        invocation, updateAuthProperty, methodForAuthCodeUpdate);
                 garbleSql.run();
             }
         }
@@ -113,6 +133,8 @@ public class GarbleUpdateInterceptor implements Interceptor {
         if (null != properties) {
             Properties updatedDataMsgProperty = new Properties();
             Properties insertAuthProperty = new Properties();
+            Properties updateAuthProperty = new Properties();
+
 
             for (Object key : properties.keySet()) {
                 if (key instanceof String &&
@@ -129,12 +151,22 @@ public class GarbleUpdateInterceptor implements Interceptor {
                                     ""),
                             properties.get(key));
                 }
+                if (key instanceof String &&
+                        ((String) key).contains(GarbleFunctionEnum.UPDATE_AUTHENTICATION.getPropertyPre())) {
+                    updateAuthProperty.put(
+                            ((String) key).replace(GarbleFunctionEnum.UPDATE_AUTHENTICATION.getPropertyPre(),
+                                    ""),
+                            properties.get(key));
+                }
             }
             if (0 != updatedDataMsgProperty.size()) {
                 setUpdatedDataMsgProperty(updatedDataMsgProperty);
             }
             if (0 != insertAuthProperty.size()) {
                 setInsertAuthProperty(insertAuthProperty);
+            }
+            if (0 != updateAuthProperty.size()) {
+                setUpdateAuthProperty(updateAuthProperty);
             }
 
         }
@@ -160,6 +192,19 @@ public class GarbleUpdateInterceptor implements Interceptor {
             this.methodForAuthCodeInsert = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
                     this.insertAuthProperty.getAuthCodePath(),
                     AuthenticationTypeEnum.INSERT
+            );
+        }
+    }
+
+    /**
+     * 设置更新鉴权相关属性
+     */
+    public void setUpdateAuthProperty(Properties prop) {
+        this.updateAuthProperty = PropertyUtil.propertyToObject(prop, AuthenticationFilterUpdateProperty.class);
+        if (null != updateAuthProperty) {
+            this.methodForAuthCodeUpdate = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                    this.updateAuthProperty.getAuthCodePath(),
+                    AuthenticationTypeEnum.UPDATE
             );
         }
     }

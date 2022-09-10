@@ -5,6 +5,7 @@ import com.aster.plugin.garble.entity.UserEntity;
 import com.aster.plugin.garble.mapper.UserMapper;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
+import com.aster.plugin.garble.sql.UpdateAuthFilterSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
 import com.aster.plugin.garble.util.PropertyUtil;
@@ -21,6 +22,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
+import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
@@ -48,7 +50,8 @@ public class BaseTest {
 
         try {
             //这里的测试并不能获得正确的测试结果，因为session没有commit到sql内，所以无法获取更新个数
-            userMapper.updateOne("张老二", "bbb");
+            userMapper.updateOne("张老二狗子", "bbb");
+
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -112,7 +115,35 @@ public class BaseTest {
         String sql = "        update ssd.hr_house_pr hhp,viw_summary c, ppp.hr_room\n" +
                 "        set hhp.contact_name = c.name,hhp.contact_phone = c.phone, hr_room.vol=0\n" +
                 "        where hhp.id = c.id and (hhp.contact_name is null or hhp.contact_name ='');";
+
+
         Statement statement = CCJSqlParserUtil.parse(sql);
+        List<String> fullTableList = new TablesNamesFinder().getTableList(statement);
+
+        String authSql = new UpdateAuthFilterSqlCube(
+
+
+                Arrays.asList("hr_house_pr", "viw_summary"),
+                new HashMap<String, String>() {{
+                    put("hr_house_pr", "house_col");
+                    put("viw_summary", "sum_col");
+                }},
+
+                new HashMap<String, Integer>() {{
+                    put("hr_house_pr", 1);
+                    put("viw_summary", 1);
+                }},
+
+                new HashMap<String, String>() {{
+                    put("hr_house_pr", "123");
+                    put("viw_summary", "1234");
+                }}
+
+        ).addAuthCode(sql);
+
+
+
+
         Update updateStatement = (Update) statement;
         Map<String, String> nameAliasMap = new HashMap<>();
         if (null == updateStatement.getTable().getAlias()) {

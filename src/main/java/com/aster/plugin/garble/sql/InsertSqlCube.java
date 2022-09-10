@@ -13,6 +13,8 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,26 @@ import java.util.Map;
  * @author astercasc
  */
 public class InsertSqlCube extends BaseSqlCube {
+
+    /**
+     * 获取所有表名
+     *
+     * @param sql sql
+     * @return 简单表名，不包含schema
+     */
+    @Override
+    public List<String> getTableList(String sql) {
+        try {
+            Statement statement = CCJSqlParserUtil.parse(sql);
+            if (statement instanceof Insert) {
+                Insert insertStatement = (Insert) statement;
+                return Collections.singletonList(insertStatement.getTable().getName());
+            }
+        } catch (JSQLParserException jsqlParserException) {
+            jsqlParserException.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 
 
     /**

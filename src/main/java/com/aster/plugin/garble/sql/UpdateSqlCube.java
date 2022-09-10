@@ -96,14 +96,13 @@ public class UpdateSqlCube extends BaseSqlCube {
     }
 
     /**
-     * 将被监视的table的更新标志位写入到sql中
+     * 添加set
      */
-    public static String addUpdateSet(String sql, Map<String, String> monitoredTableMap,
-                                      Map<String, String> monitoredTableUpdateFlagColMap,
-                                      String defaultFlagColName) {
+    public static String addUpdateSet(String sql, List<String> tableList,
+                                      Map<String, String> monitoredTableUpdateColMap,
+                                      Map<String, String> monitoredTableUpdateColValueMap) {
         try {
-            //配置数据
-            List<String> tableList = new ArrayList<>(monitoredTableMap.keySet());
+            List<String> localTableList = new ArrayList<>(tableList);
             Map<String, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(sql);
             //sql解析
             Statement statement = CCJSqlParserUtil.parse(sql);
@@ -119,18 +118,17 @@ public class UpdateSqlCube extends BaseSqlCube {
                             //getName方法只取表名不取schema名
                             String name = null == table ? updateStatement.getTable().getName() : table.getName();
                             String fullTableName = nameAliasMap.get(name);
-                            if (tableList.contains(fullTableName)) {
-                                String updateFlagColName = monitoredTableUpdateFlagColMap.get(fullTableName);
-                                updateFlagColName = null == updateFlagColName ? defaultFlagColName : updateFlagColName;
+                            if (localTableList.contains(fullTableName)) {
+                                String updateFlagColName = monitoredTableUpdateColMap.get(fullTableName);
                                 //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
-                                if(updateSet.getColumns().get(count).getColumnName().equals(updateFlagColName)) {
+                                if (updateSet.getColumns().get(count).getColumnName().equals(updateFlagColName)) {
                                     return sql;
                                 }
                                 updateVol.add(new UpdateSet(
                                         new Column(new Table(name), updateFlagColName),
-                                        new LongValue(1)));
+                                        new StringValue(monitoredTableUpdateColValueMap.get(name))));
                                 //防止由于多字段更新，导致的多次更新标志位
-                                tableList.remove(fullTableName);
+                                localTableList.remove(fullTableName);
                             }
                         }
                     }
