@@ -112,10 +112,11 @@ public class BaseTest {
 
     @Test
     public void testJSql() throws JSQLParserException {
-        String sql = "        update ssd.hr_house_pr hhp,viw_summary c, ppp.hr_room\n" +
-                "        set hhp.contact_name = c.name,hhp.contact_phone = c.phone, hr_room.vol=0\n" +
-                "        where hhp.id = c.id and (hhp.contact_name is null or hhp.contact_name ='');";
+//        String sql = "        update ssd.hr_house_pr hhp,viw_summary c, ppp.hr_room\n" +
+//                "        set hhp.contact_name = c.name,hhp.contact_phone = c.phone, hr_room.vol=0\n" +
+//                "        where hhp.id = c.id and (hhp.contact_name is null or hhp.contact_name ='');";
 
+                String sql = "update sch.user set ext = '1' where id  in (select id from (select id from user where id = 1) tab)";
 
         Statement statement = CCJSqlParserUtil.parse(sql);
         List<String> fullTableList = new TablesNamesFinder().getTableList(statement);
