@@ -169,43 +169,7 @@ public class BaseTest {
             }
         }
 
-        Map<String, String> monitoredTableMap = new HashMap<String, String>() {{
-            put("hr_house_pr", "id");
-            put("hr_house", "id");
-            put("hr_address", "id");
-            put("hr_room", "id");
-        }};
 
-        Map<String, String> monitoredTableUpdateFlagColMap = new HashMap<String, String>() {{
-            put("hr_house_pr", "test");
-        }};
-
-        List<String> tableList = new ArrayList<>(monitoredTableMap.keySet());
-
-
-        if (null != updateStatement.getUpdateSets() && 0 != updateStatement.getUpdateSets().size()) {
-            List<UpdateSet> updateVol = new ArrayList<>();
-            for (UpdateSet updateSet : updateStatement.getUpdateSets()) {
-                for (int count = 0; count < updateSet.getColumns().size(); ++count) {
-                    String name = updateSet.getColumns().get(count).getTable().getName();
-                    String fullTableName = nameAliasMap.get(name);
-                    if (tableList.contains(fullTableName)) {
-                        String updateFlagVolName = monitoredTableUpdateFlagColMap.get(fullTableName);
-                        updateFlagVolName = null == updateFlagVolName ? "update_record" : updateFlagVolName;
-
-                        updateVol.add(new UpdateSet(
-                                new Column(new Table(name), updateFlagVolName),
-                                new LongValue(1)));
-                        //防止由于多字段更新，导致的多次更新标志位
-                        tableList.remove(fullTableName);
-                    }
-                }
-            }
-            updateStatement.getUpdateSets().addAll(updateVol);
-        }
-
-
-        new UpdateSqlCube().getTableList(sql);
 
         System.out.println(sql);
 
@@ -218,7 +182,7 @@ public class BaseTest {
 
         try {
             //这里的测试并不能获得正确的测试结果，因为session没有commit到sql内，所以无法获取更新个数
-            userMapper.insertOne(new UserEntity(123, "张先生", "zzz"));
+            //userMapper.insertOne(new UserEntity(123, "张先生", "zzz"));
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();

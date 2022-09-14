@@ -65,16 +65,22 @@ public class GarbleQueryInterceptor implements Interceptor {
         Executor executor = (Executor) invocation.getTarget();
         CacheKey cacheKey;
         BoundSql boundSql;
+
         //由于逻辑关系，只会进入一次
-        if(args.length == 4){
-            //4 个参数时
-            boundSql = ms.getBoundSql(parameter);
-            cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
-        } else {
-            //6 个参数时
-            cacheKey = (CacheKey) args[4];
-            boundSql = (BoundSql) args[5];
-        }
+//        if(args.length == 4){
+//            //4 个参数时
+//            boundSql = ms.getBoundSql(parameter);
+//            cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
+//        } else {
+//            //6 个参数时
+//            cacheKey = (CacheKey) args[4];
+//            boundSql = (BoundSql) args[5];
+//        }
+
+
+        boundSql = ms.getBoundSql(parameter);
+        cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
+
 
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
