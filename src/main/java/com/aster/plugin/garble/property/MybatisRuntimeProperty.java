@@ -112,6 +112,10 @@ public class MybatisRuntimeProperty {
                 new DefaultReflectorFactory());
         msObject.setValue("sqlSource.boundSql.sql", newSql);
         args2[0] = newStatement;
+        //兼容6参数传入
+        if (args2.length == 6) {
+            args2[5] = newBoundSql;
+        }
     }
 
     /**

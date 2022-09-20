@@ -183,6 +183,7 @@ public class BaseTest {
         try {
             //这里的测试并不能获得正确的测试结果，因为session没有commit到sql内，所以无法获取更新个数
             //userMapper.insertOne(new UserEntity(123, "张先生", "zzz"));
+            //userMapper.insertTwo(123, 456);
             sqlSession.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
