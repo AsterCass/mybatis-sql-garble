@@ -16,7 +16,9 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -40,18 +42,13 @@ public class GarbleQueryInterceptor implements Interceptor {
      */
     private AuthenticationFilterSelectProperty authenticationFilterSelectProperty;
 
-    /**
-     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
-     */
-    private List<Method> methodForAuthCodeSelect;
-
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != authenticationFilterSelectProperty) {
                 AuthenticationFilterSelectAbstract garbleSql = new AuthenticationFilterSelectGarbleSql(
-                        invocation, authenticationFilterSelectProperty, methodForAuthCodeSelect);
+                        invocation, authenticationFilterSelectProperty);
                 garbleSql.run();
             }
         }
@@ -103,20 +100,37 @@ public class GarbleQueryInterceptor implements Interceptor {
 
             }
             if (0 != authenticationFilterSelectMap.size()) {
-                setAuthenticationFilterSelectProperty(authenticationFilterSelectMap);
+                setAuthenticationFilterSelectProperty(authenticationFilterSelectMap, null);
             }
 
         }
     }
 
-    public void setAuthenticationFilterSelectProperty(Properties prop) {
+    public void setAuthenticationFilterSelectProperty(Properties prop,
+                                                      Map<Method, Object> springMethodForAuthCodeSelect) {
         this.authenticationFilterSelectProperty =
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
-            this.methodForAuthCodeSelect = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
-                    this.authenticationFilterSelectProperty.getAuthCodePath(),
-                    AuthenticationTypeEnum.SELECT
-            );
+            //spring 版本使用
+            if (null != springMethodForAuthCodeSelect) {
+                authenticationFilterSelectProperty.setMethodForAuthCodeSelect(springMethodForAuthCodeSelect);
+            } else {
+                List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                        this.authenticationFilterSelectProperty.getAuthCodePath(),
+                        AuthenticationTypeEnum.SELECT);
+                if (0 != methodList.size()) {
+                    Map<Method, Object> methodForAuthCodeSelect = new HashMap<>();
+                    for (Method method : methodList) {
+                        try {
+                            methodForAuthCodeSelect.put(method, method.getDeclaringClass()
+                                    .getDeclaredConstructor().newInstance());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    authenticationFilterSelectProperty.setMethodForAuthCodeSelect(methodForAuthCodeSelect);
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.aster.plugin.garble.property;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,15 @@ public class AuthenticationInsertProperty extends MybatisRuntimeProperty {
      * 在此map中的的sql不受到监控，即使包含监控表
      */
     protected List<String> excludedMapperPath;
+
+
+
+
+
+    /**
+     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
+     */
+    protected Map<Method, Object> methodForAuthCodeInsert;
 
 
 }

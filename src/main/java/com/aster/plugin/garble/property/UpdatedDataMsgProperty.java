@@ -3,6 +3,7 @@ package com.aster.plugin.garble.property;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -37,5 +38,13 @@ public class UpdatedDataMsgProperty extends MybatisRuntimeProperty {
      * 不拦截的sql的路径
      */
     protected List<String> excludedMapperPath;
+
+
+
+
+    /**
+     * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
+     */
+    protected Map<Method, Object> postMethodForUpdatedRows;
 
 }

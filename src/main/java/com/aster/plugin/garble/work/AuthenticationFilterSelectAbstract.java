@@ -12,7 +12,6 @@ import org.apache.ibatis.plugin.Invocation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +30,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
      */
     public AuthenticationFilterSelectAbstract(
             Invocation invocation, AuthenticationFilterSelectProperty property,
-            List<Method> methodForAuthCodeSelect) {
+            Map<Method, Object> methodForAuthCodeSelect) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
@@ -86,13 +85,12 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
         } else {
             throw new GarbleParamException("添加鉴权需求但是未检测到鉴权监控表配置");
         }
-
         try {
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
-            for (Method method : methodForAuthCodeSelect) {
-                Object code = method.invoke(method.getDeclaringClass().getDeclaredConstructor().newInstance());
+            for (Method method : methodForAuthCodeSelect.keySet()) {
+                Object code = method.invoke(methodForAuthCodeSelect.get(method));
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;

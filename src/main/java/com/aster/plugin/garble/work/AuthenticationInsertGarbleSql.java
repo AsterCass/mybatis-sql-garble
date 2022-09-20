@@ -14,9 +14,8 @@ public class AuthenticationInsertGarbleSql extends AuthenticationInsertAbstract 
 
 
     public AuthenticationInsertGarbleSql(
-            Invocation invocation, AuthenticationInsertProperty property,
-            List<Method> methodForAuthCodeSelect) {
-        super(invocation, property, methodForAuthCodeSelect);
+            Invocation invocation, AuthenticationInsertProperty property) {
+        super(invocation, property, property.getMethodForAuthCodeInsert());
     }
 
 

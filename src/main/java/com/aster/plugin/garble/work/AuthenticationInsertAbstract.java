@@ -5,7 +5,6 @@ import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.property.AuthenticationInsertProperty;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.InsertSqlCube;
-import com.aster.plugin.garble.sql.SelectSqlCube;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
@@ -13,7 +12,6 @@ import org.apache.ibatis.plugin.Invocation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +30,7 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
      */
     public AuthenticationInsertAbstract(
             Invocation invocation, AuthenticationInsertProperty property,
-            List<Method> methodForAuthCodeInsert) {
+            Map<Method, Object> methodForAuthCodeInsert) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
@@ -75,8 +73,8 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
-            for (Method method : methodForAuthCodeInsert) {
-                Object code = method.invoke(method.getDeclaringClass().getDeclaredConstructor().newInstance());
+            for (Method method : methodForAuthCodeInsert.keySet()) {
+                Object code = method.invoke(methodForAuthCodeInsert.get(method));
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;

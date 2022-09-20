@@ -15,10 +15,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,20 +46,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
      */
     private AuthenticationFilterUpdateProperty updateAuthProperty;
 
-    /**
-     * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
-     */
-    private List<Method> postMethodForUpdatedRows;
 
-    /**
-     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
-     */
-    private List<Method> methodForAuthCodeInsert;
-
-    /**
-     * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
-     */
-    private List<Method> methodForAuthCodeUpdate;
 
 
     @Override
@@ -81,7 +65,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != insertAuthProperty) {
                 AuthenticationInsertAbstract garbleSql = new AuthenticationInsertGarbleSql(
-                        invocation, insertAuthProperty, methodForAuthCodeInsert);
+                        invocation, insertAuthProperty);
                 garbleSql.run();
             }
         }
@@ -89,7 +73,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != updateAuthProperty) {
                 AuthenticationFilterUpdateAbstract garbleSql = new AuthenticationFilterUpdateGarbleSql(
-                        invocation, updateAuthProperty, methodForAuthCodeUpdate);
+                        invocation, updateAuthProperty);
                 garbleSql.run();
             }
         }
@@ -106,12 +90,13 @@ public class GarbleUpdateInterceptor implements Interceptor {
                 //后续操作
                 if (null != list && 0 != list.size()) {
                     List<Method> sortedMethodList =
-                            postMethodForUpdatedRows.stream().sorted(Comparator.comparing(
-                                    method -> method.getAnnotation(DealWithUpdated.class)
-                                            .priority())).collect(Collectors.toList());
-                    if (0 != postMethodForUpdatedRows.size()) {
+                            updatedDataMsgProperty.getPostMethodForUpdatedRows().keySet()
+                                    .stream().sorted(Comparator.comparing(
+                                            method -> method.getAnnotation(DealWithUpdated.class)
+                                                    .priority())).collect(Collectors.toList());
+                    if (0 != updatedDataMsgProperty.getPostMethodForUpdatedRows().size()) {
                         for (Method method : sortedMethodList) {
-                            method.invoke(method.getDeclaringClass().getDeclaredConstructor().newInstance(), list);
+                            method.invoke(updatedDataMsgProperty.getPostMethodForUpdatedRows().get(method), list);
                         }
                     }
                 }
@@ -160,13 +145,13 @@ public class GarbleUpdateInterceptor implements Interceptor {
                 }
             }
             if (0 != updatedDataMsgProperty.size()) {
-                setUpdatedDataMsgProperty(updatedDataMsgProperty);
+                setUpdatedDataMsgProperty(updatedDataMsgProperty, null);
             }
             if (0 != insertAuthProperty.size()) {
-                setInsertAuthProperty(insertAuthProperty);
+                setInsertAuthProperty(insertAuthProperty, null);
             }
             if (0 != updateAuthProperty.size()) {
-                setUpdateAuthProperty(updateAuthProperty);
+                setUpdateAuthProperty(updateAuthProperty, null);
             }
 
         }
@@ -175,37 +160,91 @@ public class GarbleUpdateInterceptor implements Interceptor {
     /**
      * 设置更新数据回调的相关属性
      */
-    public void setUpdatedDataMsgProperty(Properties prop) {
+    public void setUpdatedDataMsgProperty(Properties prop,
+                                          Map<Method, Object> springPostMethodForUpdatedRows) {
         this.updatedDataMsgProperty = PropertyUtil.propertyToObject(prop, UpdatedDataMsgProperty.class);
         if (null != updatedDataMsgProperty) {
-            this.postMethodForUpdatedRows = SpecifiedMethodGenerator
-                    .loadUpdatedMsgBySubTypes(this.updatedDataMsgProperty.getDealWithUpdatedPath());
+
+            //spring 版本使用
+            if (null != springPostMethodForUpdatedRows) {
+                updatedDataMsgProperty.setPostMethodForUpdatedRows(springPostMethodForUpdatedRows);
+            } else {
+                List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                        this.updatedDataMsgProperty.getDealWithUpdatedPath(),
+                        AuthenticationTypeEnum.SELECT);
+                if (0 != methodList.size()) {
+                    Map<Method, Object> methodObjectMap = new HashMap<>();
+                    for (Method method : methodList) {
+                        try {
+                            methodObjectMap.put(method, method.getDeclaringClass()
+                                    .getDeclaredConstructor().newInstance());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    updatedDataMsgProperty.setPostMethodForUpdatedRows(methodObjectMap);
+                }
+            }
+
+
         }
     }
 
     /**
      * 设置插入授權相关属性
      */
-    public void setInsertAuthProperty(Properties prop) {
+    public void setInsertAuthProperty(Properties prop, Map<Method, Object> springMethodForAuthCodeInsert) {
         this.insertAuthProperty = PropertyUtil.propertyToObject(prop, AuthenticationInsertProperty.class);
         if (null != insertAuthProperty) {
-            this.methodForAuthCodeInsert = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
-                    this.insertAuthProperty.getAuthCodePath(),
-                    AuthenticationTypeEnum.INSERT
-            );
+            //spring 版本使用
+            if (null != springMethodForAuthCodeInsert) {
+                insertAuthProperty.setMethodForAuthCodeInsert(springMethodForAuthCodeInsert);
+            } else {
+                List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                        this.insertAuthProperty.getAuthCodePath(),
+                        AuthenticationTypeEnum.SELECT);
+                if (0 != methodList.size()) {
+                    Map<Method, Object> methodObjectMap = new HashMap<>();
+                    for (Method method : methodList) {
+                        try {
+                            methodObjectMap.put(method, method.getDeclaringClass()
+                                    .getDeclaredConstructor().newInstance());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    insertAuthProperty.setMethodForAuthCodeInsert(methodObjectMap);
+                }
+            }
         }
     }
 
     /**
      * 设置更新鉴权相关属性
      */
-    public void setUpdateAuthProperty(Properties prop) {
+    public void setUpdateAuthProperty(Properties prop, Map<Method, Object> springMethodForAuthCodeUpdate) {
         this.updateAuthProperty = PropertyUtil.propertyToObject(prop, AuthenticationFilterUpdateProperty.class);
         if (null != updateAuthProperty) {
-            this.methodForAuthCodeUpdate = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
-                    this.updateAuthProperty.getAuthCodePath(),
-                    AuthenticationTypeEnum.UPDATE
-            );
+            //spring 版本使用
+            if (null != springMethodForAuthCodeUpdate) {
+                updateAuthProperty.setMethodForAuthCodeUpdate(springMethodForAuthCodeUpdate);
+            } else {
+                List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
+                        this.updateAuthProperty.getAuthCodePath(),
+                        AuthenticationTypeEnum.SELECT);
+                if (0 != methodList.size()) {
+                    Map<Method, Object> methodObjectMap = new HashMap<>();
+                    for (Method method : methodList) {
+                        try {
+                            methodObjectMap.put(method, method.getDeclaringClass()
+                                    .getDeclaredConstructor().newInstance());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    updateAuthProperty.setMethodForAuthCodeUpdate(methodObjectMap);
+                }
+            }
         }
     }
 

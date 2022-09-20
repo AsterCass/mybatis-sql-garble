@@ -12,7 +12,6 @@ import org.apache.ibatis.plugin.Invocation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationFilterUpdateProperty {
@@ -27,7 +26,7 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
      */
     public AuthenticationFilterUpdateAbstract(
             Invocation invocation, AuthenticationFilterUpdateProperty property,
-            List<Method> methodForAuthCodeUpdate) {
+            Map<Method, Object> methodForAuthCodeUpdate) {
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
@@ -87,8 +86,8 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
-            for (Method method : methodForAuthCodeUpdate) {
-                Object code = method.invoke(method.getDeclaringClass().getDeclaredConstructor().newInstance());
+            for (Method method : methodForAuthCodeUpdate.keySet()) {
+                Object code = method.invoke(methodForAuthCodeUpdate.get(method));
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;

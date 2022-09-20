@@ -14,9 +14,8 @@ public class AuthenticationFilterSelectGarbleSql extends AuthenticationFilterSel
 
 
     public AuthenticationFilterSelectGarbleSql(
-            Invocation invocation, AuthenticationFilterSelectProperty property,
-            List<Method> methodForAuthCodeSelect) {
-        super(invocation, property, methodForAuthCodeSelect);
+            Invocation invocation, AuthenticationFilterSelectProperty property) {
+        super(invocation, property, property.getMethodForAuthCodeSelect());
     }
 
 

@@ -11,9 +11,8 @@ import java.util.List;
 public class AuthenticationFilterUpdateGarbleSql extends AuthenticationFilterUpdateAbstract {
 
     public AuthenticationFilterUpdateGarbleSql(
-            Invocation invocation, AuthenticationFilterUpdateProperty property,
-            List<Method> methodForAuthCodeSelect) {
-        super(invocation, property, methodForAuthCodeSelect);
+            Invocation invocation, AuthenticationFilterUpdateProperty property) {
+        super(invocation, property, property.getMethodForAuthCodeUpdate());
     }
 
 
