@@ -5,6 +5,7 @@ import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.SelectSqlCube;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
@@ -17,6 +18,7 @@ import java.util.Map;
 /**
  * @author astercasc
  */
+@Slf4j
 public abstract class AuthenticationFilterSelectAbstract extends AuthenticationFilterSelectProperty {
 
 
@@ -31,6 +33,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
     public AuthenticationFilterSelectAbstract(
             Invocation invocation, AuthenticationFilterSelectProperty property,
             Map<Method, Object> methodForAuthCodeSelect) {
+        log.info("[op:AuthenticationFilterSelectAbstract] start");
         this.invocation = invocation;
         this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
@@ -89,8 +92,11 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
+            log.info("[op:AuthenticationFilterSelectAbstract] func start");
             for (Method method : methodForAuthCodeSelect.keySet()) {
+                log.info("[op:AuthenticationFilterSelectAbstract] func invoke = {} start", method.getName());
                 Object code = method.invoke(methodForAuthCodeSelect.get(method));
+                log.info("[op:AuthenticationFilterSelectAbstract] func end ");
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;
@@ -101,6 +107,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                     throw new GarbleParamException("鉴权code获取方法返回值需为String类型");
                 }
             }
+            log.info("[op:AuthenticationFilterSelectAbstract] func end");
             for (String table : monitoredTableList) {
                 if (null == annTableAuthCodeMap.get(table)) {
                     throw new GarbleParamException(table +
@@ -113,6 +120,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
         } catch (Exception ex) {
             throw new GarbleRuntimeException(ex);
         }
+        log.info("[op:AuthenticationFilterSelectAbstract] end");
 
     }
 
