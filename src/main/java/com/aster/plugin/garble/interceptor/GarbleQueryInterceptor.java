@@ -7,6 +7,7 @@ import com.aster.plugin.garble.service.SpecifiedMethodGenerator;
 import com.aster.plugin.garble.util.PropertyUtil;
 import com.aster.plugin.garble.work.AuthenticationFilterSelectAbstract;
 import com.aster.plugin.garble.work.AuthenticationFilterSelectGarbleSql;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -35,6 +36,7 @@ import java.util.Properties;
                                 CacheKey.class, BoundSql.class})
         }
 )
+@Slf4j
 public class GarbleQueryInterceptor implements Interceptor {
 
     /**
@@ -45,6 +47,7 @@ public class GarbleQueryInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
+        log.info("[op:GarbleQueryInterceptor] intercept start");
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != authenticationFilterSelectProperty) {
                 AuthenticationFilterSelectAbstract garbleSql = new AuthenticationFilterSelectGarbleSql(
@@ -52,6 +55,8 @@ public class GarbleQueryInterceptor implements Interceptor {
                 garbleSql.run();
             }
         }
+
+        log.info("[op:GarbleQueryInterceptor] intercept end");
 
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
@@ -85,6 +90,8 @@ public class GarbleQueryInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
+
+        log.info("[op:GarbleQueryInterceptor] setProperties start");
         //这里是兼容maven配置调用, spring boot 直接会调用 setAuthenticationFilterSelectProperty 方法
         if (null != properties) {
             Properties authenticationFilterSelectMap = new Properties();
@@ -104,10 +111,12 @@ public class GarbleQueryInterceptor implements Interceptor {
             }
 
         }
+        log.info("[op:GarbleQueryInterceptor] setProperties end");
     }
 
     public void setAuthenticationFilterSelectProperty(Properties prop,
                                                       Map<Method, Object> springMethodForAuthCodeSelect) {
+        log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty start");
         this.authenticationFilterSelectProperty =
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
@@ -132,6 +141,7 @@ public class GarbleQueryInterceptor implements Interceptor {
                 }
             }
         }
+        log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty end");
     }
 
 
