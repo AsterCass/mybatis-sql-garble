@@ -169,9 +169,8 @@ public class GarbleUpdateInterceptor implements Interceptor {
             if (null != springPostMethodForUpdatedRows) {
                 updatedDataMsgProperty.setPostMethodForUpdatedRows(springPostMethodForUpdatedRows);
             } else {
-                List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
-                        this.updatedDataMsgProperty.getDealWithUpdatedPath(),
-                        AuthenticationTypeEnum.SELECT);
+                List<Method> methodList = SpecifiedMethodGenerator.loadUpdatedMsgBySubTypes(
+                        this.updatedDataMsgProperty.getDealWithUpdatedPath());
                 if (0 != methodList.size()) {
                     Map<Method, Object> methodObjectMap = new HashMap<>();
                     for (Method method : methodList) {
@@ -202,7 +201,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
             } else {
                 List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
                         this.insertAuthProperty.getAuthCodePath(),
-                        AuthenticationTypeEnum.SELECT);
+                        AuthenticationTypeEnum.INSERT);
                 if (0 != methodList.size()) {
                     Map<Method, Object> methodObjectMap = new HashMap<>();
                     for (Method method : methodList) {
@@ -231,7 +230,7 @@ public class GarbleUpdateInterceptor implements Interceptor {
             } else {
                 List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
                         this.updateAuthProperty.getAuthCodePath(),
-                        AuthenticationTypeEnum.SELECT);
+                        AuthenticationTypeEnum.UPDATE);
                 if (0 != methodList.size()) {
                     Map<Method, Object> methodObjectMap = new HashMap<>();
                     for (Method method : methodList) {
