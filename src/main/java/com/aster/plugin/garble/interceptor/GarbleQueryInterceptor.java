@@ -25,6 +25,7 @@ import java.util.Properties;
 /**
  * 功能
  * 1. 支持数据鉴权代码无感
+ *
  * @author astercasc
  */
 @Intercepts(
@@ -66,7 +67,7 @@ public class GarbleQueryInterceptor implements Interceptor {
         CacheKey cacheKey;
         BoundSql boundSql;
         //由于逻辑关系，只会进入一次
-        if(args.length == 4){
+        if (args.length == 4) {
             //4 个参数时
             boundSql = ms.getBoundSql(parameter);
             cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);

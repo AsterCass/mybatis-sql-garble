@@ -4,9 +4,6 @@ import com.aster.plugin.garble.property.AuthenticationInsertProperty;
 import com.aster.plugin.garble.sql.InsertAuthSqlCube;
 import org.apache.ibatis.plugin.Invocation;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 /**
  * @author astercasc
  */
