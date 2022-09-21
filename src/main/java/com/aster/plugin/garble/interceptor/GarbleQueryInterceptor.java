@@ -117,9 +117,9 @@ public class GarbleQueryInterceptor implements Interceptor {
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
             //spring 版本使用
-//            if (null != springMethodForAuthCodeSelect) {
-//                authenticationFilterSelectProperty.setMethodForAuthCodeSelect(springMethodForAuthCodeSelect);
-//            } else {
+            if (null != springMethodForAuthCodeSelect) {
+                authenticationFilterSelectProperty.setMethodForAuthCodeSelect(springMethodForAuthCodeSelect);
+            } else {
                 List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
                         this.authenticationFilterSelectProperty.getAuthCodePath(),
                         AuthenticationTypeEnum.SELECT);
@@ -135,7 +135,7 @@ public class GarbleQueryInterceptor implements Interceptor {
                     }
                     authenticationFilterSelectProperty.setMethodForAuthCodeSelect(methodForAuthCodeSelect);
                 }
-//            }
+            }
         }
         log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty end");
     }
