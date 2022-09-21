@@ -28,8 +28,6 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
             Invocation invocation, AuthenticationFilterUpdateProperty property,
             Map<Method, Object> methodForAuthCodeUpdate) {
         this.invocation = invocation;
-        this.crossTableList = new ArrayList<>();
-        this.excludedMapperPath = property.getExcludedMapperPath();
         if (invocation.getTarget() instanceof Executor) {
             this.executor = (Executor) invocation.getTarget();
         }
@@ -37,6 +35,10 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
             this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
         }
 
+
+
+        this.crossTableList = new ArrayList<>();
+        this.excludedMapperPath = property.getExcludedMapperPath();
         this.monitoredTableList = property.getMonitoredTableList();
 
         //这里全部转小写，后面各种操作，大小写不太方便

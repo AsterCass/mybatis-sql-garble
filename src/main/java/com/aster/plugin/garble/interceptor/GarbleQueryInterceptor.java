@@ -42,32 +42,29 @@ public class GarbleQueryInterceptor implements Interceptor {
     /**
      * 传入配置
      */
-    private AuthenticationFilterSelectProperty authenticationFilterSelectProperty;
+    public AuthenticationFilterSelectProperty authenticationFilterSelectProperty;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
-        log.info("[op:GarbleQueryInterceptor] intercept start");
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != authenticationFilterSelectProperty) {
+                authenticationFilterSelectProperty.setInvocation(invocation);
                 AuthenticationFilterSelectAbstract garbleSql = new AuthenticationFilterSelectGarbleSql(
-                        invocation, authenticationFilterSelectProperty);
+                        authenticationFilterSelectProperty);
                 garbleSql.run();
             }
         }
 
-        log.info("[op:GarbleQueryInterceptor] intercept end");
-
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
-        ms.getConfiguration().getEnvironment().getDataSource().getConnection();
+        //ms.getConfiguration().getEnvironment().getDataSource().getConnection();
         Object parameter = args[1];
         RowBounds rowBounds = (RowBounds) args[2];
         ResultHandler resultHandler = (ResultHandler) args[3];
         Executor executor = (Executor) invocation.getTarget();
         CacheKey cacheKey;
         BoundSql boundSql;
-
         //由于逻辑关系，只会进入一次
         if(args.length == 4){
             //4 个参数时
@@ -78,7 +75,6 @@ public class GarbleQueryInterceptor implements Interceptor {
             cacheKey = (CacheKey) args[4];
             boundSql = (BoundSql) args[5];
         }
-
 
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
@@ -121,9 +117,9 @@ public class GarbleQueryInterceptor implements Interceptor {
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
             //spring 版本使用
-            if (null != springMethodForAuthCodeSelect) {
-                authenticationFilterSelectProperty.setMethodForAuthCodeSelect(springMethodForAuthCodeSelect);
-            } else {
+//            if (null != springMethodForAuthCodeSelect) {
+//                authenticationFilterSelectProperty.setMethodForAuthCodeSelect(springMethodForAuthCodeSelect);
+//            } else {
                 List<Method> methodList = SpecifiedMethodGenerator.loadAuthCodeBySubTypes(
                         this.authenticationFilterSelectProperty.getAuthCodePath(),
                         AuthenticationTypeEnum.SELECT);
@@ -139,7 +135,7 @@ public class GarbleQueryInterceptor implements Interceptor {
                     }
                     authenticationFilterSelectProperty.setMethodForAuthCodeSelect(methodForAuthCodeSelect);
                 }
-            }
+//            }
         }
         log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty end");
     }

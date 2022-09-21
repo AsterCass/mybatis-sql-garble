@@ -33,10 +33,8 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
     public AuthenticationFilterSelectAbstract(
             Invocation invocation, AuthenticationFilterSelectProperty property,
             Map<Method, Object> methodForAuthCodeSelect) {
-        log.info("[op:AuthenticationFilterSelectAbstract] start");
+
         this.invocation = invocation;
-        this.crossTableList = new ArrayList<>();
-        this.excludedMapperPath = property.getExcludedMapperPath();
         if (invocation.getTarget() instanceof Executor) {
             this.executor = (Executor) invocation.getTarget();
         }
@@ -44,6 +42,9 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
         }
 
+
+        this.crossTableList = new ArrayList<>();
+        this.excludedMapperPath = property.getExcludedMapperPath();
         this.monitoredTableList = property.getMonitoredTableList();
 
         //这里全部转小写，后面各种操作，大小写不太方便
@@ -120,7 +121,6 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
         } catch (Exception ex) {
             throw new GarbleRuntimeException(ex);
         }
-        log.info("[op:AuthenticationFilterSelectAbstract] end");
 
     }
 

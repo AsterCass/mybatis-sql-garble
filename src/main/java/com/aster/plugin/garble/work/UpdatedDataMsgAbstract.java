@@ -23,6 +23,14 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
      */
     public UpdatedDataMsgAbstract(Invocation invocation, UpdatedDataMsgProperty property) {
         this.invocation = invocation;
+        if (invocation.getTarget() instanceof Executor) {
+            this.executor = (Executor) invocation.getTarget();
+        }
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
+        }
+
+
         this.crossTableList = new ArrayList<>();
 
         if (null != property.getMonitoredTableMap() && 0 != property.getMonitoredTableMap().size()) {
@@ -52,12 +60,6 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
         }
 
         this.excludedMapperPath = property.getExcludedMapperPath();
-        if (invocation.getTarget() instanceof Executor) {
-            this.executor = (Executor) invocation.getTarget();
-        }
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        }
     }
 
 
