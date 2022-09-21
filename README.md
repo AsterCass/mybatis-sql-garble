@@ -8,6 +8,8 @@
    2. 比特与鉴权: 通过自定义方法回调鉴权code, 将code和指定列比较比特位取与如果大于0即为有该权限
    3. 交集鉴权, 传入String形式的List, 如果数据对应字段有一个想匹配则有该权限
 3. 支持数据插入自动写入权限
+4. 其他
+   1. 兼容page-helper测试完成
 
 ## 日程中功能
 
@@ -16,7 +18,7 @@
 3. 交集鉴权支持数据单个列存jsonList的情况, 目前仅支持传入的权限写为List
 4. 支持多字段鉴权（多字段同时满足对应的鉴权方法才能鉴权成功, 授权也可以同时授权多个字段）
 5. 支持在update语句中添加select子查询的查询鉴权
-6. 兼容page-helper和mybatis plus等其他拦截器的处理
+6. 测试与mybatis plus等其他拦截器的兼容性
 
 ## 快速开始（以使用【返回更新数据】功能为例）
 
@@ -171,6 +173,7 @@ xml:
 callback:
 
 ```java
+@Service
 public class UpdatedOneService implements DealWithUpdatedInterface {
 
    /**
@@ -186,6 +189,7 @@ public class UpdatedOneService implements DealWithUpdatedInterface {
 ```
 
 ```java
+@Service
 public class UpdatedTwoService implements DealWithUpdatedInterface {
 
    /**
@@ -272,6 +276,7 @@ garble:
 1. 目前只支持mysql
 2. 对于多schema的场景需要完善
 3. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
+4. 回调函数中的@Service是spring boot项目中的需要增加的, 如果是非spring项目直接引入mybatis-sql-garble包的话则不需要添加
 
 ## 功能简述
 
@@ -313,6 +318,7 @@ ALTER TABLE your_schema.your_table
 ```java
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 
+@Service
 public class QueryAuthService implements AuthenticationCodeInterface {
    /**
     * 获取鉴权code，用于和配置字段相比较
@@ -398,6 +404,7 @@ import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.service.AuthenticationCodeInterface;
 
+@Service
 public class InsertAuthService implements AuthenticationCodeInterface {
 
 

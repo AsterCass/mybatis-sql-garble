@@ -53,6 +53,8 @@ public class MybatisRuntimeProperty {
      */
     protected List<String> monitoredTableList;
 
+    private static final int NEW_VERSION_INVOCATION_ARG_NUM = 6;
+
     /**
      * 判断是否需要排除
      */
@@ -60,8 +62,14 @@ public class MybatisRuntimeProperty {
         final Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         Object parameterObject = args[1];
-        BoundSql boundSql = ms.getBoundSql(parameterObject);
-        String sql = boundSql.getSql();
+        BoundSql boundSql;
+        String sql;
+        if (NEW_VERSION_INVOCATION_ARG_NUM == args.length) {
+            boundSql = (BoundSql) args[5];
+        } else {
+            boundSql = ms.getBoundSql(parameterObject);
+        }
+        sql = boundSql.getSql();
         //这里全部转小写，后面各种操作，大小写不太方便
         this.sql = sql.toLowerCase();
         boolean toGarble = true;
@@ -97,11 +105,15 @@ public class MybatisRuntimeProperty {
      * 新sql导入invocation
      */
     protected void newSqlBuilder(String newSql) {
-        final Object[] args2 = invocation.getArgs();
-        MappedStatement statement = (MappedStatement) args2[0];
-        Object parameterObject2 = args2[1];
-
-        BoundSql newBoundSql = statement.getBoundSql(parameterObject2);
+        final Object[] args = invocation.getArgs();
+        MappedStatement statement = (MappedStatement) args[0];
+        Object parameterObject2 = args[1];
+        BoundSql newBoundSql;
+        if (NEW_VERSION_INVOCATION_ARG_NUM == args.length) {
+            newBoundSql = (BoundSql) args[5];
+        } else {
+            newBoundSql = statement.getBoundSql(parameterObject2);
+        }
         MappedStatement newStatement = MappedStatementUtil.newMappedStatement(
                 statement, statement.getId(), new BoundSqlSqlSource(newBoundSql),
                 statement.getResultMaps(), mappedStatement.getSqlCommandType());
@@ -111,10 +123,9 @@ public class MybatisRuntimeProperty {
                 new DefaultObjectWrapperFactory(),
                 new DefaultReflectorFactory());
         msObject.setValue("sqlSource.boundSql.sql", newSql);
-        args2[0] = newStatement;
-        //兼容6参数传入
-        if (args2.length == 6) {
-            args2[5] = newBoundSql;
+        args[0] = newStatement;
+        if (NEW_VERSION_INVOCATION_ARG_NUM == args.length) {
+            args[5] = newBoundSql;
         }
     }
 

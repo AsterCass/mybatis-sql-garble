@@ -93,11 +93,8 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
-            log.info("[op:AuthenticationFilterSelectAbstract] func start");
             for (Method method : methodForAuthCodeSelect.keySet()) {
-                log.info("[op:AuthenticationFilterSelectAbstract] func invoke = {} start", method.getName());
                 Object code = method.invoke(methodForAuthCodeSelect.get(method));
-                log.info("[op:AuthenticationFilterSelectAbstract] func end ");
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;
@@ -108,7 +105,6 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                     throw new GarbleParamException("鉴权code获取方法返回值需为String类型");
                 }
             }
-            log.info("[op:AuthenticationFilterSelectAbstract] func end");
             for (String table : monitoredTableList) {
                 if (null == annTableAuthCodeMap.get(table)) {
                     throw new GarbleParamException(table +
