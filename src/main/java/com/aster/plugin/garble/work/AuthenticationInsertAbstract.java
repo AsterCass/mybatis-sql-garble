@@ -96,6 +96,7 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new GarbleRuntimeException(ex);
         }
 

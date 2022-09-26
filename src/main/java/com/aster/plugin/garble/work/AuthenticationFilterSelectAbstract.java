@@ -115,6 +115,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new GarbleRuntimeException(ex);
         }
 
