@@ -70,6 +70,10 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
             throw new GarbleParamException("添加授权需求但是未检测到授权监控表配置");
         }
 
+        this.methodForAuthCodeInsert = methodForAuthCodeInsert;
+    }
+
+    private void setTableAuthCodeMap() {
         try {
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
@@ -99,7 +103,6 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
             ex.printStackTrace();
             throw new GarbleRuntimeException(ex);
         }
-
     }
 
 
@@ -109,6 +112,7 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
     public void run() {
         if (notExcludedTableCondition(invocation, excludedMapperPath) &&
                 (monitoredTableCondition(monitoredTableList, new InsertSqlCube()))) {
+            setTableAuthCodeMap();
             exec();
         }
     }

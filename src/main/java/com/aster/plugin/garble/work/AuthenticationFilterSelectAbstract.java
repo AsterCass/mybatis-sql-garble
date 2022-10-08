@@ -89,6 +89,13 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
         } else {
             throw new GarbleParamException("添加鉴权需求但是未检测到鉴权监控表配置");
         }
+
+        this.methodForAuthCodeSelect = methodForAuthCodeSelect;
+    }
+
+
+
+    private void setTableAuthCodeMap() {
         try {
             monitoredTableAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
@@ -118,7 +125,6 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             ex.printStackTrace();
             throw new GarbleRuntimeException(ex);
         }
-
     }
 
 
@@ -128,6 +134,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
     public void run() {
         if (notExcludedTableCondition(invocation, excludedMapperPath) &&
                 (monitoredTableCondition(monitoredTableList, new SelectSqlCube()))) {
+            setTableAuthCodeMap();
             exec();
         }
     }
