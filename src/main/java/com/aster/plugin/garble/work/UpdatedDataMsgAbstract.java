@@ -3,8 +3,6 @@ package com.aster.plugin.garble.work;
 import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.util.ArrayList;
@@ -22,16 +20,8 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
      * builder
      */
     public UpdatedDataMsgAbstract(Invocation invocation, UpdatedDataMsgProperty property) {
-        this.invocation = invocation;
-        if (invocation.getTarget() instanceof Executor) {
-            this.executor = (Executor) invocation.getTarget();
-        }
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        }
 
-
-        this.crossTableList = new ArrayList<>();
+        super(invocation);
 
         if (null != property.getMonitoredTableMap() && 0 != property.getMonitoredTableMap().size()) {
             Map<String, String> lowerMonitoredTableMap = new HashMap<>();

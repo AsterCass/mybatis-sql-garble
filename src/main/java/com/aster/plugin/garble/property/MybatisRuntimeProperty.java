@@ -3,6 +3,7 @@ package com.aster.plugin.garble.property;
 import com.aster.plugin.garble.sql.BaseSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -13,6 +14,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ import java.util.List;
  * @author astercasc
  */
 @Data
+@NoArgsConstructor
 public class MybatisRuntimeProperty {
 
     /**
@@ -44,6 +47,11 @@ public class MybatisRuntimeProperty {
     protected String sql;
 
     /**
+     * connect schema
+     */
+    protected String schema;
+
+    /**
      * sql和监控表列表重合的表名
      */
     protected List<String> crossTableList;
@@ -54,6 +62,17 @@ public class MybatisRuntimeProperty {
     protected List<String> monitoredTableList;
 
     private static final int NEW_VERSION_INVOCATION_ARG_NUM = 6;
+
+    public MybatisRuntimeProperty(Invocation invocation) {
+        this.invocation = invocation;
+        if (invocation.getTarget() instanceof Executor) {
+            this.executor = (Executor) invocation.getTarget();
+        }
+        if (invocation.getArgs()[0] instanceof MappedStatement) {
+            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
+        }
+        this.crossTableList = new ArrayList<>();
+    }
 
     /**
      * 判断是否需要排除

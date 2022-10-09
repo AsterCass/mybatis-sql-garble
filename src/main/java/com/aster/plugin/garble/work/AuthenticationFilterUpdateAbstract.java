@@ -5,12 +5,9 @@ import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.property.AuthenticationFilterUpdateProperty;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,17 +24,9 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
     public AuthenticationFilterUpdateAbstract(
             Invocation invocation, AuthenticationFilterUpdateProperty property,
             Map<Method, Object> methodForAuthCodeUpdate) {
-        this.invocation = invocation;
-        if (invocation.getTarget() instanceof Executor) {
-            this.executor = (Executor) invocation.getTarget();
-        }
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        }
 
+        super(invocation);
 
-
-        this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
         this.monitoredTableList = property.getMonitoredTableList();
 

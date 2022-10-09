@@ -6,12 +6,9 @@ import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.SelectSqlCube;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,16 +31,8 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             Invocation invocation, AuthenticationFilterSelectProperty property,
             Map<Method, Object> methodForAuthCodeSelect) {
 
-        this.invocation = invocation;
-        if (invocation.getTarget() instanceof Executor) {
-            this.executor = (Executor) invocation.getTarget();
-        }
-        if (invocation.getArgs()[0] instanceof MappedStatement) {
-            this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        }
+        super(invocation);
 
-
-        this.crossTableList = new ArrayList<>();
         this.excludedMapperPath = property.getExcludedMapperPath();
         this.monitoredTableList = property.getMonitoredTableList();
 

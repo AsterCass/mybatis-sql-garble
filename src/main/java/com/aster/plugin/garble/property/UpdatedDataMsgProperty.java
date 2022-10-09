@@ -2,6 +2,8 @@ package com.aster.plugin.garble.property;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Map;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class UpdatedDataMsgProperty extends MybatisRuntimeProperty {
 
     /**
@@ -40,11 +43,14 @@ public class UpdatedDataMsgProperty extends MybatisRuntimeProperty {
     protected List<String> excludedMapperPath;
 
 
-
-
     /**
      * 继承 DealWithUpdatedInterface 的方法，用于做返回更新行的后续处理
      */
     protected Map<Method, Object> postMethodForUpdatedRows;
+
+
+    public UpdatedDataMsgProperty(Invocation invocation) {
+        super(invocation);
+    }
 
 }

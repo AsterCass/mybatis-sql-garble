@@ -2,6 +2,8 @@ package com.aster.plugin.garble.property;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Map;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class AuthenticationInsertProperty extends MybatisRuntimeProperty {
 
 
@@ -41,13 +44,14 @@ public class AuthenticationInsertProperty extends MybatisRuntimeProperty {
     protected List<String> excludedMapperPath;
 
 
-
-
-
     /**
      * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
      */
     protected Map<Method, Object> methodForAuthCodeInsert;
+
+    public AuthenticationInsertProperty(Invocation invocation) {
+        super(invocation);
+    }
 
 
 }

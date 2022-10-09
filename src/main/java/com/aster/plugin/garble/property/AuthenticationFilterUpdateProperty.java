@@ -2,13 +2,19 @@ package com.aster.plugin.garble.property;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author astercasc
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class AuthenticationFilterUpdateProperty extends MybatisRuntimeProperty {
 
     /**
@@ -47,11 +53,13 @@ public class AuthenticationFilterUpdateProperty extends MybatisRuntimeProperty {
     protected List<String> excludedMapperPath;
 
 
-
     /**
      * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
      */
     protected Map<Method, Object> methodForAuthCodeUpdate;
 
+    public AuthenticationFilterUpdateProperty(Invocation invocation) {
+        super(invocation);
+    }
 
 }

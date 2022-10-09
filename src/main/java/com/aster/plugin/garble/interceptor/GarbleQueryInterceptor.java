@@ -59,7 +59,6 @@ public class GarbleQueryInterceptor implements Interceptor {
 
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
-        //ms.getConfiguration().getEnvironment().getDataSource().getConnection();
         Object parameter = args[1];
         RowBounds rowBounds = (RowBounds) args[2];
         ResultHandler resultHandler = (ResultHandler) args[3];
