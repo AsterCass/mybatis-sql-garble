@@ -2,6 +2,7 @@ package com.aster.plugin.garble.property;
 
 import com.aster.plugin.garble.sql.BaseSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
+import com.mysql.cj.jdbc.ConnectionImpl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.executor.Executor;
@@ -14,6 +15,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,10 +73,18 @@ public class MybatisRuntimeProperty {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
         }
-
-//        try {
-//            this.mappedStatement.getConfiguration().getEnvironment().getDataSource().getConnection();
-//        }
+        try {
+            Connection connection = this.mappedStatement.getConfiguration()
+                    .getEnvironment().getDataSource().getConnection();
+            if (connection instanceof ConnectionImpl) {
+                ConnectionImpl con = (ConnectionImpl) connection;
+                this.schema = con.getDatabase();
+            }
+            connection.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("connect to sql fail");
+        }
 
 
         this.crossTableList = new ArrayList<>();
