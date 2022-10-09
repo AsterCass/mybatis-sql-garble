@@ -8,6 +8,7 @@ import com.aster.plugin.garble.sql.SelectSqlCube;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.plugin.Invocation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,6 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
     }
 
 
-
     private void setTableAuthCodeMap() {
         try {
             monitoredTableAuthCodeMap = new HashMap<>();
@@ -110,9 +110,12 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                 }
             }
 
+        } catch (InvocationTargetException ex) {
+            ex.getTargetException().printStackTrace();
+            throw new RuntimeException(ex.getTargetException().getMessage());
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new GarbleRuntimeException(ex);
+            throw new GarbleRuntimeException(ex.getMessage());
         }
     }
 

@@ -71,6 +71,12 @@ public class MybatisRuntimeProperty {
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             this.mappedStatement = (MappedStatement) invocation.getArgs()[0];
         }
+
+//        try {
+//            this.mappedStatement.getConfiguration().getEnvironment().getDataSource().getConnection();
+//        }
+
+
         this.crossTableList = new ArrayList<>();
     }
 

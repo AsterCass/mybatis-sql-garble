@@ -96,7 +96,11 @@ public class GarbleUpdateInterceptor implements Interceptor {
                                                     .priority())).collect(Collectors.toList());
                     if (0 != updatedDataMsgProperty.getPostMethodForUpdatedRows().size()) {
                         for (Method method : sortedMethodList) {
-                            method.invoke(updatedDataMsgProperty.getPostMethodForUpdatedRows().get(method), list);
+                            try {
+                                method.invoke(updatedDataMsgProperty.getPostMethodForUpdatedRows().get(method), list);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
                     }
                 }

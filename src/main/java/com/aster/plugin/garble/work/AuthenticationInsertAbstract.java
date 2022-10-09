@@ -7,6 +7,7 @@ import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.InsertSqlCube;
 import org.apache.ibatis.plugin.Invocation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,9 +90,12 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
                 }
             }
 
+        } catch (InvocationTargetException ex) {
+            ex.getTargetException().printStackTrace();
+            throw new RuntimeException(ex.getTargetException().getMessage());
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new GarbleRuntimeException(ex);
+            throw new GarbleRuntimeException(ex.getMessage());
         }
     }
 
