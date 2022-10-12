@@ -105,7 +105,7 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
 
         } catch (InvocationTargetException ex) {
             ex.getTargetException().printStackTrace();
-            throw new RuntimeException(ex.getTargetException().getMessage());
+            throw new GarbleRuntimeException(ex.getTargetException().getMessage());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new GarbleRuntimeException(ex.getMessage());
