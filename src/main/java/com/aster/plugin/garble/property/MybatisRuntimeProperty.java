@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.property;
 
+import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.sql.BaseSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
 import com.mysql.cj.jdbc.ConnectionImpl;
@@ -57,6 +58,11 @@ public class MybatisRuntimeProperty {
      * sql和监控表列表重合的表名
      */
     protected List<String> crossTableList;
+
+    /**
+     * sql和监控表列表重合的表名
+     */
+    protected List<GarbleTable> crossGarbleTableList;
 
     /**
      * 监控表列表
@@ -125,6 +131,7 @@ public class MybatisRuntimeProperty {
     protected boolean monitoredTableCondition(List<String> monitoredTableList, BaseSqlCube sqlCube) {
         boolean inMonitored = false;
         List<String> tableList = sqlCube.getTableList(sql);
+        crossGarbleTableList = sqlCube.getGarbleTableList(mappedStatement, sql);
         for (String monitoredTable : monitoredTableList) {
             for (String table : tableList) {
                 if (table.equals(monitoredTable)) {

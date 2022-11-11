@@ -1,12 +1,12 @@
 package com.aster.plugin.garble.test;
 
 import com.alibaba.fastjson.JSON;
+import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.entity.UserEntity;
 import com.aster.plugin.garble.mapper.UserMapper;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
 import com.aster.plugin.garble.sql.UpdateAuthFilterSqlCube;
-import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
 import com.aster.plugin.garble.util.PropertyUtil;
 import net.sf.jsqlparser.JSQLParserException;
@@ -21,12 +21,15 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class BaseTest {
 
@@ -42,6 +45,27 @@ public class BaseTest {
             sqlSession.close();
         }
     }
+
+    @Test
+    public void insertBase() {
+        SqlSession sqlSession = MybatisHelper.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        try {
+//            UserEntity userEntity = new UserEntity();
+//            userEntity.setId(777);
+//            userEntity.setName("888");
+//            userEntity.setExt("999");
+//            userMapper.insertOne(userEntity);
+
+            sqlSession.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            sqlSession.close();
+        }
+    }
+
 
     @Test
     public void updateBase() {
@@ -208,8 +232,25 @@ public class BaseTest {
 
         String insertSql4 = "INSERT into user (id,name,ext, update_record) VALUES (9,'张老九','iii', 0)";
 
+        String insertSql5 = "INSERT into `garble`.`user` (id,name,ext) VALUES (8,'张老八','hhh'), (7,'张老七','ggg')";
+
 
         Insert insert = (Insert) CCJSqlParserUtil.parse(insertSql4);
+
+        //======================== garbleTable test =========================
+
+        //mysql插入语句没有别名
+        GarbleTable insertGarbleTable = new GarbleTable();
+        insertGarbleTable.setTable(insert.getTable());
+        insertGarbleTable.setTableName(insert.getTable().getName());
+        insertGarbleTable.setSchemaName(insert.getTable().getSchemaName());
+        if (null == insertGarbleTable.getSchemaName()) {
+            //ms.getConfiguration().getEnvironment().getDataSource().getConnection();
+            insertGarbleTable.setSchemaName("");
+            //con.close
+        }
+
+        //=============================================================
 
         boolean containFlag = false;
         for (int count = 0; count < insert.getColumns().size(); ++count) {
@@ -251,6 +292,7 @@ public class BaseTest {
 
     @Test
     public void elseTest() {
+
 
     }
 }
