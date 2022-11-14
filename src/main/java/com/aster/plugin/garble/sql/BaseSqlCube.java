@@ -5,7 +5,9 @@ import com.aster.plugin.garble.bean.GarbleTable;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author astercasc
@@ -28,8 +30,8 @@ public abstract class BaseSqlCube {
      * @param sql sql
      * @return 复杂结构表名 包括schema
      */
-    public List<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
-        return new ArrayList<>();
+    public Set<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
+        return new HashSet<>();
     }
 
 }

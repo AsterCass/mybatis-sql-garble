@@ -1,9 +1,7 @@
 package com.aster.plugin.garble.sql;
 
 import com.aster.plugin.garble.bean.GarbleTable;
-import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.service.UpdateFlagCol;
-import com.mysql.cj.jdbc.ConnectionImpl;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -17,11 +15,12 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -57,13 +56,12 @@ public class InsertSqlCube extends BaseSqlCube {
      * @return 复杂结构表名 包括schema
      */
     @Override
-    public List<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
+    public Set<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
                 GarbleTable garbleTable = new GarbleTable();
-                garbleTable.setTable(insertStatement.getTable());
                 String table = null == insertStatement.getTable().getName() ?
                         null : insertStatement.getTable().getName().replace("`", "");
                 String schema = null == insertStatement.getTable().getSchemaName() ?
@@ -71,22 +69,14 @@ public class InsertSqlCube extends BaseSqlCube {
                 garbleTable.setTableName(table);
                 garbleTable.setSchemaName(schema);
                 if (null == garbleTable.getSchemaName()) {
-                    try {
-                        Connection con = ms.getConfiguration().getEnvironment().getDataSource().getConnection();
-                        if (con instanceof ConnectionImpl) {
-                            ConnectionImpl conImpl = (ConnectionImpl) con;
-                            garbleTable.setSchemaName(conImpl.getDatabase());
-                        }
-                        con.close();
-                    } catch (Exception ex) {
-                        throw new GarbleRuntimeException("无法获取数据库连接");
-                    }
+                    garbleTable.setSchemaName(GarbleTable.getConnectSchema(ms));
                 }
+                return new HashSet<>(Collections.singletonList(garbleTable));
             }
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
         }
-        return new ArrayList<>();
+        return new HashSet<>();
     }
 
 

@@ -19,6 +19,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * mybatis基本运行时属性
@@ -62,7 +63,7 @@ public class MybatisRuntimeProperty {
     /**
      * sql和监控表列表重合的表名
      */
-    protected List<GarbleTable> crossGarbleTableList;
+    protected Set<GarbleTable> crossGarbleTableList;
 
     /**
      * 监控表列表

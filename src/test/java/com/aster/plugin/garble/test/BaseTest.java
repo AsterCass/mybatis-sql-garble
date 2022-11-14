@@ -9,6 +9,7 @@ import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
 import com.aster.plugin.garble.sql.UpdateAuthFilterSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
 import com.aster.plugin.garble.util.PropertyUtil;
+import com.aster.plugin.garble.util.SqlUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -20,6 +21,7 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.ibatis.session.SqlSession;
@@ -95,7 +97,7 @@ public class BaseTest {
     }
 
     @Test
-    public void queryTest() {
+    public void queryTest() throws JSQLParserException {
 
 
         String sql = "select * from sch1.user us join sch2.per pe on per.co1 = user.col2 " +
@@ -105,6 +107,18 @@ public class BaseTest {
         String sql2 = "select * from user, per where user.id = per.user_id";
 
         String sql3 = "select * from ping_ta where auth_code in (123, 34, 55323)";
+
+        //======================== garbleTable test =========================
+
+        Select select = (Select) CCJSqlParserUtil.parse(sql1);
+        List<String> fullTableList = new TablesNamesFinder().getTableList(select);
+
+        List<String> tableList = SqlUtil.getTableNameFromFullName(fullTableList);
+
+        System.out.println(11111111);
+
+        //==================================================================
+
 
         String newSql = new SelectAuthFilterSqlCube(
                 Arrays.asList("user", "per", "testTable", "ping_ta"),
@@ -241,7 +255,6 @@ public class BaseTest {
 
         //mysql插入语句没有别名
         GarbleTable insertGarbleTable = new GarbleTable();
-        insertGarbleTable.setTable(insert.getTable());
         insertGarbleTable.setTableName(insert.getTable().getName());
         insertGarbleTable.setSchemaName(insert.getTable().getSchemaName());
         if (null == insertGarbleTable.getSchemaName()) {

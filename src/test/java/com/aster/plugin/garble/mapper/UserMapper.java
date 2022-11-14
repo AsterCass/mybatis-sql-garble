@@ -15,7 +15,7 @@ public interface UserMapper {
 
     int updateOne(@Param("name") String name, @Param("ext") String ext);
 
-    @Insert("insert into `garble`.`user` (id, `name`, ext) values (#{id},#{name},#{ext})")
+    @Insert("insert into `user` (id, `name`, ext) values (#{id},#{name},#{ext})")
     int insertOne(UserEntity userEntity);
 
     @Insert("INSERT into user (id,name,ext, update_record) VALUES (#{ida},'张老11','hhh', 0), (#{idb},'张老12','ggg',0)")

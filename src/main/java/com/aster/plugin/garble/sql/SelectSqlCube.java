@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.sql;
 
+import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.util.SqlUtil;
 import net.sf.jsqlparser.JSQLParserException;
@@ -12,8 +13,15 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.util.TablesNamesFinder;
+import org.apache.ibatis.mapping.MappedStatement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author astercasc
@@ -41,6 +49,29 @@ public class SelectSqlCube extends BaseSqlCube {
             jsqlParserException.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 获取所有garble表名
+     *
+     * @param sql sql
+     * @return 简单表名，不包含schema
+     */
+    @Override
+    public Set<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
+        try {
+            Statement statement = CCJSqlParserUtil.parse(sql);
+            //这里和update不同,使用TablesNamesFinder查询sql所含的table，因为手动取select类sql所含table确实太麻烦了
+            List<String> fullTableList = new TablesNamesFinder().getTableList(statement);
+            Set<GarbleTable> tableSet = SqlUtil.getGarbleTableFromFullName(ms, fullTableList);
+            if (0 == tableSet.size()) {
+                throw new GarbleParamException("查询语句Table解析失败" + sql);
+            }
+            return tableSet;
+        } catch (JSQLParserException jsqlParserException) {
+            jsqlParserException.printStackTrace();
+        }
+        return new HashSet<>();
     }
 
 
