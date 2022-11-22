@@ -58,17 +58,24 @@ public class MybatisRuntimeProperty {
     /**
      * sql和监控表列表重合的表名
      */
+    @Deprecated
     protected List<String> crossTableList;
 
     /**
-     * sql和监控表列表重合的表名
+     * sql和监控表列表重合的表包装
      */
-    protected Set<GarbleTable> crossGarbleTableList;
+    protected Set<GarbleTable> crossGarbleTableSet;
+
+    /**
+     * sql表达的所含表set
+     */
+    protected Set<GarbleTable> sqlGarbleTableSet;
 
     /**
      * 监控表列表
      */
-    protected List<String> monitoredTableList;
+    protected Set<GarbleTable> monitoredTableSet;
+
 
     private static final int NEW_VERSION_INVOCATION_ARG_NUM = 6;
 
@@ -126,18 +133,36 @@ public class MybatisRuntimeProperty {
         return toGarble;
     }
 
+
     /**
      * 判断是否在监控表列表中
      */
     protected boolean monitoredTableCondition(List<String> monitoredTableList, BaseSqlCube sqlCube) {
         boolean inMonitored = false;
         List<String> tableList = sqlCube.getTableList(sql);
-        crossGarbleTableList = sqlCube.getGarbleTableList(mappedStatement, sql);
         for (String monitoredTable : monitoredTableList) {
             for (String table : tableList) {
                 if (table.equals(monitoredTable)) {
                     inMonitored = true;
                     crossTableList.add(table);
+                }
+            }
+        }
+        return inMonitored;
+    }
+
+    /**
+     * 判断是否在监控表列表中
+     */
+    protected boolean monitoredTableCondition(Set<GarbleTable> monitoredTableList, BaseSqlCube sqlCube) {
+        boolean inMonitored = false;
+        sqlGarbleTableSet = sqlCube.getGarbleTableList(mappedStatement, sql);
+        for (GarbleTable monitoredTable : monitoredTableList) {
+            for (GarbleTable table : sqlGarbleTableSet) {
+                //当表名和schema都相同的话
+                if (table.equal(monitoredTable)) {
+                    inMonitored = true;
+                    crossGarbleTableSet.add(table);
                 }
             }
         }

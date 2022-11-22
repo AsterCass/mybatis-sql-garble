@@ -34,24 +34,68 @@ import java.io.Reader;
 
 public class MybatisHelper {
 
-    private static SqlSessionFactory sqlSessionFactory;
+    private static SqlSessionFactory baseSession;
+
+    private static SqlSessionFactory updateRollbackSimpleSession;
+
+    private static SqlSessionFactory updateRollbackOtherSession;
 
     static {
         try {
             //创建SqlSessionFactory
             Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath() + "/mybatis-config.xml");
-            sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+            baseSession = new SqlSessionFactoryBuilder().build(reader);
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    static {
+        try {
+            //创建SqlSessionFactory
+            Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
+                    + "/mybatis-config-update-rollback-simple.xml");
+            updateRollbackSimpleSession = new SqlSessionFactoryBuilder().build(reader);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static {
+        try {
+            //创建SqlSessionFactory
+            Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
+                    + "/mybatis-config-update-rollback-other.xml");
+            updateRollbackOtherSession = new SqlSessionFactoryBuilder().build(reader);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * 获取Session
      */
     public static SqlSession getSqlSession() {
-        return sqlSessionFactory.openSession();
+        return baseSession.openSession();
     }
+
+    /**
+     * 获取Session
+     */
+    public static SqlSession getUpdateRollbackSimpleSession() {
+        return updateRollbackSimpleSession.openSession();
+    }
+
+    /**
+     * 获取Session
+     */
+    public static SqlSession getUpdateRollbackOtherSession() {
+        return updateRollbackOtherSession.openSession();
+    }
+
 
 }

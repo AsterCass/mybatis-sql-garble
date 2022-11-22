@@ -35,6 +35,7 @@ public class InsertSqlCube extends BaseSqlCube {
      * @return 简单表名，不包含schema
      */
     @Override
+    @Deprecated
     public List<String> getTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);

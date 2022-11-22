@@ -1,5 +1,6 @@
 package com.aster.plugin.garble.work;
 
+import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.property.UpdatedDataMsgProperty;
 import com.aster.plugin.garble.sql.InsertSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
@@ -41,10 +42,10 @@ public class UpdatedDataMsgGarbleSql extends UpdatedDataMsgAbstract {
         if (isUpdate) {
             Map<String, String> monitoredTableUpdateColValueMap =
                     new HashMap<>();
-            for (String table : crossTableList) {
-                monitoredTableUpdateColValueMap.put(table, "1");
+            for (GarbleTable table : crossGarbleTableSet) {
+                monitoredTableUpdateColValueMap.put(table.getFullName(), "1");
             }
-            String newSql = UpdateSqlCube.addUpdateSet(sql, crossTableList,
+            String newSql = UpdateSqlCube.addUpdateSet(sql, schema, crossGarbleTableSet,
                     monitoredTableUpdateFlagColMap, monitoredTableUpdateColValueMap);
             newSqlBuilder(newSql);
         } else if (isInsert) {

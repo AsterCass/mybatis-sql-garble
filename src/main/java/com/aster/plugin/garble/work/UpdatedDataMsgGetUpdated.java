@@ -11,7 +11,11 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Invocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author astercasc
@@ -29,8 +33,8 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
         try {
 
             //获取查询更新行语句
-            Map<String, String> sqlMap = SelectSqlCube.getUpdatedRowListSql(crossTableList, monitoredTableMap,
-                    monitoredTableUpdateFlagColMap, defaultFlagColName);
+            Map<String, String> sqlMap = SelectSqlCube.getUpdatedRowListSql(crossGarbleTableSet, monitoredTableMap,
+                    monitoredTableUpdateFlagColMap);
             //获取更新行
             Map<String, List<String>> updatedColMap = new HashMap<>();
             for (String table : sqlMap.keySet()) {
@@ -51,7 +55,7 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
             }
             //获取回滚语句
             Map<String, String> rollBackMap = UpdateSqlCube.getFlagRollBackList(updatedColMap,
-                    monitoredTableMap, monitoredTableUpdateFlagColMap, defaultFlagColName);
+                    monitoredTableMap, monitoredTableUpdateFlagColMap);
             //数据回滚
             for (String table : rollBackMap.keySet()) {
                 BoundSql newBoundSql = new BoundSql(

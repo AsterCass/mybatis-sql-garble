@@ -29,9 +29,11 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 public class BaseTest {
 
@@ -306,6 +308,16 @@ public class BaseTest {
     @Test
     public void elseTest() {
 
+        Set<GarbleTable> test = new HashSet<>();
+        GarbleTable t1 = new GarbleTable();
+        t1.setSchemaName("111");
+        t1.setTableName("111");
+        GarbleTable t2 = new GarbleTable();
+        t2.setSchemaName("111");
+        t2.setTableName("111");
+        test.add(t1);
+        test.add(t2);
 
+        System.out.println("111111");
     }
 }

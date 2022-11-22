@@ -1,5 +1,7 @@
 package com.aster.plugin.garble.sql;
 
+import com.aster.plugin.garble.bean.GarbleTable;
+import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
@@ -15,7 +17,12 @@ import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author astercasc
@@ -29,6 +36,7 @@ public class UpdateSqlCube extends BaseSqlCube {
      * @return 简单表名，不包含schema
      */
     @Override
+    @Deprecated
     public List<String> getTableList(String sql) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
@@ -60,18 +68,19 @@ public class UpdateSqlCube extends BaseSqlCube {
     /**
      * 获取更新表的全名和别名的Map
      */
-    public static Map<String, String> getUpdateTableAliasMap(String sql) {
+    public static Map<GarbleTable, String> getUpdateTableAliasMap(String sql, String defaultSchema) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Update) {
                 Update updateStatement = (Update) statement;
-                Map<String, String> nameAliasMap = new HashMap<>();
-                if (null == updateStatement.getTable().getAlias()) {
-                    nameAliasMap.put(updateStatement.getTable().getName(),
-                            updateStatement.getTable().getName());
+                Table mainTable = updateStatement.getTable();
+                GarbleTable mainGarbleTable = new GarbleTable(
+                        mainTable.getName(), mainTable.getSchemaName(), defaultSchema);
+                Map<GarbleTable, String> nameAliasMap = new HashMap<>();
+                if (null == mainTable.getAlias()) {
+                    nameAliasMap.put(mainGarbleTable, mainTable.getName());
                 } else {
-                    nameAliasMap.put(updateStatement.getTable().getAlias().getName(),
-                            updateStatement.getTable().getName());
+                    nameAliasMap.put(mainGarbleTable, mainTable.getAlias().getName());
                 }
                 if (null != updateStatement.getStartJoins() && 0 != updateStatement.getStartJoins().size()) {
                     for (Join join : updateStatement.getStartJoins()) {
@@ -79,10 +88,12 @@ public class UpdateSqlCube extends BaseSqlCube {
                         if (join.getRightItem() instanceof Table) {
                             rightTable = (Table) join.getRightItem();
                         }
+                        GarbleTable rightGarbleTable = new GarbleTable(
+                                rightTable.getName(), rightTable.getSchemaName(), defaultSchema);
                         if (null == rightTable.getAlias()) {
-                            nameAliasMap.put(rightTable.getName(), rightTable.getName());
+                            nameAliasMap.put(rightGarbleTable, rightTable.getName());
                         } else {
-                            nameAliasMap.put(rightTable.getAlias().getName(), rightTable.getName());
+                            nameAliasMap.put(rightGarbleTable, rightTable.getAlias().getName());
                         }
 
                     }
@@ -98,12 +109,12 @@ public class UpdateSqlCube extends BaseSqlCube {
     /**
      * 添加set
      */
-    public static String addUpdateSet(String sql, List<String> tableList,
+    public static String addUpdateSet(String sql, String defaultSchema, Collection<GarbleTable> tableList,
                                       Map<String, String> monitoredTableUpdateColMap,
                                       Map<String, String> monitoredTableUpdateColValueMap) {
         try {
-            List<String> localTableList = new ArrayList<>(tableList);
-            Map<String, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(sql);
+            List<GarbleTable> localTableList = new ArrayList<>(tableList);
+            Map<GarbleTable, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(sql, defaultSchema);
             //sql解析
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Update) {
@@ -115,20 +126,25 @@ public class UpdateSqlCube extends BaseSqlCube {
                         for (int count = 0; count < updateSet.getColumns().size(); ++count) {
                             //包含默认
                             Table table = updateSet.getColumns().get(count).getTable();
-                            //getName方法只取表名不取schema名
-                            String name = null == table ? updateStatement.getTable().getName() : table.getName();
-                            String fullTableName = nameAliasMap.get(name);
-                            if (localTableList.contains(fullTableName)) {
-                                String updateFlagColName = monitoredTableUpdateColMap.get(fullTableName);
+                            //更新列set中如果没有table那么使用的就是update后跟的table
+                            if (null == table) {
+                                table = updateStatement.getTable();
+                            }
+                            GarbleTable thisTable = new GarbleTable(table.getName(),
+                                    table.getSchemaName(), defaultSchema);
+                            //如果没有alias会取到sql标记中的名称
+                            String aliasName = nameAliasMap.get(thisTable);
+                            if (localTableList.contains(thisTable)) {
+                                String updateFlagColName = monitoredTableUpdateColMap.get(thisTable.getFullName());
                                 //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
                                 if (updateSet.getColumns().get(count).getColumnName().equals(updateFlagColName)) {
                                     return sql;
                                 }
                                 updateVol.add(new UpdateSet(
-                                        new Column(new Table(name), updateFlagColName),
-                                        new StringValue(monitoredTableUpdateColValueMap.get(name))));
+                                        new Column(new Table(aliasName), updateFlagColName),
+                                        new StringValue(monitoredTableUpdateColValueMap.get(thisTable.getFullName()))));
                                 //防止由于多字段更新，导致的多次更新标志位
-                                localTableList.remove(fullTableName);
+                                localTableList.remove(thisTable);
                             }
                         }
                     }
@@ -145,14 +161,12 @@ public class UpdateSqlCube extends BaseSqlCube {
 
     public static Map<String, String> getFlagRollBackList(Map<String, List<String>> updatedColMap,
                                                           Map<String, String> monitoredTableMap,
-                                                          Map<String, String> monitoredTableUpdateFlagColMap,
-                                                          String defaultFlagColName) {
+                                                          Map<String, String> monitoredTableUpdateFlagColMap) {
         //这里查询暂时没有支持不同schema和数据库的配置
         Map<String, String> sqlMap = new HashMap<>();
         if (null != updatedColMap && 0 != updatedColMap.size()) {
             for (String table : updatedColMap.keySet()) {
-                putMap(updatedColMap, monitoredTableMap, monitoredTableUpdateFlagColMap,
-                        defaultFlagColName, sqlMap, table);
+                putMap(updatedColMap, monitoredTableMap, monitoredTableUpdateFlagColMap, sqlMap, table);
             }
         }
         return sqlMap;
@@ -160,13 +174,13 @@ public class UpdateSqlCube extends BaseSqlCube {
     }
 
     private static void putMap(Map<String, List<String>> updatedColMap, Map<String, String> monitoredTableMap,
-                               Map<String, String> monitoredTableUpdateFlagColMap, String defaultFlagColName,
+                               Map<String, String> monitoredTableUpdateFlagColMap,
                                Map<String, String> sqlMap, String table) {
         if (null != updatedColMap.get(table) && 0 != updatedColMap.get(table).size()) {
             String whereColName = monitoredTableMap.get(table);
             String flagColName = monitoredTableUpdateFlagColMap.get(table);
             if (null == flagColName) {
-                flagColName = defaultFlagColName;
+                throw new GarbleRuntimeException("fail to get flag col name");
             }
             Update update = new Update();
             update.setTable(new Table(table));

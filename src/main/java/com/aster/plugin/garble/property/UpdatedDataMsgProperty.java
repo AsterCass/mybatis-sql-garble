@@ -35,6 +35,7 @@ public class UpdatedDataMsgProperty extends MybatisRuntimeProperty {
     /**
      * 默认更新标记字段，如果监控表无法在更新标记字段Map中取得，则会使用默认更新标记字段
      */
+    @Deprecated
     protected String defaultFlagColName;
 
     /**

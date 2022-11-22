@@ -26,6 +26,33 @@ public class GarbleTable {
 
     private String aliasName;
 
+    public static final String SCHEMA_SPLIT = ".";
+
+    public static final String TABLE_NAME_PROTECT = "`";
+
+    public String getFullName() {
+        return String.format("`%s`.`%s`", this.schemaName, this.tableName);
+    }
+
+    public String getSimpleName() {
+        return String.format("%s.%s", this.schemaName, this.tableName);
+    }
+
+
+    public boolean equal(GarbleTable other) {
+        return this.getTableName().equals(other.getTableName())
+                && this.getSchemaName().equals(other.getSchemaName());
+    }
+
+    public GarbleTable(String tableName, String schemaName, String defaultSchema) {
+        this.setTableName(tableName.replace("`", "").toLowerCase());
+        if (null == schemaName) {
+            this.setSchemaName(defaultSchema.replace("`", "").toLowerCase());
+        } else {
+            this.setSchemaName(schemaName.replace("`", "").toLowerCase());
+        }
+    }
+
     public static String getConnectSchema(MappedStatement ms) {
         String schemaName = null;
         try {
