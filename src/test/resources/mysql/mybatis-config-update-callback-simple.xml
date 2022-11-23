@@ -44,6 +44,7 @@
 
 
             <property name="updated-data-msg.excludedMapperPath" value="['com.baidu','com.ali','com.bao']"/>
+
         </plugin>
     </plugins>
 
@@ -62,7 +63,10 @@
     </environments>
 
     <mappers>
-        <mapper resource="mapper/CheckMapper.xml"/>
+        <mapper resource="mapper/UpdateCallbackSimpleMapper.xml"/>
+        <mapper resource="mapper/CompanyMapper.xml"/>
+        <mapper resource="mapper/EmployeeMapper.xml"/>
+        <mapper resource="mapper/TaskMapper.xml"/>
     </mappers>
 
 </configuration>

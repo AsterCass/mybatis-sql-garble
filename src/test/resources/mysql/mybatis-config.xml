@@ -86,7 +86,6 @@
 
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
-        <mapper resource="mapper/CheckMapper.xml"/>
     </mappers>
 
 </configuration>

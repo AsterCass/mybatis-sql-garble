@@ -36,9 +36,9 @@ public class MybatisHelper {
 
     private static SqlSessionFactory baseSession;
 
-    private static SqlSessionFactory updateRollbackSimpleSession;
+    private static SqlSessionFactory updateCallbackSimpleSession;
 
-    private static SqlSessionFactory updateRollbackOtherSession;
+    private static SqlSessionFactory updateCallbackOtherSession;
 
     static {
         try {
@@ -55,8 +55,8 @@ public class MybatisHelper {
         try {
             //创建SqlSessionFactory
             Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
-                    + "/mybatis-config-update-rollback-simple.xml");
-            updateRollbackSimpleSession = new SqlSessionFactoryBuilder().build(reader);
+                    + "/mybatis-config-update-callback-simple.xml");
+            updateCallbackSimpleSession = new SqlSessionFactoryBuilder().build(reader);
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,8 +67,8 @@ public class MybatisHelper {
         try {
             //创建SqlSessionFactory
             Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
-                    + "/mybatis-config-update-rollback-other.xml");
-            updateRollbackOtherSession = new SqlSessionFactoryBuilder().build(reader);
+                    + "/mybatis-config-update-callback-other.xml");
+            updateCallbackOtherSession = new SqlSessionFactoryBuilder().build(reader);
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,15 +86,15 @@ public class MybatisHelper {
     /**
      * 获取Session
      */
-    public static SqlSession getUpdateRollbackSimpleSession() {
-        return updateRollbackSimpleSession.openSession();
+    public static SqlSession getUpdateCallbackSimpleSession() {
+        return updateCallbackSimpleSession.openSession();
     }
 
     /**
      * 获取Session
      */
-    public static SqlSession getUpdateRollbackOtherSession() {
-        return updateRollbackOtherSession.openSession();
+    public static SqlSession getUpdateCallbackOtherSession() {
+        return updateCallbackOtherSession.openSession();
     }
 
 
