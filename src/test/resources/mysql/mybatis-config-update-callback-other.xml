@@ -38,10 +38,12 @@
 
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
 
-            <property name="updated-data-msg.defaultFlagColName" value="update_record"/>
+
             <property name="updated-data-msg.monitoredTableMap"
                       value="{'garble_company':'id', 'garble_else.garble_task':'id'}"/>
             <property name="updated-data-msg.dealWithUpdatedPath" value="com.aster.plugin.garble"/>
+            <property name="updated-data-msg.monitoredTableUpdateFlagColMap"
+                      value="{'garble_company':'update_record', 'garble_else.garble_task':'update_record'}"/>
 
 
             <property name="updated-data-msg.excludedMapperPath" value="['com.baidu','com.ali','com.bao']"/>

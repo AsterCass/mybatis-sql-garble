@@ -107,12 +107,12 @@ public class CheckTest {
 
     @Test
     public void updateRowCallBackOther() {
-        log.info("[op:updateRowCallBackSimple] start");
+        log.info("[op:updateRowCallBackOther] start");
         SqlSession sqlSession = MybatisHelper.getUpdateCallbackOtherSession();
         UpdateCallbackOtherMapper mapper = sqlSession.getMapper(UpdateCallbackOtherMapper.class);
         CompanyMapper companyMapper = sqlSession.getMapper(CompanyMapper.class);
         TaskMapper taskMapper = sqlSession.getMapper(TaskMapper.class);
-        log.info("[op:updateRowCallBackSimple] update 1 have call back");
+        log.info("[op:updateRowCallBackOther] update 1 have call back");
         mapper.updateAlone1();
         sqlSession.commit();
         Optional<GarbleCompany> company1 = companyMapper.selectByPrimaryKey(1L);
@@ -120,7 +120,7 @@ public class CheckTest {
             Long code = company1.get().getCCode();
             Assert.assertEquals(111, code.longValue());
         }
-        log.info("[op:updateRowCallBackSimple] update 2 have call back");
+        log.info("[op:updateRowCallBackOther] update 2 have call back");
         mapper.updateAlone2();
         sqlSession.commit();
         Optional<GarbleCompany> company2 = companyMapper.selectByPrimaryKey(2L);
@@ -131,7 +131,7 @@ public class CheckTest {
         //这里是回调函数验证正确性 不好写Assert 需要观察日志打印是否为
         // 1:{"`garble`.`garble_company`":["1","2"]}
         // 2:{"`garble`.`garble_company`":["1","2"]}
-        log.info("[op:updateRowCallBackSimple] update 3 no call back");
+        log.info("[op:updateRowCallBackOther] update 3 no call back");
         mapper.updateAlone3();
         sqlSession.commit();
         Optional<GarbleTask> task34 = taskMapper.selectByPrimaryKey(4L);
@@ -142,7 +142,7 @@ public class CheckTest {
             Assert.assertEquals("工作x", name34);
             Assert.assertEquals("工作x", name35);
         }
-        log.info("[op:updateRowCallBackSimple] update 4 no call back");
+        log.info("[op:updateRowCallBackOther] update 4 no call back");
         mapper.updateAlone4();
         sqlSession.commit();
         Optional<GarbleTask> task44 = taskMapper.selectByPrimaryKey(4L);
@@ -153,7 +153,7 @@ public class CheckTest {
             Assert.assertEquals("工作xx", name44);
             Assert.assertEquals("工作xx", name45);
         }
-        log.info("[op:updateRowCallBackSimple] update 5 have call back");
+        log.info("[op:updateRowCallBackOther] update 5 have call back");
         mapper.updateAlone5();
         sqlSession.commit();
         List<String> task5List = mapper.checkAlone5();
@@ -164,7 +164,7 @@ public class CheckTest {
         //这里是回调函数验证正确性 不好写Assert 需要观察日志打印是否为
         // 1:{"`garble_else`.`garble_task`":["4","5"]}
         // 2:{"`garble_else`.`garble_task`":["4","5"]}
-        log.info("[op:updateRowCallBackSimple] data rollback");
+        log.info("[op:updateRowCallBackOther] data rollback");
 
         mapper.updateAloneBack1();
         mapper.updateAloneBack2();
@@ -173,7 +173,7 @@ public class CheckTest {
         mapper.updateAloneBack5();
         mapper.updateAloneBack6();
         sqlSession.commit();
-        log.info("[op:updateRowCallBackSimple] end");
+        log.info("[op:updateRowCallBackOther] end");
 
     }
 

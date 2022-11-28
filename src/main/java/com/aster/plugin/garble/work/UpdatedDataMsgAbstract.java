@@ -57,17 +57,21 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
                 continue;
             }
             //flagColMap不为空则优先使用map中的col
+            boolean insertFlag = false;
             for (String flagColTable : property.getMonitoredTableUpdateFlagColMap().keySet()) {
                 if (SqlUtil.garbleEqual(flagColTable, table, schema)) {
                     monitoredTableUpdateFlagColMap.put(table.getFullName(),
                             property.getMonitoredTableUpdateFlagColMap().get(flagColTable).toLowerCase());
+                    insertFlag = true;
                 } else if (null != property.getDefaultFlagColName() && !"".equals(property.getDefaultFlagColName())) {
                     monitoredTableUpdateFlagColMap.put(table.getFullName(),
                             property.getDefaultFlagColName().toLowerCase());
-                } else {
-                    throw new GarbleParamException(String.format("【%s】该表没有在monitoredTableUpdateFlagColMap中配置," +
-                            "也没有配置默认的更新标记列defaultFlagColName", table.getFullName()));
+                    insertFlag = true;
                 }
+            }
+            if (!insertFlag) {
+                throw new GarbleParamException(String.format("【%s】该表没有在monitoredTableUpdateFlagColMap中配置," +
+                        "也没有配置默认的更新标记列defaultFlagColName", table.getSimpleName()));
             }
         }
 
