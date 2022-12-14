@@ -40,6 +40,8 @@ public class MybatisHelper {
 
     private static SqlSessionFactory updateCallbackOtherSession;
 
+    private static SqlSessionFactory authSelectSimpleSession;
+
     static {
         try {
             //创建SqlSessionFactory
@@ -75,6 +77,18 @@ public class MybatisHelper {
         }
     }
 
+    static {
+        try {
+            //创建SqlSessionFactory
+            Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
+                    + "/mybatis-config-auth-select-simple.xml");
+            authSelectSimpleSession = new SqlSessionFactoryBuilder().build(reader);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 获取Session
@@ -95,6 +109,10 @@ public class MybatisHelper {
      */
     public static SqlSession getUpdateCallbackOtherSession() {
         return updateCallbackOtherSession.openSession();
+    }
+
+    public static SqlSession getAuthSelectSimpleSession() {
+        return authSelectSimpleSession.openSession();
     }
 
 

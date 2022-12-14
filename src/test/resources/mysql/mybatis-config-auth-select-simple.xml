@@ -36,18 +36,12 @@
 
     <plugins>
 
-        <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
-
-
-            <property name="updated-data-msg.monitoredTableMap"
-                      value="{'garble_company':'id', 'garble_else.garble_task':'id'}"/>
-            <property name="updated-data-msg.dealWithUpdatedPath" value="com.aster.plugin.garble"/>
-            <property name="updated-data-msg.monitoredTableUpdateFlagColMap"
-                      value="{'garble_company':'update_record', 'garble_else.garble_task':'update_record'}"/>
-            <property name="updated-data-msg.excludedMapperPath" value="['com.baidu','com.ali','com.bao']"/>
-
-
+        <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
+            <property name="auth.select.monitoredTableList" value="['garble_employee']"/>
+            <property name="auth.select.defaultAuthColName" value="c_id"/>
+            <property name="auth.select.defaultAuthStrategy" value="3"/>
         </plugin>
+
 
     </plugins>
 
@@ -66,7 +60,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="mapper/UpdateCallbackOtherMapper.xml"/>
+        <mapper resource="mapper/UpdateCallbackSimpleMapper.xml"/>
         <mapper resource="mapper/CompanyMapper.xml"/>
         <mapper resource="mapper/EmployeeMapper.xml"/>
         <mapper resource="mapper/TaskMapper.xml"/>

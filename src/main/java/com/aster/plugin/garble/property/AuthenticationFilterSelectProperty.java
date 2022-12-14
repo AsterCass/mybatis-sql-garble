@@ -44,7 +44,7 @@ public class AuthenticationFilterSelectProperty extends MybatisRuntimeProperty {
     protected Map<String, Integer> monitoredTableAuthStrategyMap;
 
     /**
-     * 监控表和权限策略，当monitoredTableAuthStrategyMap无法查询到需要监控表的权限策略的时候，使用默认权限测率
+     * 监控表和权限策略，当monitoredTableAuthStrategyMap无法查询到需要监控表的权限策略的时候，使用默认权限策略
      */
     protected Integer defaultAuthStrategy;
 
@@ -52,7 +52,6 @@ public class AuthenticationFilterSelectProperty extends MybatisRuntimeProperty {
      * 在此map中的的sql不受到监控，即使包含监控表
      */
     protected List<String> excludedMapperPath;
-
 
     /**
      * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，

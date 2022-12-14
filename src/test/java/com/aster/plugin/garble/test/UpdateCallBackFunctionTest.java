@@ -1,36 +1,23 @@
 package com.aster.plugin.garble.test;
 
 
-import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.entity.GarbleCompany;
 import com.aster.plugin.garble.entity.GarbleTask;
 import com.aster.plugin.garble.mapper.CompanyMapper;
 import com.aster.plugin.garble.mapper.TaskMapper;
 import com.aster.plugin.garble.mapper.UpdateCallbackOtherMapper;
 import com.aster.plugin.garble.mapper.UpdateCallbackSimpleMapper;
-import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.MybatisHelper;
-import com.aster.plugin.garble.util.SqlUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.statement.update.UpdateSet;
-import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
-public class CheckTest {
+public class UpdateCallBackFunctionTest {
 
     @Test
     public void updateRowCallBackSimple() {
@@ -179,22 +166,7 @@ public class CheckTest {
 
 
     @Test
-    public void elseTest() throws JSQLParserException {
-        String updateTwoTable = "UPDATE a.product p INNER JOIN product_price ON p.productid= pp.productid " +
-                "SET pp.price = p.price * 0.8, p.dateUpdate = CURDATE()";
-        Statement statement = CCJSqlParserUtil.parse(updateTwoTable);
-        Update updateStatement = (Update) statement;
-        ArrayList<UpdateSet> sets = updateStatement.getUpdateSets();
-        //getName方法只取表名不取schema名
-        Table table = updateStatement.getTable();
-        String schema = table.getSchemaName();
-        String tableName = updateStatement.getTable().getName();
-        Map<GarbleTable, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(updateTwoTable, "garble");
-
-        List<String> fullTableList = new TablesNamesFinder().getTableList(statement);
-        Set<GarbleTable> tableSet = SqlUtil.getGarbleTableFromFullName("garble", fullTableList);
-
-
+    public void elseTest() {
         System.out.println("123");
     }
 
