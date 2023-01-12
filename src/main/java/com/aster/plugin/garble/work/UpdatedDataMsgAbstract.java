@@ -24,11 +24,15 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
      */
     public UpdatedDataMsgAbstract(Invocation invocation, UpdatedDataMsgProperty property) {
 
+        //基础数据赋值
         super(invocation);
 
+        //基本验证
         if (null == property.getMonitoredTableMap() || 0 == property.getMonitoredTableMap().size()) {
             throw new GarbleParamException("添加更新标记返回需求但是未检测到添加表信息配置【monitoredTableMap】");
         }
+
+        //基础表名赋值
         Map<String, String> lowerMonitoredTableMap = new HashMap<>();
         for (Map.Entry<String, String> entry : property.getMonitoredTableMap().entrySet()) {
             lowerMonitoredTableMap.put(SqlUtil.getGarbleTableFromFullName(schema, entry.getKey()).getFullName(),
@@ -38,10 +42,8 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
         this.monitoredTableSet = SqlUtil.getGarbleTableFromFullName(
                 schema, new ArrayList<>(lowerMonitoredTableMap.keySet()));
 
-
-        //这里全部转小写，后面各种操作，大小写不太方便
+        //默认值导入 这里的操作全部转小写，后面复杂处理，大小写不太方便
         this.monitoredTableUpdateFlagColMap = new HashMap<>();
-
         for (GarbleTable table : monitoredTableSet) {
             //如果property.getMonitoredTableUpdateFlagColMap()没有初始化则使用default值
             if (null == property.getMonitoredTableUpdateFlagColMap()
