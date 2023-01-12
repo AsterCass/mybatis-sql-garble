@@ -26,18 +26,17 @@ public abstract class UpdatedDataMsgAbstract extends UpdatedDataMsgProperty {
 
         super(invocation);
 
-        if (null != property.getMonitoredTableMap() && 0 != property.getMonitoredTableMap().size()) {
-            Map<String, String> lowerMonitoredTableMap = new HashMap<>();
-            for (Map.Entry<String, String> entry : property.getMonitoredTableMap().entrySet()) {
-                lowerMonitoredTableMap.put(SqlUtil.getGarbleTableFromFullName(schema, entry.getKey()).getFullName(),
-                        entry.getValue().toLowerCase());
-            }
-            this.monitoredTableMap = lowerMonitoredTableMap;
-            this.monitoredTableSet = SqlUtil.getGarbleTableFromFullName(
-                    schema, new ArrayList<>(lowerMonitoredTableMap.keySet()));
-        } else {
-            throw new GarbleParamException("添加更新标记返回需求但是未检测到添加表信息配置");
+        if (null == property.getMonitoredTableMap() || 0 == property.getMonitoredTableMap().size()) {
+            throw new GarbleParamException("添加更新标记返回需求但是未检测到添加表信息配置【monitoredTableMap】");
         }
+        Map<String, String> lowerMonitoredTableMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : property.getMonitoredTableMap().entrySet()) {
+            lowerMonitoredTableMap.put(SqlUtil.getGarbleTableFromFullName(schema, entry.getKey()).getFullName(),
+                    entry.getValue().toLowerCase());
+        }
+        this.monitoredTableMap = lowerMonitoredTableMap;
+        this.monitoredTableSet = SqlUtil.getGarbleTableFromFullName(
+                schema, new ArrayList<>(lowerMonitoredTableMap.keySet()));
 
 
         //这里全部转小写，后面各种操作，大小写不太方便
