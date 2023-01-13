@@ -38,7 +38,8 @@
 
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
             <property name="auth.select.monitoredTableList" value="['garble_employee']"/>
-            <property name="auth.select.defaultAuthColName" value="c_id"/>
+            <property name="auth.select.monitoredTableAuthColMap"
+                      value="{'garble_employee':'c_id'}"/>
             <property name="auth.select.defaultAuthStrategy" value="3"/>
         </plugin>
 

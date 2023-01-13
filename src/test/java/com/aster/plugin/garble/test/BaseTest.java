@@ -121,33 +121,33 @@ public class BaseTest {
 
         //==================================================================
 
-
-        String newSql = new SelectAuthFilterSqlCube(
-                Arrays.asList("user", "per", "testTable", "ping_ta"),
-                new HashMap<String, String>() {{
-                    put("user", "perCol");
-                    put("per", "perCol");
-                    put("testTable", "perCol");
-                    put("ping_ta", "auth_code");
-                }},
-
-                new HashMap<String, Integer>() {{
-                    put("user", 1);
-                    put("per", 1);
-                    put("testTable", 2);
-                    put("ping_ta", 3);
-                }},
-                new HashMap<String, String>() {{
-                    put("user", "123");
-                    put("per", "123");
-                    put("testTable", "7");
-                    put("ping_ta", JSON.toJSONString(Arrays.asList("123", "456")));
-                }}
-
-        ).addAuthCode(sql3);
-
-
-        System.out.println(newSql);
+//
+//        String newSql = new SelectAuthFilterSqlCube(
+//                Arrays.asList("user", "per", "testTable", "ping_ta"),
+//                new HashMap<String, String>() {{
+//                    put("user", "perCol");
+//                    put("per", "perCol");
+//                    put("testTable", "perCol");
+//                    put("ping_ta", "auth_code");
+//                }},
+//
+//                new HashMap<String, Integer>() {{
+//                    put("user", 1);
+//                    put("per", 1);
+//                    put("testTable", 2);
+//                    put("ping_ta", 3);
+//                }},
+//                new HashMap<String, String>() {{
+//                    put("user", "123");
+//                    put("per", "123");
+//                    put("testTable", "7");
+//                    put("ping_ta", JSON.toJSONString(Arrays.asList("123", "456")));
+//                }}
+//
+//        ).addAuthCode(sql3);
+//
+//
+//        System.out.println(newSql);
     }
 
     @Test

@@ -32,7 +32,7 @@ public class SqlUtil {
     }
 
     /**
-     * 形如 garble.`user` 或者 user 的集合是否包含和table包装相等
+     * 形如 garble.`user` 或者 user 是否包含和table包装相等
      */
     public static boolean garbleEqual(String tableString, GarbleTable table, String defaultScheme) {
 
@@ -50,7 +50,21 @@ public class SqlUtil {
     }
 
     /**
-     * 从形如garble.`user`的全民中获取表名包装
+     * 形如 garble.`user` 或者 user 的集合是否包含和table包装相等 如果相等返回该字符串 否则返回 null
+     */
+    public static String garbleContain(List<String> tableStringList, GarbleTable table, String defaultScheme) {
+        String resultString = null;
+        for (String tableString : tableStringList) {
+            if (garbleEqual(tableString, table, defaultScheme)) {
+                resultString = tableString;
+            }
+        }
+        return resultString;
+    }
+
+
+    /**
+     * 从形如garble.`user`的全名中获取表名包装
      */
     public static GarbleTable getGarbleTableFromFullName(String defaultSchema, String fullTable) {
         String midFullTable = fullTable.replace("`", "");
@@ -69,7 +83,7 @@ public class SqlUtil {
     }
 
     /**
-     * 从形如garble.`user`的全民中获取表名包装
+     * 从形如garble.`user`的全名中获取表名包装
      */
     public static Set<GarbleTable> getGarbleTableFromFullName(String defaultSchema,
                                                               List<String> fullTableNames) {
@@ -95,7 +109,7 @@ public class SqlUtil {
     }
 
     /**
-     * 从形如garble.`user`的全民中获取表名包装
+     * 从形如garble.`user`的全名中获取表名包装
      */
     public static Set<GarbleTable> getGarbleTableFromFullName(MappedStatement ms,
                                                               List<String> fullTableNames) {

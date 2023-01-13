@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -37,9 +38,14 @@ import java.util.stream.Collectors;
 public class SelectAuthFilterSqlCube extends SelectSqlCube {
 
     /**
+     * 当前连接的schema
+     */
+    protected String defaultSchema;
+
+    /**
      * 监控表列表
      */
-    protected List<String> monitoredTableList;
+    protected Set<GarbleTable> crossGarbleTableSet;
 
     /**
      * 监控表和权限标记列
@@ -57,13 +63,15 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
     protected Map<String, String> monitoredTableAuthCodeMap;
 
 
-    public SelectAuthFilterSqlCube(List<String> monitoredTableList,
+    public SelectAuthFilterSqlCube(String defaultSchema,
+                                   Set<GarbleTable> crossGarbleTableSet,
                                    Map<String, String> monitoredTableAuthColMap,
                                    Map<String, Integer> monitoredTableAuthStrategyMap,
                                    Map<String, String> monitoredTableAuthCodeMap) {
+        this.defaultSchema = defaultSchema;
         this.monitoredTableAuthColMap = monitoredTableAuthColMap;
         this.monitoredTableAuthStrategyMap = monitoredTableAuthStrategyMap;
-        this.monitoredTableList = monitoredTableList;
+        this.crossGarbleTableSet = crossGarbleTableSet;
         this.monitoredTableAuthCodeMap = monitoredTableAuthCodeMap;
     }
 
@@ -95,12 +103,14 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
         try {
             //本层的sql中包含的tale, 不包含下层的子查询
             List<GarbleTable> sqlTableList = getTableNameMapInSelectBody(select);
-            List<GarbleTable> crossTableList = sqlTableList.stream().filter(table ->
-                    monitoredTableList.contains(table.getTableName().replace("`", ""))
-            ).collect(Collectors.toList());
+            List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
+                    crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
+                            .contains(table.getFullName())).collect(Collectors.toList());
+
+
             Expression where = select.getWhere();
-            if (0 != crossTableList.size()) {
-                List<Expression> expressionList = expressionListBuilder(crossTableList);
+            if (0 != currentCrossTableList.size()) {
+                List<Expression> expressionList = expressionListBuilder(currentCrossTableList);
                 if (null != where) {
                     getSubTableInWhere(where);
                     expressionList.add(where);
@@ -120,7 +130,7 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
         List<Expression> expressionList = new ArrayList<>();
         if (null != crossTableList && 0 != crossTableList.size()) {
             for (GarbleTable table : crossTableList) {
-                String key = table.getTableName().replace("`", "");
+                String key = table.getFullName();
                 String col = monitoredTableAuthColMap.get(key);
                 String code = monitoredTableAuthCodeMap.get(key);
                 Integer strategy = monitoredTableAuthStrategyMap.get(key);
@@ -205,12 +215,13 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
         List<GarbleTable> garbleTableList = new ArrayList<>();
         if (select.getFromItem() instanceof Table) {
             Table priTable = (Table) select.getFromItem();
+            String schema = null == priTable.getSchemaName() ? defaultSchema : priTable.getSchemaName();
             if (null == priTable.getAlias()) {
                 garbleTableList.add(new GarbleTable(priTable, priTable.getName(),
-                        priTable.getSchemaName(), null));
+                        schema, null));
             } else {
                 garbleTableList.add(new GarbleTable(priTable, priTable.getName(),
-                        priTable.getSchemaName(), priTable.getAlias().getName()));
+                        schema, priTable.getAlias().getName()));
             }
 
         } else {
@@ -220,12 +231,13 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
             for (Join join : select.getJoins()) {
                 if (join.getRightItem() instanceof Table) {
                     Table joinTable = (Table) join.getRightItem();
+                    String schema = null == joinTable.getSchemaName() ? defaultSchema : joinTable.getSchemaName();
                     if (null == joinTable.getAlias()) {
                         garbleTableList.add(new GarbleTable(joinTable, joinTable.getName(),
-                                joinTable.getSchemaName(), null));
+                                schema, null));
                     } else {
                         garbleTableList.add(new GarbleTable(joinTable, joinTable.getName(),
-                                joinTable.getSchemaName(), joinTable.getAlias().getName()));
+                                schema, joinTable.getAlias().getName()));
                     }
                 } else {
                     throw new GarbleParamException("查询语句JoinFormItem解析失败");

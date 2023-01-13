@@ -18,6 +18,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -102,6 +103,9 @@ public class MybatisRuntimeProperty {
 
 
         this.crossTableList = new ArrayList<>();
+        this.monitoredTableSet = new HashSet<>();
+        this.sqlGarbleTableSet = new HashSet<>();
+        this.crossGarbleTableSet = new HashSet<>();
     }
 
     /**

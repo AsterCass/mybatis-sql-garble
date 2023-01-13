@@ -12,7 +12,11 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
@@ -87,7 +91,7 @@ public class GarbleQueryInterceptor implements Interceptor {
     @Override
     public void setProperties(Properties properties) {
 
-        log.info("[op:GarbleQueryInterceptor] setProperties start");
+        log.debug("[op:GarbleQueryInterceptor] setProperties start");
         //这里是兼容maven配置调用, spring boot 直接会调用 setAuthenticationFilterSelectProperty 方法
         if (null != properties) {
             Properties authenticationFilterSelectMap = new Properties();
@@ -107,12 +111,12 @@ public class GarbleQueryInterceptor implements Interceptor {
             }
 
         }
-        log.info("[op:GarbleQueryInterceptor] setProperties end");
+        log.debug("[op:GarbleQueryInterceptor] setProperties end");
     }
 
     public void setAuthenticationFilterSelectProperty(Properties prop,
                                                       Map<Method, Object> springMethodForAuthCodeSelect) {
-        log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty start");
+        log.debug("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty start");
         this.authenticationFilterSelectProperty =
                 PropertyUtil.propertyToObject(prop, AuthenticationFilterSelectProperty.class);
         if (null != authenticationFilterSelectProperty) {
@@ -137,7 +141,7 @@ public class GarbleQueryInterceptor implements Interceptor {
                 }
             }
         }
-        log.info("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty end");
+        log.debug("[op:GarbleQueryInterceptor] setAuthenticationFilterSelectProperty end");
     }
 
 

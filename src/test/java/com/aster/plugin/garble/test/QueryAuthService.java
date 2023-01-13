@@ -19,7 +19,7 @@ public class QueryAuthService implements AuthenticationCodeInterface {
      * @return 鉴权code
      */
     @Override
-    @AuthenticationCodeBuilder(type = 2, tables = {"user", "garble_employee"})
+    @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble_.*$", "^garble\\..*$"})
     public String authenticationCodeBuilder() {
         return JSON.toJSONString(Arrays.asList("1234", "12345", "1"));
     }
