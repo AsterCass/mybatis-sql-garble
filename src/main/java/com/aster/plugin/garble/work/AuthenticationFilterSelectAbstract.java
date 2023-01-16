@@ -116,48 +116,48 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
         try {
             monitoredTableAuthCodeMap = new HashMap<>();
             //先执行所有实现AuthenticationCodeInterface的方法
-            HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
+            HashMap<String, String> annTableRegAuthCodeMap = new HashMap<>();
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
             for (Method method : methodForAuthCodeSelect.keySet()) {
                 Object code = method.invoke(methodForAuthCodeSelect.get(method));
                 String authCode;
                 if (code instanceof String) {
                     authCode = (String) code;
-                    for (String table : method.getAnnotation(AuthenticationCodeBuilder.class).tables()) {
-                        annTableAuthCodeMap.put(table, authCode);
+                    for (String tableReg : method.getAnnotation(AuthenticationCodeBuilder.class).tables()) {
+                        annTableRegAuthCodeMap.put(tableReg, authCode);
                     }
                 } else {
                     throw new GarbleParamException("鉴权code获取方法返回值需为String类型");
                 }
             }
             for (String table : monitoredTableList) {
-                String matchKey = null;
+                String matchedTableReg = null;
                 GarbleTable garbleTable = SqlUtil.getGarbleTableFromFullName(schema, table);
-                for (String key : annTableAuthCodeMap.keySet()) {
-                    if (garbleTable.getTableName().matches(key)) {
-                        if (null != matchKey && !matchKey.equals(key)) {
+                for (String tableReg : annTableRegAuthCodeMap.keySet()) {
+                    if (garbleTable.getTableName().matches(tableReg)) {
+                        if (null != matchedTableReg && !matchedTableReg.equals(tableReg)) {
                             throw new GarbleParamException(
                                     String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
                                             SqlUtil.getGarbleTableFromFullName(schema, table).getSimpleName(),
-                                            matchKey, key));
+                                            matchedTableReg, tableReg));
                         }
-                        matchKey = key;
+                        matchedTableReg = tableReg;
                     }
-                    if (garbleTable.getSimpleName().matches(key)) {
-                        if (null != matchKey && !matchKey.equals(key)) {
+                    if (garbleTable.getSimpleName().matches(tableReg)) {
+                        if (null != matchedTableReg && !matchedTableReg.equals(tableReg)) {
                             throw new GarbleParamException(
                                     String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
                                             SqlUtil.getGarbleTableFromFullName(schema, table).getSimpleName(),
-                                            matchKey, key));
+                                            matchedTableReg, tableReg));
                         }
-                        matchKey = key;
+                        matchedTableReg = tableReg;
                     }
                 }
-                if (null == matchKey) {
+                if (null == matchedTableReg) {
                     throw new GarbleParamException(table +
                             " 该table没有在AuthenticationCodeBuilder注解中被使用, 无法获取鉴权code");
                 } else {
-                    monitoredTableAuthCodeMap.put(table, annTableAuthCodeMap.get(matchKey));
+                    monitoredTableAuthCodeMap.put(table, annTableRegAuthCodeMap.get(matchedTableReg));
                 }
             }
 
