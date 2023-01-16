@@ -109,7 +109,7 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                             .contains(table.getFullName())).collect(Collectors.toList());
             //重构where内查询条件, 增加auth过滤
             Expression where = select.getWhere();
-            if (0 != currentCrossTableList.size()) {
+            if (0 != crossGarbleTableSet.size()) {
                 //构建auth过滤的表达式
                 List<Expression> expressionList = expressionListBuilder(currentCrossTableList);
                 //如果原表达式式没有where直接插入构建的auth表达式, 否则需要深度优先搜索向下重构之前的where, 再插入构建的auth表达式
