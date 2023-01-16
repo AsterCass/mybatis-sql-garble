@@ -7,6 +7,7 @@ import com.aster.plugin.garble.exception.GarbleParamException;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
@@ -114,7 +115,9 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                 //如果原表达式式没有where直接插入构建的auth表达式, 否则需要深度优先搜索向下重构之前的where, 再插入构建的auth表达式
                 if (null != where) {
                     getSubTableInWhere(where);
-                    expressionList.add(where);
+                    //添加括号 防止出现条件中带有or导致的or, and连用导致的逻辑谬误
+                    Parenthesis par = new Parenthesis(where);
+                    expressionList.add(par);
                 }
                 Expression expression = andExpressionBuilder(expressionList);
                 select.setWhere(expression);
