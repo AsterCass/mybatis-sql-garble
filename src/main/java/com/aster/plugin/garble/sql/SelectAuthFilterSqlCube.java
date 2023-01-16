@@ -106,11 +106,12 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
             List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
                     crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
                             .contains(table.getFullName())).collect(Collectors.toList());
-
-
+            //重构where内查询条件, 增加auth过滤
             Expression where = select.getWhere();
             if (0 != currentCrossTableList.size()) {
+                //构建auth过滤的表达式
                 List<Expression> expressionList = expressionListBuilder(currentCrossTableList);
+                //如果原表达式式没有where直接插入构建的auth表达式, 否则需要深度优先搜索向下重构之前的where, 再插入构建的auth表达式
                 if (null != where) {
                     getSubTableInWhere(where);
                     expressionList.add(where);
@@ -135,13 +136,16 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                 String code = monitoredTableAuthCodeMap.get(key);
                 Integer strategy = monitoredTableAuthStrategyMap.get(key);
                 if (null == col) {
-                    throw new GarbleParamException(key + " 该表无法从配置文件中载入数据库鉴权列");
+                    throw new GarbleParamException(
+                            String.format("[%s]该表无法从配置文件中载入数据库鉴权列", key));
                 }
                 if (null == code) {
-                    throw new GarbleParamException(key + " 该表无法从AuthenticationCodeBuilder获取相应鉴权code");
+                    throw new GarbleParamException(
+                            String.format("[%s]该表无法从AuthenticationCodeBuilder获取相应鉴权code", key));
                 }
                 if (null == strategy) {
-                    throw new GarbleParamException(key + " 该表无法从配置文件中载入鉴权策略");
+                    throw new GarbleParamException(
+                            String.format("[%s]该表无法从配置文件中载入鉴权策略", key));
                 }
                 //这里就不用策略模式了，目前用的话，冗余设计了
                 if (AuthenticationStrategyEnum.EQUAL.getCode().equals(strategy)) {
@@ -170,7 +174,8 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
                     inExpression.setRightItemsList(expressions);
                     expressionList.add(inExpression);
                 } else {
-                    throw new GarbleParamException(key + " 该表配置文件写入错误，参考AuthenticationStrategyEnum");
+                    throw new GarbleParamException(
+                            String.format("[%s]该表配置文件写入错误，参考AuthenticationStrategyEnum", key));
                 }
             }
         }
