@@ -78,8 +78,8 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                         property.getMonitoredTableAuthColMap().get(colMapContainTable));
             } else if (null == this.defaultAuthColName) {
                 throw new GarbleParamException(
-                        "monitor-table-list监控表中包含monitored-table-auth-col-map未标明的table," +
-                                "或没有给予默认权限标记列default-auth-col-name默认值");
+                        String.format("monitoredTableList中的[%s]未在monitoredTableAuthColMap中中查询到相应的key, " +
+                                "defaultAuthColName也未标明默认的鉴权列, 无法为该表配置鉴权", garbleTable.getSimpleName()));
             } else {
                 monitoredTableAuthColMap.put(garbleTable.getFullName(), this.defaultAuthColName);
             }
@@ -96,8 +96,9 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
 
             } else if (null == this.defaultAuthStrategy) {
                 throw new GarbleParamException(
-                        "monitor-table-list监控表中包含monitored-table-auth-strategy-map未标明的table," +
-                                "或没有给予默认权限标记列default-auth-strategy默认值");
+                        String.format("monitoredTableList中的[%s]未在monitoredTableAuthStrategyMap中中查询到相应的key, " +
+                                "defaultAuthStrategy默认值也未标明默认的鉴权策略, 无法为该表配置鉴权",
+                                garbleTable.getSimpleName()));
             } else {
                 monitoredTableAuthStrategyMap.put(garbleTable.getFullName(), defaultAuthStrategy);
             }
