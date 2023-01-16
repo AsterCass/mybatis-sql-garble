@@ -135,7 +135,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                 GarbleTable garbleTable = SqlUtil.getGarbleTableFromFullName(schema, table);
                 for (String key : annTableAuthCodeMap.keySet()) {
                     if (garbleTable.getTableName().matches(key)) {
-                        if (null != matchKey) {
+                        if (null != matchKey && !matchKey.equals(key)) {
                             throw new GarbleParamException(
                                     String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
                                             SqlUtil.getGarbleTableFromFullName(schema, table).getSimpleName(),
@@ -144,7 +144,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
                         matchKey = key;
                     }
                     if (garbleTable.getSimpleName().matches(key)) {
-                        if (null != matchKey) {
+                        if (null != matchKey && !matchKey.equals(key)) {
                             throw new GarbleParamException(
                                     String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
                                             SqlUtil.getGarbleTableFromFullName(schema, table).getSimpleName(),
