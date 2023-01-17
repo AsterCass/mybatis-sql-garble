@@ -19,7 +19,9 @@ public class QueryAuthService implements AuthenticationCodeInterface {
      * @return 鉴权code
      */
     @Override
-    @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble_.*$", "^garble\\..*$"})
+    // 错误示例 这样会匹配成功多个正则 为了防止用户产生难以定位的bug 多个匹配的情况会报错
+//     @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble_.*$", "^garble\\..*$"})
+    @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble.*$"})
     public String authenticationCodeBuilder() {
         return JSON.toJSONString(Arrays.asList("1234", "12345", "1"));
     }

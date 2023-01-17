@@ -32,14 +32,14 @@
         <setting name="cacheEnabled" value="true"/>
         <setting name="lazyLoadingEnabled" value="false"/>
         <setting name="aggressiveLazyLoading" value="true"/>
+        <setting name="mapUnderscoreToCamelCase" value="true" />
     </settings>
 
     <plugins>
 
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
             <property name="auth.select.monitoredTableList" value="['garble_employee']"/>
-            <property name="auth.select.monitoredTableAuthColMap"
-                      value="{'garble_employee':'c_id'}"/>
+            <property name="auth.select.defaultAuthColName" value="c_id"/>
             <property name="auth.select.defaultAuthStrategy" value="3"/>
         </plugin>
 
@@ -61,7 +61,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="mapper/UpdateCallbackSimpleMapper.xml"/>
+        <mapper resource="mapper/AuthSelectSimpleMapper.xml"/>
         <mapper resource="mapper/CompanyMapper.xml"/>
         <mapper resource="mapper/EmployeeMapper.xml"/>
         <mapper resource="mapper/TaskMapper.xml"/>
