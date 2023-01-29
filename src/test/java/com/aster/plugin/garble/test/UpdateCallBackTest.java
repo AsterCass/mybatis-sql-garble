@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class UpdateCallBackFunctionTest {
+public class UpdateCallBackTest {
 
     @Test
     public void updateRowCallBackSimple() {

@@ -28,7 +28,7 @@ public interface AuthSelectSimpleMapper {
             "ge.e_msg like '%z%' or ge.e_msg like '%s%'")
     List<GarbleEmployee> selectOtherJoin();
 
-    @Select("select * from garble_task where e_id in (select id from garble_employee)")
+    @Select("select * from garble_task where e_id in (select id from garble_employee ge)")
     List<GarbleTask> selectSub();
 
     @Select("select gt.* from garble_task gt join garble_employee ge on gt.e_id = ge.id")

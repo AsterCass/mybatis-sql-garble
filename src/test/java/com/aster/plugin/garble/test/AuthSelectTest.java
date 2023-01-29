@@ -89,7 +89,6 @@ public class AuthSelectTest {
             Assert.assertTrue(Arrays.asList(1L, 2L, 3L ,4L, 5L, 6L).contains(task.getId()));
         }
 
-
         log.info("[op:authSelectSimple] base filter success");
 
     }

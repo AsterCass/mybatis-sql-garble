@@ -15,22 +15,5 @@ public class UpdatedOneService implements DealWithUpdatedInterface {
         System.out.println("1:" + JSON.toJSONString(updatedTableMap));
     }
 
-    private void test() {
-
-    }
-
-    public void pubTest() {
-
-    }
-
-    @DealWithUpdated(priority = 3)
-    public void pubTestAnn() {
-
-    }
-
-    public void execute() {
-
-    }
-
 
 }

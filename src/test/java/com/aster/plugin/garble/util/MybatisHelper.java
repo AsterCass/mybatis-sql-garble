@@ -34,24 +34,12 @@ import java.io.Reader;
 
 public class MybatisHelper {
 
-    private static SqlSessionFactory baseSession;
-
     private static SqlSessionFactory updateCallbackSimpleSession;
 
     private static SqlSessionFactory updateCallbackOtherSession;
 
     private static SqlSessionFactory authSelectSimpleSession;
 
-    static {
-        try {
-            //创建SqlSessionFactory
-            Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath() + "/mybatis-config.xml");
-            baseSession = new SqlSessionFactoryBuilder().build(reader);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     static {
         try {
@@ -89,14 +77,6 @@ public class MybatisHelper {
         }
     }
 
-
-    /**
-     * 获取Session
-     */
-    public static SqlSession getSqlSession() {
-        return baseSession.openSession();
-    }
-
     /**
      * 获取Session
      */
@@ -111,6 +91,9 @@ public class MybatisHelper {
         return updateCallbackOtherSession.openSession();
     }
 
+    /**
+     * 获取Session
+     */
     public static SqlSession getAuthSelectSimpleSession() {
         return authSelectSimpleSession.openSession();
     }
