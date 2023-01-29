@@ -3,6 +3,7 @@ package com.aster.plugin.garble.test;
 
 import com.aster.plugin.garble.entity.GarbleEmployee;
 import com.aster.plugin.garble.entity.GarbleTask;
+import com.aster.plugin.garble.mapper.AuthSelectOtherMapper;
 import com.aster.plugin.garble.mapper.AuthSelectSimpleMapper;
 import com.aster.plugin.garble.mapper.EmployeeMapper;
 import com.aster.plugin.garble.util.MybatisHelper;
@@ -86,11 +87,83 @@ public class AuthSelectTest {
         Assert.assertNotNull(taskJoin);
         Assert.assertEquals(taskJoin.size(), 6);
         for (GarbleTask task : taskJoin) {
-            Assert.assertTrue(Arrays.asList(1L, 2L, 3L ,4L, 5L, 6L).contains(task.getId()));
+            Assert.assertTrue(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L).contains(task.getId()));
         }
 
         log.info("[op:authSelectSimple] base filter success");
 
+    }
+
+    @Test
+    public void authSelectOther() {
+        log.info("[op:authSelectOther] start");
+        //基本查询sql验证
+        SqlSession sqlSession = MybatisHelper.getAuthSelectOtherSession();
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<GarbleEmployee> bxSEmployee = mapper.selectByExample(null);
+        Assert.assertNotNull(bxSEmployee);
+        Assert.assertEquals(bxSEmployee.size(), 4);
+        for (GarbleEmployee employee : bxSEmployee) {
+            Assert.assertTrue(Arrays.asList(11L, 22L, 33L, 44L).contains(employee.getId()));
+        }
+        //基本查询sql验证
+        AuthSelectOtherMapper otherMapper = sqlSession.getMapper(AuthSelectOtherMapper.class);
+        List<GarbleEmployee> employees = otherMapper.selectAll();
+        sqlSession.commit();
+        Assert.assertNotNull(employees);
+        Assert.assertEquals(employees.size(), 4);
+        for (GarbleEmployee employee : employees) {
+            Assert.assertTrue(Arrays.asList(11L, 22L, 33L, 44L).contains(employee.getId()));
+        }
+        //schema内联表查询
+        List<GarbleTask> taskAll = otherMapper.selectAllTask();
+        sqlSession.commit();
+        Assert.assertNotNull(taskAll);
+        Assert.assertEquals(taskAll.size(), 3);
+        for (GarbleTask task : taskAll) {
+            Assert.assertTrue(Arrays.asList(1L, 2L, 3L).contains(task.getId()));
+        }
+        //schema外联表查询
+        List<GarbleTask> taskElseAll = otherMapper.selectAllElseTask();
+        sqlSession.commit();
+        Assert.assertNotNull(taskElseAll);
+        Assert.assertEquals(taskElseAll.size(), 2);
+        for (GarbleTask task : taskElseAll) {
+            Assert.assertTrue(Arrays.asList(4L, 5L).contains(task.getId()));
+        }
+        //schema内联表查询反
+        List<GarbleEmployee> employeeAllRe = otherMapper.selectAllTaskRe();
+        sqlSession.commit();
+        Assert.assertNotNull(employeeAllRe);
+        Assert.assertEquals(employeeAllRe.size(), 3);
+        for (GarbleEmployee employee : employeeAllRe) {
+            Assert.assertEquals(11L, (long) employee.getId());
+        }
+        //schema外联表查询反
+        List<GarbleEmployee> employeeElseAllRe = otherMapper.selectAllElseTaskRe();
+        sqlSession.commit();
+        Assert.assertNotNull(employeeElseAllRe);
+        Assert.assertEquals(employeeElseAllRe.size(), 2);
+        for (GarbleEmployee employee : employeeElseAllRe) {
+            Assert.assertEquals(22L, (long) employee.getId());
+        }
+        //schema外联表子查询
+        List<GarbleTask> taskElseChild = otherMapper.selectChildElseTask();
+        sqlSession.commit();
+        Assert.assertNotNull(taskElseChild);
+        Assert.assertEquals(taskElseChild.size(), 2);
+        for (GarbleTask task : taskElseChild) {
+            Assert.assertTrue(Arrays.asList(4L, 5L).contains(task.getId()));
+        }
+        //schema外联表子查询反
+        List<GarbleEmployee> employeeElseChildRe = otherMapper.selectChildElseTaskRe();
+        sqlSession.commit();
+        Assert.assertNotNull(employeeElseChildRe);
+        Assert.assertEquals(employeeElseChildRe.size(), 1);
+        for (GarbleEmployee employee : employeeElseChildRe) {
+            Assert.assertEquals(22L, (long) employee.getId());
+        }
+        log.info("[op:authSelectOther] end");
     }
 
 

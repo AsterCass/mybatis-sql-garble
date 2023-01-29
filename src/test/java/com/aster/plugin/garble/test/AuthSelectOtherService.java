@@ -7,7 +7,7 @@ import com.aster.plugin.garble.service.AuthenticationCodeInterface;
 
 import java.util.Arrays;
 
-public class AuthSelectService implements AuthenticationCodeInterface {
+public class AuthSelectOtherService implements AuthenticationCodeInterface {
 
     /**
      * 获取鉴权code，用于和配置字段相比较
@@ -19,11 +19,9 @@ public class AuthSelectService implements AuthenticationCodeInterface {
      * @return 鉴权code
      */
     @Override
-    // 错误示例 这样会匹配成功多个正则 为了防止用户产生难以定位的bug 多个匹配的情况会报错
-//     @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble_.*$", "^garble\\..*$"})
-    @AuthenticationCodeBuilder(type = 2, tables = {"user", "^garble_employ.*$"})
+    @AuthenticationCodeBuilder(type = 2, tables = {"^garble.garble_task$", "^garble_else.garble_task$"})
     public String authenticationCodeBuilder() {
-        return JSON.toJSONString(Arrays.asList("12345678", "1"));
+        return JSON.toJSONString(Arrays.asList("1234567800", "11", "220"));
     }
 
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,17 +53,29 @@ public class PropertyUtil {
                     if ("java.util.Map<java.lang.String, java.lang.String>".equals(type)) {
                         Method method = propertyInstance.getClass()
                                 .getDeclaredMethod("set" + firstUpperName, Map.class);
-                        String mapStr;
-                        //兼容mybatis-config和yml文件的配置
-                        if (prop.get(name) instanceof String) {
-                            mapStr = prop.get(name).toString();
-                        } else {
-                            mapStr = JSON.toJSONString(prop.get(name));
-                        }
-
                         @SuppressWarnings("rawtypes")
-                        Map strMap = JSON.parseObject(mapStr, Map.class);
+                        Map strMap = getMapFromStringProp(prop, name);
                         method.invoke(propertyInstance, strMap);
+                    }
+                    if ("java.util.Map<java.lang.String, java.lang.Integer>".equals(type)) {
+                        Method method = propertyInstance.getClass()
+                                .getDeclaredMethod("set" + firstUpperName, Map.class);
+                        @SuppressWarnings("rawtypes")
+                        Map strMap = getMapFromStringProp(prop, name);
+                        Map<String, Integer> invokeMap = new HashMap<>();
+                        for (Object key : strMap.keySet()) {
+                            Object value = strMap.get(key);
+                            if (value instanceof Integer) {
+                                invokeMap.put(key.toString(), (Integer) value);
+                            } else if (value instanceof String) {
+                                int thisValue = Integer.parseInt((String) value);
+                                invokeMap.put(key.toString(), thisValue);
+                            } else {
+                                int thisValue = Integer.parseInt(value.toString());
+                                invokeMap.put(key.toString(), thisValue);
+                            }
+                        }
+                        method.invoke(propertyInstance, invokeMap);
                     }
 
                     if ("java.util.List<java.lang.String>".equals(type)) {
@@ -101,6 +114,20 @@ public class PropertyUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Map getMapFromStringProp(Properties prop, String name) {
+        String mapStr;
+        //兼容mybatis-config和yml文件的配置
+        if (prop.get(name) instanceof String) {
+            mapStr = prop.get(name).toString();
+        } else {
+            mapStr = JSON.toJSONString(prop.get(name));
+        }
+        @SuppressWarnings("rawtypes")
+        Map strMap = JSON.parseObject(mapStr, Map.class);
+        return strMap;
     }
 
     private static String firstUpperCase(String str) {
