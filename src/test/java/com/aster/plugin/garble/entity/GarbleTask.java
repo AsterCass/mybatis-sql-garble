@@ -19,4 +19,8 @@ public class GarbleTask {
     @Entity.Column("update_record")
     private Integer updateRecord;
 
+    @Entity.Column("auth_code_col")
+    private Integer authCodeCol;
+
+
 }

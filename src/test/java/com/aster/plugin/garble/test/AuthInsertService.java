@@ -16,7 +16,7 @@ public class AuthInsertService implements AuthenticationCodeInterface {
      * @return 鉴权code
      */
     @Override
-    @AuthenticationCodeBuilder(type = 3, tables = {"user"})
+    @AuthenticationCodeBuilder(type = 3, tables = {"^garble.garble_task$"})
     public String authenticationCodeBuilder() {
         return "1234";
     }

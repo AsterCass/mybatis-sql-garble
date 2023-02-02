@@ -86,59 +86,60 @@ CREATE TABLE `garble_task`
     `e_id`          int(11) NOT NULL,
     `t_name`        varchar(50) DEFAULT NULL,
     `update_record` int(4)      DEFAULT 0,
+    `auth_code_col`        varchar(50) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4;
 
-insert into garble_task(t_name, e_id)
-values ('工作1', 11);
-insert into garble_task(t_name, e_id)
-values ('工作2', 11);
-insert into garble_task(t_name, e_id)
-values ('工作3', 11);
-insert into garble_task(t_name, e_id)
-values ('工作4', 22);
-insert into garble_task(t_name, e_id)
-values ('工作5', 22);
-insert into garble_task(t_name, e_id)
-values ('工作6', 44);
-insert into garble_task(t_name, e_id)
-values ('工作7', 55);
-insert into garble_task(t_name, e_id)
-values ('工作8', 66);
-insert into garble_task(t_name, e_id)
-values ('工作9', 77);
-insert into garble_task(t_name, e_id)
-values ('工作9', 77);
-insert into garble_task(t_name, e_id)
-values ('工作9', 77);
-insert into garble_task(t_name, e_id)
-values ('工作9', 77);
-insert into garble_task(t_name, e_id)
-values ('工作10', 88);
-insert into garble_task(t_name, e_id)
-values ('工作10', 88);
-insert into garble_task(t_name, e_id)
-values ('工作10', 88);
-insert into garble_task(t_name, e_id)
-values ('工作11', 99);
-insert into garble_task(t_name, e_id)
-values ('工作12', 1010);
-insert into garble_task(t_name, e_id)
-values ('工作13', 1212);
-insert into garble_task(t_name, e_id)
-values ('工作14', 1313);
-insert into garble_task(t_name, e_id)
-values ('工作15', 1414);
-insert into garble_task(t_name, e_id)
-values ('工作16', 1515);
-insert into garble_task(t_name, e_id)
-values ('工作17', 1515);
-insert into garble_task(t_name, e_id)
-values ('工作18', 1515);
-insert into garble_task(t_name, e_id)
-values ('工作19', 1515);
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作1', 11, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作2', 11, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作3', 11, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作4', 22, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作5', 22, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作6', 44, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作7', 55, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作8', 66, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 77, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 77, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 77, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 77, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 88, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 88, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 88, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作11', 99, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作12', 1010, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作13', 1212, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作14', 1313, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作15', 1414, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作16', 1515, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作17', 1515, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作18', 1515, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作19', 1515, '123');
 
 USE `garble_else`;
 
@@ -150,56 +151,57 @@ CREATE TABLE `garble_task`
     `e_id`          int(11) NOT NULL,
     `t_name`        varchar(50) DEFAULT NULL,
     `update_record` int(4)      DEFAULT 0,
+    `auth_code_col`        varchar(50) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4;
 
-insert into garble_task(t_name, e_id)
-values ('工作1', 110);
-insert into garble_task(t_name, e_id)
-values ('工作2', 110);
-insert into garble_task(t_name, e_id)
-values ('工作3', 110);
-insert into garble_task(t_name, e_id)
-values ('工作4', 220);
-insert into garble_task(t_name, e_id)
-values ('工作5', 220);
-insert into garble_task(t_name, e_id)
-values ('工作6', 440);
-insert into garble_task(t_name, e_id)
-values ('工作7', 550);
-insert into garble_task(t_name, e_id)
-values ('工作8', 660);
-insert into garble_task(t_name, e_id)
-values ('工作9', 770);
-insert into garble_task(t_name, e_id)
-values ('工作9', 770);
-insert into garble_task(t_name, e_id)
-values ('工作9', 770);
-insert into garble_task(t_name, e_id)
-values ('工作9', 770);
-insert into garble_task(t_name, e_id)
-values ('工作10', 880);
-insert into garble_task(t_name, e_id)
-values ('工作10', 880);
-insert into garble_task(t_name, e_id)
-values ('工作10', 880);
-insert into garble_task(t_name, e_id)
-values ('工作11', 990);
-insert into garble_task(t_name, e_id)
-values ('工作12', 10100);
-insert into garble_task(t_name, e_id)
-values ('工作13', 12120);
-insert into garble_task(t_name, e_id)
-values ('工作14', 13130);
-insert into garble_task(t_name, e_id)
-values ('工作15', 14140);
-insert into garble_task(t_name, e_id)
-values ('工作16', 15150);
-insert into garble_task(t_name, e_id)
-values ('工作17', 15150);
-insert into garble_task(t_name, e_id)
-values ('工作18', 15150);
-insert into garble_task(t_name, e_id)
-values ('工作19', 15150);
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作1', 110, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作2', 110, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作3', 110, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作4', 220, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作5', 220, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作6', 440, '1234');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作7', 550, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作8', 660, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 770, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 770, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 770, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作9', 770, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 880, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 880, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作10', 880, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作11', 990, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作12', 10100, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作13', 12120, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作14', 13130, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作15', 14140, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作16', 15150, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作17', 15150, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作18', 15150, '123');
+insert into garble_task(t_name, e_id, auth_code_col)
+values ('工作19', 15150, '123');
