@@ -20,7 +20,7 @@ public class GarbleTask {
     private Integer updateRecord;
 
     @Entity.Column("auth_code_col")
-    private Integer authCodeCol;
+    private String authCodeCol;
 
 
 }

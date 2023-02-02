@@ -21,7 +21,7 @@ public class AuthSelectOtherService implements AuthenticationCodeInterface {
     @Override
     @AuthenticationCodeBuilder(type = 2, tables = {"^garble.garble_task$", "^garble_else.garble_task$"})
     public String authenticationCodeBuilder() {
-        return JSON.toJSONString(Arrays.asList("1234567800", "11", "220"));
+        return JSON.toJSONString(Arrays.asList("1234567800", "11", "220", "123456"));
     }
 
 }

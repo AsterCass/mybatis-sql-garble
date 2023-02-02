@@ -42,6 +42,8 @@ public class MybatisHelper {
 
     private static SqlSessionFactory authSelectOtherSession;
 
+    private static SqlSessionFactory authInsertSession;
+
 
     static {
         try {
@@ -91,6 +93,18 @@ public class MybatisHelper {
         }
     }
 
+    static {
+        try {
+            //创建SqlSessionFactory
+            Reader reader = Resources.getResourceAsReader(TestUtil.getXmlPath()
+                    + "/mybatis-config-auth-insert.xml");
+            authInsertSession = new SqlSessionFactoryBuilder().build(reader);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 获取Session
      */
@@ -117,6 +131,13 @@ public class MybatisHelper {
      */
     public static SqlSession getAuthSelectOtherSession() {
         return authSelectOtherSession.openSession();
+    }
+
+    /**
+     * 获取Session
+     */
+    public static SqlSession getAuthInsertSession() {
+        return authInsertSession.openSession();
     }
 
 
