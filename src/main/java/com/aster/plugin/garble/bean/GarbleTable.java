@@ -2,7 +2,6 @@ package com.aster.plugin.garble.bean;
 
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.mysql.cj.jdbc.ConnectionImpl;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.sf.jsqlparser.schema.Table;
@@ -15,7 +14,6 @@ import java.sql.Connection;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class GarbleTable {
 
     private Table table;
@@ -38,6 +36,18 @@ public class GarbleTable {
         return String.format("%s.%s", this.schemaName, this.tableName);
     }
 
+    public void setTableName(String tableName) {
+        if (null != tableName) {
+            this.tableName = tableName.replace("`", "").toLowerCase();
+        }
+    }
+
+    public void setSchemaName(String schemaName) {
+        if (null != schemaName) {
+            this.schemaName = schemaName.replace("`", "").toLowerCase();
+        }
+    }
+
 
     public boolean equal(GarbleTable other) {
         return this.getTableName().equals(other.getTableName())
@@ -51,6 +61,13 @@ public class GarbleTable {
         } else {
             this.setSchemaName(schemaName.replace("`", "").toLowerCase());
         }
+    }
+
+    public GarbleTable(Table table, String tableName, String schemaName, String aliasName) {
+        this.table = table;
+        this.aliasName = aliasName;
+        this.setTableName(tableName);
+        this.setSchemaName(schemaName);
     }
 
     public static String getConnectSchema(MappedStatement ms) {

@@ -1,6 +1,8 @@
 package com.aster.plugin.garble.property;
 
 import com.aster.plugin.garble.bean.GarbleTable;
+import com.aster.plugin.garble.exception.GarbleParamException;
+import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.BaseSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
 import com.mysql.cj.jdbc.ConnectionImpl;
@@ -16,10 +18,14 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -199,6 +205,67 @@ public class MybatisRuntimeProperty {
         if (NEW_VERSION_INVOCATION_ARG_NUM == args.length) {
             args[5] = newBoundSql;
         }
+    }
+
+    /**
+     * 权限相关回调获取
+     */
+    protected HashMap<String, String> executeMethodForGetAuth(Map<Method, Object> methodForAuthCodeSelect,
+                                                              String typeErrorMessage)
+            throws IllegalAccessException, InvocationTargetException {
+        HashMap<String, String> annTableRegAuthCodeMap = new HashMap<>();
+        for (Method method : methodForAuthCodeSelect.keySet()) {
+            Object code = method.invoke(methodForAuthCodeSelect.get(method));
+            String authCode;
+            if (code instanceof String) {
+                authCode = (String) code;
+                for (String tableReg : method.getAnnotation(AuthenticationCodeBuilder.class).tables()) {
+                    annTableRegAuthCodeMap.put(tableReg, authCode);
+                }
+            } else {
+                throw new GarbleParamException(typeErrorMessage);
+            }
+        }
+        return annTableRegAuthCodeMap;
+    }
+
+    /**
+     * 权限码正则匹配
+     */
+    protected Map<String, String> authRegMatch(HashMap<String, String> annTableRegAuthCodeMap,
+                                               Set<GarbleTable> monitoredTableSet,
+                                               String tableNoFoundErrorMessage) {
+        Map<String, String> monitoredTableAuthCodeMap = new HashMap<>();
+        for (GarbleTable garbleTable : monitoredTableSet) {
+            String matchedTableReg = null;
+            for (String tableReg : annTableRegAuthCodeMap.keySet()) {
+                if (garbleTable.getTableName().matches(tableReg)) {
+                    if (null != matchedTableReg && !matchedTableReg.equals(tableReg)) {
+                        throw new GarbleParamException(
+                                String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
+                                        garbleTable.getSimpleName(),
+                                        matchedTableReg, tableReg));
+                    }
+                    matchedTableReg = tableReg;
+                }
+                if (garbleTable.getSimpleName().matches(tableReg)) {
+                    if (null != matchedTableReg && !matchedTableReg.equals(tableReg)) {
+                        throw new GarbleParamException(
+                                String.format("[%s]该正则匹配不具有唯一匹配，匹配项有[%s][%s]...",
+                                        garbleTable.getSimpleName(),
+                                        matchedTableReg, tableReg));
+                    }
+                    matchedTableReg = tableReg;
+                }
+            }
+            if (null == matchedTableReg) {
+                throw new GarbleParamException(garbleTable.getSimpleName() + tableNoFoundErrorMessage);
+            } else {
+                monitoredTableAuthCodeMap.put(garbleTable.getFullName(),
+                        annTableRegAuthCodeMap.get(matchedTableReg));
+            }
+        }
+        return monitoredTableAuthCodeMap;
     }
 
     /**

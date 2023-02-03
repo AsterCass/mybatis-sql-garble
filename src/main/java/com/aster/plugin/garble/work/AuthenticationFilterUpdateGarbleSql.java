@@ -4,11 +4,14 @@ import com.aster.plugin.garble.property.AuthenticationFilterUpdateProperty;
 import com.aster.plugin.garble.sql.UpdateAuthFilterSqlCube;
 import org.apache.ibatis.plugin.Invocation;
 
+/**
+ * @author astercasc
+ */
 public class AuthenticationFilterUpdateGarbleSql extends AuthenticationFilterUpdateAbstract {
 
     public AuthenticationFilterUpdateGarbleSql(
             Invocation invocation, AuthenticationFilterUpdateProperty property) {
-        super(invocation, property, property.getMethodForAuthCodeUpdate());
+        super(invocation, property);
     }
 
 

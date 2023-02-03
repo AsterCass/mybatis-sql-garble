@@ -26,6 +26,7 @@ public class AuthInsertTest {
         //插入本schema数据库
         AuthInsertMapper insertMapper = sqlSession.getMapper(AuthInsertMapper.class);
         insertMapper.insertSimple();
+        sqlSession.commit();
 
         log.info("[op:authInsert] end");
     }

@@ -20,14 +20,14 @@ public interface AuthSelectOtherMapper {
     @Select("select * from garble_employee join garble_task on garble_task.e_id = garble_employee.id")
     List<GarbleEmployee> selectAllTaskRe();
 
-    @Select("select * from garble_employee ge join garble_else.garble_task gt on gt.e_id = concat(ge.id,'0')")
+    @Select("select * from `garble_employee` ge join garble_else.garble_task gt on gt.e_id = concat(ge.id,'0')")
     List<GarbleEmployee> selectAllElseTaskRe();
 
-    @Select("select * from garble_else.garble_task gt where left(gt.e_id,2) in (select id from garble_employee ge)")
+    @Select("select * from `garble_else`.`garble_task` gt where left(gt.e_id,2) in (select id from `garble_employee` ge)")
     List<GarbleTask> selectChildElseTask();
 
     @Select("select * from garble.garble_employee ge where " +
-            "concat(ge.id,'0') in (select e_id from garble_else.garble_task gt)")
+            "concat(ge.id,'0') in (select e_id from `garble_else`.`garble_task` gt)")
     List<GarbleEmployee> selectChildElseTaskRe();
 
 }

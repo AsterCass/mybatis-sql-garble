@@ -1,14 +1,15 @@
 package com.aster.plugin.garble.work;
 
+import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.property.AuthenticationInsertProperty;
-import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.InsertSqlCube;
+import com.aster.plugin.garble.util.SqlUtil;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,69 +28,67 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
      * builder
      */
     public AuthenticationInsertAbstract(
-            Invocation invocation, AuthenticationInsertProperty property,
-            Map<Method, Object> methodForAuthCodeInsert) {
+            Invocation invocation, AuthenticationInsertProperty property) {
 
+        //基础数据赋值
         super(invocation);
 
-        this.excludedMapperPath = property.getExcludedMapperPath();
-        this.monitoredTableList = property.getMonitoredTableList();
+        //基本验证
+        if (null == property.getMonitoredTableList() || 0 == property.getMonitoredTableList().size()) {
+            throw new GarbleParamException("添加插入授权需求但是未检测到监控表配置【monitoredTableList】");
+        }
+
+        //基础表名赋值
+        this.monitoredTableList = new ArrayList<>();
+        for (String tableName : property.getMonitoredTableList()) {
+            GarbleTable garbleTable = SqlUtil.getGarbleTableFromFullName(schema, tableName);
+            this.monitoredTableList.add(garbleTable.getFullName());
+            this.monitoredTableSet.add(garbleTable);
+        }
 
         //这里全部转小写，后面各种操作，大小写不太方便
         if (null != property.getDefaultAuthColName()) {
             this.defaultAuthColName = property.getDefaultAuthColName().toLowerCase();
         } else {
-            this.defaultAuthColName = "";
+            this.defaultAuthColName = null;
         }
 
-        if (null != monitoredTableList && 0 != monitoredTableList.size()) {
-            this.monitoredTableAuthColMap = new HashMap<>();
-            for (String table : monitoredTableList) {
-                if (null != property.getMonitoredTableAuthColMap() &&
-                        null != property.getMonitoredTableAuthColMap().get(table)) {
-                    monitoredTableAuthColMap.put(table, property.getMonitoredTableAuthColMap().get(table));
-                } else if ("".equals(defaultAuthColName)) {
-                    throw new GarbleParamException(
-                            "monitor-table-list监控表中包含monitoredTableAuthCodeMap未标明的table," +
-                                    "或没有给予默认权限标记列defaultAuthColName默认值");
-                } else {
-                    monitoredTableAuthColMap.put(table, defaultAuthColName);
-                }
-
+        this.monitoredTableAuthColMap = new HashMap<>();
+        for (GarbleTable garbleTable : monitoredTableSet) {
+            //权限标记列
+            String colMapContainTable = null;
+            if (null != property.getMonitoredTableAuthColMap()) {
+                colMapContainTable = SqlUtil.garbleContain(
+                        new ArrayList<>(property.getMonitoredTableAuthColMap().keySet()), garbleTable, schema);
             }
-        } else {
-            throw new GarbleParamException("添加授权需求但是未检测到授权监控表配置");
+            if (null != property.getMonitoredTableAuthColMap() && null != colMapContainTable) {
+                this.monitoredTableAuthColMap.put(garbleTable.getFullName(),
+                        property.getMonitoredTableAuthColMap().get(colMapContainTable));
+            } else if (null == defaultAuthColName) {
+                throw new GarbleParamException(
+                        String.format("monitoredTableList中的[%s]未在monitoredTableAuthColMap中中查询到相应的key, " +
+                                "defaultAuthColName也未标明默认的鉴权列, 无法为该表配置鉴权", garbleTable.getSimpleName()));
+            } else {
+                this.monitoredTableAuthColMap.put(garbleTable.getFullName(), defaultAuthColName);
+            }
         }
 
-        this.methodForAuthCodeInsert = methodForAuthCodeInsert;
+        //回调方法
+        this.methodForAuthCodeInsert = property.getMethodForAuthCodeInsert();
+
+        //忽视的sql的mapper路径
+        this.excludedMapperPath = property.getExcludedMapperPath();
+
     }
 
     private void setTableAuthCodeMap() {
         try {
-            monitoredTableAuthCodeMap = new HashMap<>();
+            //先执行所有实现AuthenticationCodeInterface的方法
             //此methodList至少为1个, 校验在项目初始化时完成 SpecifiedMethodGenerator.loadAuthCodeBySubTypes
-            HashMap<String, String> annTableAuthCodeMap = new HashMap<>();
-            for (Method method : methodForAuthCodeInsert.keySet()) {
-                Object code = method.invoke(methodForAuthCodeInsert.get(method));
-                String authCode;
-                if (code instanceof String) {
-                    authCode = (String) code;
-                    for (String table : method.getAnnotation(AuthenticationCodeBuilder.class).tables()) {
-                        annTableAuthCodeMap.put(table, authCode);
-                    }
-                } else {
-                    throw new GarbleParamException("授权code获取方法返回值需为String类型");
-                }
-            }
-            for (String table : monitoredTableList) {
-                if (null == annTableAuthCodeMap.get(table)) {
-                    throw new GarbleParamException(table +
-                            " 该table没有在AuthenticationCodeBuilder注解中被使用, 无法获取授权code");
-                } else {
-                    monitoredTableAuthCodeMap.put(table, annTableAuthCodeMap.get(table));
-                }
-            }
-
+            HashMap<String, String> annTableRegAuthCodeMap = executeMethodForGetAuth(
+                    methodForAuthCodeInsert, "授权code获取方法返回值需为String类型");
+            this.monitoredTableAuthCodeMap = authRegMatch(annTableRegAuthCodeMap, crossGarbleTableSet,
+                    " 该table没有在AuthenticationCodeBuilder注解中被使用, 无法获取授权code");
         } catch (InvocationTargetException ex) {
             ex.getTargetException().printStackTrace();
             throw new GarbleRuntimeException(ex.getTargetException().getMessage());
@@ -105,7 +104,7 @@ public abstract class AuthenticationInsertAbstract extends AuthenticationInsertP
      */
     public void run() {
         if (notExcludedTableCondition(invocation, excludedMapperPath) &&
-                (monitoredTableCondition(monitoredTableList, new InsertSqlCube()))) {
+                (monitoredTableCondition(monitoredTableSet, new InsertSqlCube()))) {
             setTableAuthCodeMap();
             exec();
         }

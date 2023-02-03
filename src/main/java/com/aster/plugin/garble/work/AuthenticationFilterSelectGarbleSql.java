@@ -3,6 +3,7 @@ package com.aster.plugin.garble.work;
 import com.aster.plugin.garble.property.AuthenticationFilterSelectProperty;
 import com.aster.plugin.garble.sql.SelectAuthFilterSqlCube;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.plugin.Invocation;
 
 /**
  * @author astercasc
@@ -11,8 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationFilterSelectGarbleSql extends AuthenticationFilterSelectAbstract {
 
 
-    public AuthenticationFilterSelectGarbleSql(AuthenticationFilterSelectProperty property) {
-        super(property.getInvocation(), property, property.getMethodForAuthCodeSelect());
+    public AuthenticationFilterSelectGarbleSql(Invocation invocation,
+                                               AuthenticationFilterSelectProperty property) {
+        super(invocation, property);
     }
 
 

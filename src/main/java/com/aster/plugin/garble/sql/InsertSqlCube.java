@@ -2,6 +2,7 @@ package com.aster.plugin.garble.sql;
 
 import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.service.UpdateFlagCol;
+import com.aster.plugin.garble.util.SqlUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -11,16 +12,15 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -47,37 +47,6 @@ public class InsertSqlCube extends BaseSqlCube {
             jsqlParserException.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-
-    /**
-     * 获取所有表名包装
-     *
-     * @param sql sql
-     * @return 复杂结构表名 包括schema
-     */
-    @Override
-    public Set<GarbleTable> getGarbleTableList(MappedStatement ms, String sql) {
-        try {
-            Statement statement = CCJSqlParserUtil.parse(sql);
-            if (statement instanceof Insert) {
-                Insert insertStatement = (Insert) statement;
-                GarbleTable garbleTable = new GarbleTable();
-                String table = null == insertStatement.getTable().getName() ?
-                        null : insertStatement.getTable().getName().replace("`", "");
-                String schema = null == insertStatement.getTable().getSchemaName() ?
-                        null : insertStatement.getTable().getSchemaName().replace("`", "");
-                garbleTable.setTableName(table);
-                garbleTable.setSchemaName(schema);
-                if (null == garbleTable.getSchemaName()) {
-                    garbleTable.setSchemaName(GarbleTable.getConnectSchema(ms));
-                }
-                return new HashSet<>(Collections.singletonList(garbleTable));
-            }
-        } catch (JSQLParserException jsqlParserException) {
-            jsqlParserException.printStackTrace();
-        }
-        return new HashSet<>();
     }
 
 
@@ -112,7 +81,8 @@ public class InsertSqlCube extends BaseSqlCube {
      * 如果要修改sql中存在的列的值，参考
      * <a href="https://www.cnblogs.com/flysand/p/9274997.html">https://www.cnblogs.com/flysand/p/9274997.html</a>
      */
-    public static String addInsertNumberSet(String sql, List<String> tableList,
+    public static String addInsertNumberSet(String sql, Set<GarbleTable> crossGarbleTableSet,
+                                            String defaultSchema,
                                             Map<String, String> tableColMap,
                                             Map<String, String> tableValueMap) {
         try {
@@ -120,11 +90,14 @@ public class InsertSqlCube extends BaseSqlCube {
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
-                if (!tableList.contains(insertStatement.getTable().getName())) {
+                GarbleTable thisGrableTable = SqlUtil.getGarbleTableFromFullName(
+                        defaultSchema, insertStatement.getTable().getName());
+                if (!crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
+                        .contains(thisGrableTable.getFullName())) {
                     return sql;
                 }
-                String flagColName = tableColMap.get(insertStatement.getTable().getName());
-                String value = tableValueMap.get(insertStatement.getTable().getName());
+                String flagColName = tableColMap.get(thisGrableTable.getFullName());
+                String value = tableValueMap.get(thisGrableTable.getFullName());
                 for (int count = 0; count < insertStatement.getColumns().size(); ++count) {
                     //是否本来的sql中就已经包含了鉴权列
                     if (flagColName.equals(insertStatement.getColumns().get(count).getColumnName())) {

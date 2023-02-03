@@ -36,12 +36,14 @@
     </settings>
 
     <plugins>
-
         <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleQueryInterceptor">
             <!--            select-->
             <property name="auth.select.monitoredTableList" value="['garble_task', 'garble_else.garble_task']"/>
             <property name="auth.select.defaultAuthColName" value="auth_code_col"/>
             <property name="auth.select.defaultAuthStrategy" value="3"/>
+        </plugin>
+
+        <plugin interceptor="com.aster.plugin.garble.interceptor.GarbleUpdateInterceptor">
             <!--            insert-->
             <property name="auth.insert.monitoredTableList" value="['garble_task', 'garble_else.garble_task']"/>
             <property name="auth.insert.defaultAuthColName" value="auth_code_col"/>
@@ -65,7 +67,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="mapper/AuthSelectOtherMapper.xml"/>
+        <mapper resource="mapper/AuthInsertMapper.xml"/>
         <mapper resource="mapper/CompanyMapper.xml"/>
         <mapper resource="mapper/EmployeeMapper.xml"/>
         <mapper resource="mapper/TaskMapper.xml"/>

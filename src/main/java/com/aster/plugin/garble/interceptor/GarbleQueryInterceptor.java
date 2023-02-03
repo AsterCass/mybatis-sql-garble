@@ -54,9 +54,8 @@ public class GarbleQueryInterceptor implements Interceptor {
 
         if (invocation.getArgs()[0] instanceof MappedStatement) {
             if (null != authenticationFilterSelectProperty) {
-                authenticationFilterSelectProperty.setInvocation(invocation);
                 AuthenticationFilterSelectAbstract garbleSql = new AuthenticationFilterSelectGarbleSql(
-                        authenticationFilterSelectProperty);
+                        invocation, authenticationFilterSelectProperty);
                 garbleSql.run();
             }
         }

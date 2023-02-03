@@ -43,7 +43,6 @@ public class AuthenticationInsertProperty extends MybatisRuntimeProperty {
      */
     protected List<String> excludedMapperPath;
 
-
     /**
      * 继承 AuthenticationCodeInterface 用于获取鉴权code的方法，
      */

@@ -26,8 +26,7 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
      * builder
      */
     public AuthenticationFilterUpdateAbstract(
-            Invocation invocation, AuthenticationFilterUpdateProperty property,
-            Map<Method, Object> methodForAuthCodeUpdate) {
+            Invocation invocation, AuthenticationFilterUpdateProperty property) {
 
         super(invocation);
 
@@ -77,7 +76,7 @@ public abstract class AuthenticationFilterUpdateAbstract extends AuthenticationF
             throw new GarbleParamException("添加鉴权需求但是未检测到鉴权监控表配置");
         }
 
-        this.methodForAuthCodeUpdate = methodForAuthCodeUpdate;
+        this.methodForAuthCodeUpdate = property.getMethodForAuthCodeUpdate();
     }
 
     private void setTableAuthCodeMap() {

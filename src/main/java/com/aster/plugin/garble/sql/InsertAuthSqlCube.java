@@ -1,14 +1,18 @@
 package com.aster.plugin.garble.sql;
 
-import java.util.List;
+import com.aster.plugin.garble.bean.GarbleTable;
+
 import java.util.Map;
+import java.util.Set;
 
 public class InsertAuthSqlCube extends InsertSqlCube {
+
+    protected String defaultSchema;
 
     /**
      * 监控表列表
      */
-    protected List<String> monitoredTableList;
+    protected Set<GarbleTable> crossGarbleTableSet;
 
     /**
      * 监控表和权限标记列
@@ -20,11 +24,13 @@ public class InsertAuthSqlCube extends InsertSqlCube {
      */
     protected Map<String, String> monitoredTableAuthCodeMap;
 
-    public InsertAuthSqlCube(List<String> monitoredTableList,
+    public InsertAuthSqlCube(String defaultSchema,
+                             Set<GarbleTable> crossGarbleTableSet,
                              Map<String, String> monitoredTableAuthColMap,
                              Map<String, String> monitoredTableAuthCodeMap) {
+        this.defaultSchema = defaultSchema;
         this.monitoredTableAuthColMap = monitoredTableAuthColMap;
-        this.monitoredTableList = monitoredTableList;
+        this.crossGarbleTableSet = crossGarbleTableSet;
         this.monitoredTableAuthCodeMap = monitoredTableAuthCodeMap;
     }
 
@@ -34,7 +40,8 @@ public class InsertAuthSqlCube extends InsertSqlCube {
      */
     public String addAuthCode(String sql) {
         //map和list的对应关系已经在 AuthenticationFilterAbstract 的构造函数中验证过了
-        return addInsertNumberSet(sql, monitoredTableList, monitoredTableAuthColMap, monitoredTableAuthCodeMap);
+        return addInsertNumberSet(sql, crossGarbleTableSet, defaultSchema,
+                monitoredTableAuthColMap, monitoredTableAuthCodeMap);
     }
 
 
