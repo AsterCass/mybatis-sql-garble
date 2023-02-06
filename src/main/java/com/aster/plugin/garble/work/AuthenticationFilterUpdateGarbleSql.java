@@ -17,7 +17,8 @@ public class AuthenticationFilterUpdateGarbleSql extends AuthenticationFilterUpd
 
     @Override
     protected void exec() {
-        String newSql = new UpdateAuthFilterSqlCube(crossTableList,
+        String newSql = new UpdateAuthFilterSqlCube(
+                schema, crossGarbleTableSet,
                 monitoredTableAuthColMap,
                 monitoredTableAuthStrategyMap,
                 monitoredTableAuthCodeMap).addAuthCode(sql);

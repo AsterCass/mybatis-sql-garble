@@ -12,13 +12,22 @@ import net.sf.jsqlparser.statement.update.Update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+/**
+ * @author astercasc
+ */
 public class UpdateAuthFilterSqlCube extends UpdateSqlCube {
+
+    /**
+     * 默认schema
+     */
+    private String defaultSchema;
 
     /**
      * 监控表列表
      */
-    protected List<String> monitoredTableList;
+    protected Set<GarbleTable> crossGarbleTableSet;
 
     /**
      * 监控表和权限标记列
@@ -35,13 +44,15 @@ public class UpdateAuthFilterSqlCube extends UpdateSqlCube {
      */
     protected Map<String, String> monitoredTableAuthCodeMap;
 
-    public UpdateAuthFilterSqlCube(List<String> monitoredTableList,
+    public UpdateAuthFilterSqlCube(String defaultSchema,
+                                   Set<GarbleTable> crossGarbleTableSet,
                                    Map<String, String> monitoredTableAuthColMap,
                                    Map<String, Integer> monitoredTableAuthStrategyMap,
                                    Map<String, String> monitoredTableAuthCodeMap) {
+        this.defaultSchema = defaultSchema;
+        this.crossGarbleTableSet = crossGarbleTableSet;
         this.monitoredTableAuthColMap = monitoredTableAuthColMap;
         this.monitoredTableAuthStrategyMap = monitoredTableAuthStrategyMap;
-        this.monitoredTableList = monitoredTableList;
         this.monitoredTableAuthCodeMap = monitoredTableAuthCodeMap;
     }
 

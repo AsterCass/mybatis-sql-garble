@@ -117,7 +117,7 @@ public abstract class AuthenticationFilterSelectAbstract extends AuthenticationF
             HashMap<String, String> annTableRegAuthCodeMap = executeMethodForGetAuth(
                     methodForAuthCodeSelect, "鉴权code获取方法返回值需为String类型");
             this.monitoredTableAuthCodeMap = authRegMatch(annTableRegAuthCodeMap, crossGarbleTableSet,
-                    " 该table没有在AuthenticationCodeBuilder注解中被使用, 无法获取鉴权code");
+                    " 该table没有在AuthenticationCodeBuilder注解中被使用, 无法获取查询鉴权code");
 
         } catch (InvocationTargetException ex) {
             ex.getTargetException().printStackTrace();
