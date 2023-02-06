@@ -90,6 +90,7 @@ public class AuthSelectTest {
             Assert.assertTrue(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L).contains(task.getId()));
         }
 
+        sqlSession.close();
         log.info("[op:authSelectSimple] base filter success");
 
     }
@@ -163,6 +164,8 @@ public class AuthSelectTest {
         for (GarbleEmployee employee : employeeElseChildRe) {
             Assert.assertEquals(22L, (long) employee.getId());
         }
+
+        sqlSession.close();
         log.info("[op:authSelectOther] end");
     }
 

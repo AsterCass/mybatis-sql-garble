@@ -95,6 +95,7 @@ public class AuthInsertTest {
             sqlSession.commit();
         }
 
+        sqlSession.close();
         log.info("[op:authInsert] end");
     }
 

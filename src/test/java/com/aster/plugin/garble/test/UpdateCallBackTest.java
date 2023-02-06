@@ -88,6 +88,8 @@ public class UpdateCallBackTest {
         mapper.updateAloneBack3();
         mapper.updateAloneBack4();
         sqlSession.commit();
+
+        sqlSession.close();
         log.info("[op:updateRowCallBackSimple] end");
 
     }
@@ -160,6 +162,8 @@ public class UpdateCallBackTest {
         mapper.updateAloneBack5();
         mapper.updateAloneBack6();
         sqlSession.commit();
+
+        sqlSession.close();
         log.info("[op:updateRowCallBackOther] end");
 
     }
