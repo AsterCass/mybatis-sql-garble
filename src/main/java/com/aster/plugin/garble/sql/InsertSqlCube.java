@@ -90,8 +90,13 @@ public class InsertSqlCube extends BaseSqlCube {
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Insert) {
                 Insert insertStatement = (Insert) statement;
+                String thisInsertTable = insertStatement.getTable().getName();
+                String thisInsertSchema = insertStatement.getTable().getSchemaName();
+                if (null != thisInsertSchema) {
+                    defaultSchema = thisInsertSchema;
+                }
                 GarbleTable thisGrableTable = SqlUtil.getGarbleTableFromFullName(
-                        defaultSchema, insertStatement.getTable().getName());
+                        defaultSchema, thisInsertTable);
                 if (!crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
                         .contains(thisGrableTable.getFullName())) {
                     return sql;

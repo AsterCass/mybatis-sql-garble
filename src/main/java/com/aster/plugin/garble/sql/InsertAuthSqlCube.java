@@ -7,6 +7,9 @@ import java.util.Set;
 
 public class InsertAuthSqlCube extends InsertSqlCube {
 
+    /**
+     * 默认schema
+     */
     protected String defaultSchema;
 
     /**
