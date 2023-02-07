@@ -5,6 +5,9 @@ import com.aster.plugin.garble.bean.GarbleTable;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author astercasc
+ */
 public class InsertAuthSqlCube extends InsertSqlCube {
 
     /**

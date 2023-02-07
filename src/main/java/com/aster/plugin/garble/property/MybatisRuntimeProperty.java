@@ -21,7 +21,6 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,12 +62,6 @@ public class MybatisRuntimeProperty {
     protected String schema;
 
     /**
-     * sql和监控表列表重合的表名
-     */
-    @Deprecated
-    protected List<String> crossTableList;
-
-    /**
      * sql和监控表列表重合的表包装
      */
     protected Set<GarbleTable> crossGarbleTableSet;
@@ -107,8 +100,6 @@ public class MybatisRuntimeProperty {
             throw new RuntimeException("connect to sql fail");
         }
 
-
-        this.crossTableList = new ArrayList<>();
         this.monitoredTableSet = new HashSet<>();
         this.sqlGarbleTableSet = new HashSet<>();
         this.crossGarbleTableSet = new HashSet<>();
@@ -141,24 +132,6 @@ public class MybatisRuntimeProperty {
             }
         }
         return toGarble;
-    }
-
-
-    /**
-     * 判断是否在监控表列表中
-     */
-    protected boolean monitoredTableCondition(List<String> monitoredTableList, BaseSqlCube sqlCube) {
-        boolean inMonitored = false;
-        List<String> tableList = sqlCube.getTableList(sql);
-        for (String monitoredTable : monitoredTableList) {
-            for (String table : tableList) {
-                if (table.equals(monitoredTable)) {
-                    inMonitored = true;
-                    crossTableList.add(table);
-                }
-            }
-        }
-        return inMonitored;
     }
 
     /**
