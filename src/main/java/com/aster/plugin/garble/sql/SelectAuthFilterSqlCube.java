@@ -72,7 +72,8 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
             Select selectStatement = (Select) statement;
             if (selectStatement.getSelectBody() instanceof PlainSelect) {
                 PlainSelect select = (PlainSelect) selectStatement.getSelectBody();
-                crossTableBuilder(select);
+                new BaseSqlWhereCube(defaultSchema, crossGarbleTableSet, monitoredTableAuthColMap,
+                        monitoredTableAuthStrategyMap, monitoredTableAuthCodeMap).crossTableBuilder(select);
             } else {
                 throw new GarbleParamException("查询语句Body解析失败: " + sql);
             }
@@ -81,68 +82,6 @@ public class SelectAuthFilterSqlCube extends SelectSqlCube {
             jsqlParserException.printStackTrace();
         }
         return sql;
-    }
-
-    /**
-     * 本层查询解析
-     */
-    private void crossTableBuilder(PlainSelect select) {
-        try {
-            //本层的sql中包含的tale, 不包含下层的子查询
-            List<GarbleTable> sqlTableList = getTableNameMapInSqlBody(select, defaultSchema);
-            List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
-                    crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
-                            .contains(table.getFullName())).collect(Collectors.toList());
-            //重构where内查询条件, 增加auth过滤
-            Expression where = select.getWhere();
-            if (0 != crossGarbleTableSet.size()) {
-                //构建auth过滤的表达式
-                List<Expression> expressionList = expressionListBuilder(
-                        monitoredTableAuthColMap, monitoredTableAuthStrategyMap,
-                        monitoredTableAuthCodeMap, currentCrossTableList);
-                //如果原表达式式没有where直接插入构建的auth表达式, 否则需要深度优先搜索向下重构之前的where, 再插入构建的auth表达式
-                if (null != where) {
-                    getSubTableInWhere(where);
-                    //添加括号 防止出现条件中带有or导致的or, and连用导致的逻辑谬误
-                    Parenthesis par = new Parenthesis(where);
-                    expressionList.add(par);
-                }
-                Expression expression = andExpressionBuilder(expressionList);
-                select.setWhere(expression);
-            }
-        } catch (GarbleParamException ex) {
-            throw new GarbleParamException(ex.getMessage() + " SQL: " + select);
-        }
-    }
-
-    /**
-     * 查询where中的子查询进行循环
-     */
-    public void getSubTableInWhere(Expression whereExpression) {
-        if (null != whereExpression) {
-            Method[] methodList = whereExpression.getClass().getMethods();
-            for (Method method : methodList) {
-                List<String> rightLeftExpression = Arrays.asList("getRightExpression", "getLeftExpression");
-                if (rightLeftExpression.contains(method.getName()) && 0 == method.getParameterTypes().length) {
-                    try {
-                        Object obj = method.invoke(whereExpression);
-                        if (obj instanceof SubSelect) {
-                            SubSelect subSelectStat = (SubSelect) obj;
-                            if (subSelectStat.getSelectBody() instanceof PlainSelect) {
-                                PlainSelect select = (PlainSelect) subSelectStat.getSelectBody();
-                                crossTableBuilder(select);
-                            } else {
-                                throw new GarbleParamException("查询语句Body解析失败");
-                            }
-                        } else if (obj instanceof Expression) {
-                            getSubTableInWhere((Expression) obj);
-                        }
-                    } catch (InvocationTargetException | IllegalAccessException ex) {
-                        throw new GarbleParamException("查询语句InWhere方法调用失败");
-                    }
-                }
-            }
-        }
     }
 
 
