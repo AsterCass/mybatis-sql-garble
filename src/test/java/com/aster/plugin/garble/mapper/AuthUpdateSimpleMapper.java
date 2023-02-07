@@ -15,6 +15,15 @@ public interface AuthUpdateSimpleMapper {
     @Update("update garble_task set update_record = 1 where e_id = 77")
     void updateEmployee();
 
+    @Update("update garble_task gt set update_record = 1 where e_id = 77")
+    void updateEmployeeAlias();
+
+    @Update("update `garble`.garble_task set update_record = 1 where e_id = 77")
+    void updateEmployeeSchema();
+
+    @Update("update `garble`.`garble_task` gt set update_record = 1 where e_id = 77")
+    void updateEmployeeSchemaAlias();
+
 
 
 

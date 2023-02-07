@@ -52,6 +52,45 @@ public class AuthUpdateTest {
             simpleMapper.updateCallBack();
             sqlSession.commit();
         }
+        //基本更新sql验证 alias
+        {
+            simpleMapper.updateEmployeeAlias();
+            sqlSession.commit();
+            List<GarbleTask> taskList = simpleMapper.selectUpdatedTask();
+            Assert.assertNotNull(taskList);
+            Assert.assertEquals(taskList.size(), 2);
+            for (GarbleTask task : taskList) {
+                Assert.assertTrue(Arrays.asList(11L, 12L).contains(task.getId()));
+            }
+            simpleMapper.updateCallBack();
+            sqlSession.commit();
+        }
+        //基本更新sql验证 schema
+        {
+            simpleMapper.updateEmployeeSchema();
+            sqlSession.commit();
+            List<GarbleTask> taskList = simpleMapper.selectUpdatedTask();
+            Assert.assertNotNull(taskList);
+            Assert.assertEquals(taskList.size(), 2);
+            for (GarbleTask task : taskList) {
+                Assert.assertTrue(Arrays.asList(11L, 12L).contains(task.getId()));
+            }
+            simpleMapper.updateCallBack();
+            sqlSession.commit();
+        }
+        //基本更新sql验证 alias schema
+        {
+            simpleMapper.updateEmployeeSchemaAlias();
+            sqlSession.commit();
+            List<GarbleTask> taskList = simpleMapper.selectUpdatedTask();
+            Assert.assertNotNull(taskList);
+            Assert.assertEquals(taskList.size(), 2);
+            for (GarbleTask task : taskList) {
+                Assert.assertTrue(Arrays.asList(11L, 12L).contains(task.getId()));
+            }
+            simpleMapper.updateCallBack();
+            sqlSession.commit();
+        }
 
         sqlSession.close();
         log.info("[op:authUpdateSimple] end");
