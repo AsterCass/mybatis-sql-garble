@@ -1,9 +1,11 @@
 package com.aster.plugin.garble.sql;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.exception.GarbleParamException;
+import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import net.sf.jsqlparser.Model;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -211,35 +213,41 @@ public class BaseSqlWhereCube {
                             String.format("[%s]该表无法从配置文件中载入鉴权策略", key));
                 }
                 //这里就不用策略模式了，目前用的话，冗余设计了
-                if (AuthenticationStrategyEnum.EQUAL.getCode().equals(strategy)) {
-                    EqualsTo equals = new EqualsTo();
-                    equals.setLeftExpression(new Column(table.getTable(), col));
-                    equals.setRightExpression(new StringValue(code));
-                    expressionList.add(equals);
-                } else if (AuthenticationStrategyEnum.BOOLEAN_AND.getCode().equals(strategy)) {
-                    BitwiseAnd bitwiseAnd = new BitwiseAnd();
-                    bitwiseAnd.setLeftExpression(new Column(table.getTable(), col));
-                    bitwiseAnd.setRightExpression(new StringValue(code));
+                try {
+                    if (AuthenticationStrategyEnum.EQUAL.getCode().equals(strategy)) {
+                        EqualsTo equals = new EqualsTo();
+                        equals.setLeftExpression(new Column(table.getTable(), col));
+                        equals.setRightExpression(new StringValue(code));
+                        expressionList.add(equals);
+                    } else if (AuthenticationStrategyEnum.BOOLEAN_AND.getCode().equals(strategy)) {
+                        BitwiseAnd bitwiseAnd = new BitwiseAnd();
+                        bitwiseAnd.setLeftExpression(new Column(table.getTable(), col));
+                        bitwiseAnd.setRightExpression(new StringValue(code));
 
-                    GreaterThan greaterThan = new GreaterThan();
-                    greaterThan.setLeftExpression(bitwiseAnd);
-                    greaterThan.setRightExpression(new LongValue(0));
-                    expressionList.add(greaterThan);
-                } else if (AuthenticationStrategyEnum.INTERSECTION.getCode().equals(strategy)) {
-                    InExpression inExpression = new InExpression();
-                    inExpression.setLeftExpression(new Column(table.getTable(), col));
+                        GreaterThan greaterThan = new GreaterThan();
+                        greaterThan.setLeftExpression(bitwiseAnd);
+                        greaterThan.setRightExpression(new LongValue(0));
+                        expressionList.add(greaterThan);
+                    } else if (AuthenticationStrategyEnum.INTERSECTION.getCode().equals(strategy)) {
+                        InExpression inExpression = new InExpression();
+                        inExpression.setLeftExpression(new Column(table.getTable(), col));
 
-                    List<String> codeList = JSON.parseArray(code, String.class);
-                    ExpressionList expressions = new ExpressionList();
-                    for (String inCode : codeList) {
-                        expressions.addExpressions(new StringValue(inCode));
+                        List<String> codeList = JSON.parseArray(code, String.class);
+                        ExpressionList expressions = new ExpressionList();
+                        for (String inCode : codeList) {
+                            expressions.addExpressions(new StringValue(inCode));
+                        }
+                        inExpression.setRightItemsList(expressions);
+                        expressionList.add(inExpression);
+                    } else {
+                        throw new GarbleParamException(
+                                String.format("[%s]该表配置文件写入错误，参考AuthenticationStrategyEnum", key));
                     }
-                    inExpression.setRightItemsList(expressions);
-                    expressionList.add(inExpression);
-                } else {
-                    throw new GarbleParamException(
-                            String.format("[%s]该表配置文件写入错误，参考AuthenticationStrategyEnum", key));
+                } catch (JSONException jsonException) {
+                    throw new GarbleRuntimeException(String.format("[%s]该code不符合策略规范，" +
+                            "参考AuthenticationStrategyEnum", code));
                 }
+
             }
         }
         return expressionList;

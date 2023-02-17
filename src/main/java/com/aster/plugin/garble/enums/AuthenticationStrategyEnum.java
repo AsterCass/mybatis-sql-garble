@@ -22,7 +22,7 @@ public enum AuthenticationStrategyEnum {
     BOOLEAN_AND(2, "按位与"),
 
     /**
-     * 交集鉴权, 当传入鉴权List和数据库对于jsonString有交集时
+     * 交集鉴权, 当传入鉴权List和数据库对于字段有交集时，鉴权List使用JSON字符串形式返回
      * todo 目前不支持数据中穿插jsonString, 只支持数据中存储String
      */
     INTERSECTION(3, "交集"),
