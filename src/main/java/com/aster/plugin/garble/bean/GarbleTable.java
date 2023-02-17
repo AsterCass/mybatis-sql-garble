@@ -1,7 +1,6 @@
 package com.aster.plugin.garble.bean;
 
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
-import com.mysql.cj.jdbc.ConnectionImpl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.sf.jsqlparser.schema.Table;
@@ -71,14 +70,16 @@ public class GarbleTable {
     }
 
     public static String getConnectSchema(MappedStatement ms) {
-        String schemaName = null;
+        String schemaName;
         try {
             Connection con = ms.getConfiguration().getEnvironment().getDataSource().getConnection();
-            if (con instanceof ConnectionImpl) {
-                ConnectionImpl conImpl = (ConnectionImpl) con;
-                schemaName = conImpl.getDatabase();
+            if (null != con.getSchema() && 0 != con.getSchema().length()) {
+                schemaName = con.getSchema();
+            } else if (null != con.getCatalog() && 0 != con.getCatalog().length()) {
+                schemaName = con.getCatalog();
+            } else {
+                throw new GarbleRuntimeException("connect schema get fail");
             }
-            con.close();
         } catch (Exception ex) {
             throw new GarbleRuntimeException("无法获取数据库连接");
         }
