@@ -2,10 +2,10 @@ package com.aster.plugin.garble.property;
 
 import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.exception.GarbleParamException;
+import com.aster.plugin.garble.exception.GarbleRuntimeException;
 import com.aster.plugin.garble.service.AuthenticationCodeBuilder;
 import com.aster.plugin.garble.sql.BaseSqlCube;
 import com.aster.plugin.garble.util.MappedStatementUtil;
-import com.mysql.cj.jdbc.ConnectionImpl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.executor.Executor;
@@ -90,14 +90,17 @@ public class MybatisRuntimeProperty {
         try {
             Connection connection = this.mappedStatement.getConfiguration()
                     .getEnvironment().getDataSource().getConnection();
-            if (connection instanceof ConnectionImpl) {
-                ConnectionImpl con = (ConnectionImpl) connection;
-                this.schema = con.getDatabase();
+            if (null != connection.getSchema() && 0 != connection.getSchema().length()) {
+                schema = connection.getSchema();
+            } else if (null != connection.getCatalog() && 0 != connection.getCatalog().length()) {
+                schema = connection.getCatalog();
+            } else {
+                throw new GarbleRuntimeException("connect schema get fail");
             }
             connection.close();
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException("connect to sql fail");
+            throw new GarbleRuntimeException("connect to sql fail");
         }
 
         this.monitoredTableSet = new HashSet<>();
