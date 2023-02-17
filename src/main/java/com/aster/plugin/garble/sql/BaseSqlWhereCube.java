@@ -244,8 +244,8 @@ public class BaseSqlWhereCube {
                                 String.format("[%s]该表配置文件写入错误，参考AuthenticationStrategyEnum", key));
                     }
                 } catch (JSONException jsonException) {
-                    throw new GarbleRuntimeException(String.format("[%s]该code不符合策略规范，" +
-                            "参考AuthenticationStrategyEnum", code));
+                    throw new GarbleRuntimeException(String.format("authenticationCodeBuilder返回code[%s]" +
+                            "不符合策略规范，参考AuthenticationStrategyEnum", code));
                 }
 
             }
