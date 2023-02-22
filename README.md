@@ -22,27 +22,7 @@
 
 ## 挂起的功能
 
-!~ test ~!
-
-+( test )+
-
--! test !-
-
-+ test +
-
-```diff
-+ Green
-+ test +
-- Red
-! Orange
-@@ Pink @@
-# Gray
-```
-
-- red
-+ green
-  ! orange
-# gray
+$$\color{green}{Green}$$
 
 1. 交集鉴权支持数据单个列存jsonList的情况, 目前仅支持传入的权限写为List
    <mark>麻烦，再议</mark>
