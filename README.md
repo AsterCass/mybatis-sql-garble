@@ -18,10 +18,7 @@
 1. 支持联表更新的数据鉴权
 2. 测试与mybatis plus等其他拦截器的兼容性
 3. 获取鉴权方法使用正则匹配代替原本的list参数，简化多数据表的鉴权的配置成本
-4. 用户提示，mybatis的\<select\>标签和mapper文件中@Select标识不要写错, 在正常情况下可能没有影响,
-   但是在鉴权逻辑中 @Select @Update这种标识是区分鉴权方式的 会导致鉴权配置紊乱的问题
-5. 用户提示，测试用例相关代码中为了尽可能覆盖更多逻辑，部分地方配置有冗余、不够简便，需要用户注意区隔。
-   简化的配置方案参考readme
+
 
 ## 挂起的功能
 
@@ -36,45 +33,21 @@
    而不是通过在注解中配置type的方式，减少配置项，同时支持默认获取鉴权数据的方法
    <font color="BurlyWood">这个不重要，再议</font>
 
-## 快速开始（以使用【返回更新数据】功能为例）
+## 快速开始
+
+以使用【返回更新数据】功能为例，其他功能参考下方【功能简述】
 
 ### 数据表搭建
 
-引入该依赖需要增加希望监控表的数据列,
-这里使用 update_record 为例, 具体增加字段名可以在配置文件中指定
+引入该功能需要增加一个数据库字段来标明更新状态, 具体增加字段的字段名需要在配置文件中指定
 
-```sql
-CREATE DATABASE `garble` DEFAULT CHARACTER SET utf8mb4;
+执行统计文件下的<font color="BurlyWood">env.sql</font>文件搭建测试数据环境
 
-USE `garble`;
-DROP TABLE IF EXISTS `user`;
+### 配置
 
-CREATE TABLE `user`
-(
-   `id`            int(11) NOT NULL AUTO_INCREMENT,
-   `name`          varchar(50) DEFAULT NULL,
-   `ext`           varchar(50) DEFAULT NULL,
-   `update_record` int(4)      DEFAULT 0,
-   PRIMARY KEY (`Id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 9
-  DEFAULT CHARSET = utf8mb4;
+根据项目选用spring boot配置还是maven配置, gradle同理
 
-insert into user(id, name, ext)
-values ('1', '张老大', 'aaa');
-insert into user(id, name, ext)
-values ('2', '张老二', 'bbb');
-insert into user(id, name, ext)
-values ('3', '张老三', 'ccc');
-insert into user(id, name, ext)
-values ('4', '张老四', 'ddd');
-insert into user(id, name, ext)
-values ('5', '张老五', 'eee');
-insert into user(id, name, ext)
-values ('6', '张老六', 'fff');
-```
-
-### 配置（根据项目选用spring boot配置还是maven配置, gradle同理）
+如果使用的是springboot构建项目使用springboot配置即可，不需要再搭建maven配置
 
 #### spring boot 配置
 
@@ -108,11 +81,10 @@ garble:
       - 1
    #【返回更新数据】功能所需配置
    updated-data-msg:
-      #默认更新标记字段, 如果监控表的更新标记字段没有在monitored-table-update-flag-col-map找到对应关系, 会取该值
+      #默认更新标记字段
       default-flag-col-name: "update_record"
       #监控表和回调字段的对应关系，一般为主键
-      monitored-table-map: { 'user_table': 'id', 'log_table': 'id' }
-
+      monitored-table-map: { 'garble_task': 'id' }
 ```
 
 #### maven配置
@@ -146,7 +118,7 @@ mybatis-config.xml
          <!--默认更新标记字段, 如果监控表的更新标记字段没有在monitoredTableUpdateFlagColMap找到对应关系, 会取该值-->
          <property name="updated-data-msg.defaultFlagColName" value="update_record"/>
          <!--监控表和回调字段的对应关系，一般为主键-->
-         <property name="updated-data-msg.monitoredTableMap" value="{'user':'id'}"/>
+         <property name="updated-data-msg.monitoredTableMap" value="{'garble_task':'id'}"/>
       </plugin>
    </plugins>
 </configuration>
@@ -154,39 +126,43 @@ mybatis-config.xml
 
 ### 代码
 
+代码部分以springboot项目为例，maven项目类似，就不展示了，如果有需要可以移步本项目的测试目录查看
+
 #### 更新监控表
 
-service:
+##### service:
 
 ```java
-public class BaseTest {
-   public void test() {
-      //get userMapper...
-      userMapper.updateOne("张老二", "bbb");
+public class UpdateCallbackTest {
+
+   @Resource
+   private GarbleTaskMapper garbleTaskMapper;
+
+   public void simpleUpdateCallbackTest() {
+      garbleTaskMapper.updateOne();
    }
+
 }
 ```
 
-mapper:
+##### mapper:
 
 ```java
-public interface UserMapper {
-   int updateOne(@Param("name") String name, @Param("ext") String ext);
+
+@org.apache.ibatis.annotations.Mapper
+public interface GarbleTaskMapper extends Mapper<GarbleTask> {
+
+   @Update("update garble_task set t_name = '工作xx' where e_id = 55")
+   void updateOne();
+
 }
 ```
 
-xml:
-
-```xml
-
-<update id="updateOne">
-   update user set name = #{name} where ext = #{ext}
-</update>
-```
+##### callback:
 
 回调函数: 当感知到user监控表被更新的时候, 会回调该函数让用户可以感知到数据表的变化
 
-callback:
+如果为maven项目则不需要@Service注解
 
 ```java
 @Service
@@ -194,42 +170,30 @@ public class UpdatedOneService implements DealWithUpdatedInterface {
 
    /**
     * 回调方法需要是实现DealWithUpdatedInterface, 并且需要通过@DealWithUpdated注解
-    * 标明优先级, 优先级priority更小的会更先执行
+    * 标明优先级, 如果存在多个继承DealWithUpdatedInterface的类，优先级priority更小的会更先执行
     */
    @DealWithUpdated(priority = 1)
    @Override
    public void execute(Map<String, List<String>> updatedTableMap) {
-      System.out.println("1:" + JSON.toJSONString(updatedTableMap));
+      System.out.println(JSON.toJSONString(updatedTableMap));
    }
 }
 ```
 
-```java
-@Service
-public class UpdatedTwoService implements DealWithUpdatedInterface {
+##### log:
 
-   /**
-    * 回调方法需要是实现DealWithUpdatedInterface, 并且需要通过@DealWithUpdated注解
-    * 标明优先级, 优先级priority更小的会更先执行
-    */
-   @DealWithUpdated(priority = 2)
-   @Override
-   public void execute(Map<String, List<String>> updatedTableMap) {
-      System.out.println("2:" + JSON.toJSONString(updatedTableMap));
-   }
-}
-```
-
-log:
+此时可以观测到日志信息
 
 ```text
-1:{"user":["2"]}
-2:{"user":["2"]}
+{"garble_task":["7"]}
 ```
 
-## 配置介绍
+## 全功能完整配置介绍
 
-这里只展示yml文件的配置, 如果不使用 spring boot 则需要配置 mybatis-config , 字段和yml配置相同, 但是需要增加功能前缀, 参考【快速开始】-【配置】
+这里只展示yml文件的配置, 如果不使用springboot则需要配置mybatis-config,
+字段和yml配置相同, 但是需要增加功能前缀, 参考【快速开始】-【配置】-【maven配置】或者参考本项目的测试目录
+
+这里为完整配置的说明, 不需要全部都赋值
 
 ```yaml
 garble:
@@ -285,14 +249,37 @@ garble:
          #在此map中的的sql不受到监控，即使包含监控表
          excluded-mapper-path:
             - "com.aster.mapper.ExcludeMapperRed"
+      #更新鉴权
+      update:
+         #标记实现AuthenticationCodeInterface接口的方法路径，加快加快初始化速度，可以不赋值
+         auth-code-path: "com.baidu"
+         #监控表列表
+         monitored-table-list:
+            - "user"
+         #监控表和权限标记列
+         monitored-table-auth-col-map: { 'user_table': 'auth_code_o', 'log_table': 'auth_code_t' }
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code"
+         #监控表和权限策略
+         monitored-table-auth-strategy-map: { 'user_table': 1, 'log_table': 2 }
+         #监控表和权限策略，当monitored-table-auth-strategy-map无法查询到需要监控表的权限策略的时候，使用默认权限测率
+         default-auth-strategy: 1
+         #在此map中的的sql不受到监控，即使包含监控表
+         excluded-mapper-path:
+            - "com.aster.mapper.ExcludeMapperRed"
 ```
 
 ## 注意事项
 
 1. 目前只支持mysql
-2. 对于多schema的场景需要完善
-3. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
-4. 回调函数中的@Service是spring boot项目中的需要增加的, 如果是非spring项目直接引入mybatis-sql-garble包的话则不需要添加
+2. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
+3. 无论是sql-garble-spring-boot还是mybatis-sql-garble中的@Test部分
+测试用例相关代码中为了尽可能覆盖更多逻辑，部分地方配置有冗余、不够简便，需要用户注意区隔
+4. <font color="BurlyWood">mybatis的\<select\>标签和mapper文件中@Select标识不要写错, 在正常情况下可能没有影响, 
+但是在鉴权逻辑中 @Select @Update这种标识是区分鉴权方式的 会导致鉴权配置紊乱的问题</font>
+
+
+
 
 ## 功能简述
 
