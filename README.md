@@ -22,6 +22,28 @@
 
 ## 挂起的功能
 
+!~ test ~!
+
++( test )+
+
+-! test !-
+
++ test +
+
+```diff
++ Green
++ test +
+- Red
+! Orange
+@@ Pink @@
+# Gray
+```
+
+- red
++ green
+  ! orange
+# gray
+
 1. 交集鉴权支持数据单个列存jsonList的情况, 目前仅支持传入的权限写为List
    <mark>麻烦，再议</mark>
 2. 支持多字段鉴权（多字段同时满足对应的鉴权方法才能鉴权成功, 授权也可以同时授权多个字段） 
