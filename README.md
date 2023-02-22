@@ -23,15 +23,15 @@
 ## 挂起的功能
 
 1. 交集鉴权支持数据单个列存jsonList的情况, 目前仅支持传入的权限写为List
-   <font color="BurlyWood">麻烦，再议</font>
+   **麻烦，再议**
 2. 支持多字段鉴权（多字段同时满足对应的鉴权方法才能鉴权成功, 授权也可以同时授权多个字段）
-   <font color="BurlyWood">更麻烦，再议</font>
+   **更麻烦，再议**
 3. 支持在update语句中添加select子查询的查询鉴权
-   <font color="BurlyWood">目前在update中的select子查询的语句鉴权是采用了update中配置的鉴权策略而不是select中的
-   如果两者配置相同，那么则没有问题，如果update语句中select子查询需要使用select的鉴权配置需要跨配置域操作，比较麻烦</font>
+   **目前在update中的select子查询的语句鉴权是采用了update中配置的鉴权策略而不是select中的
+   如果两者配置相同，那么则没有问题，如果update语句中select子查询需要使用select的鉴权配置需要跨配置域操作，比较麻烦**
 4. 使用更新/插入/查询鉴权可以通过继承不同的方法实现配置不同获取鉴权数据的目的，
    而不是通过在注解中配置type的方式，减少配置项，同时支持默认获取鉴权数据的方法
-   <font color="BurlyWood">这个不重要，再议</font>
+   **这个不重要，再议**
 
 ## 快速开始
 
@@ -41,7 +41,7 @@
 
 引入该功能需要增加一个数据库字段来标明更新状态, 具体增加字段的字段名需要在配置文件中指定
 
-执行统计文件下的<font color="BurlyWood">env.sql</font>文件搭建测试数据环境
+执行统计文件下的**env.sql**文件搭建测试数据环境
 
 ### 配置
 
@@ -275,8 +275,8 @@ garble:
 2. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
 3. 无论是sql-garble-spring-boot还是mybatis-sql-garble中的@Test部分
 测试用例相关代码中为了尽可能覆盖更多逻辑，部分地方配置有冗余、不够简便，需要用户注意区隔
-4. <font color="BurlyWood">mybatis的\<select\>标签和mapper文件中@Select标识不要写错, 在正常情况下可能没有影响, 
-但是在鉴权逻辑中 @Select @Update这种标识是区分鉴权方式的 会导致鉴权配置紊乱的问题</font>
+4. **mybatis的\<select\>标签和mapper文件中@Select标识不要写错, 在正常情况下可能没有影响, 
+但是在鉴权逻辑中 @Select @Update这种标识是区分鉴权方式的 会导致鉴权配置紊乱的问题**
 
 
 
