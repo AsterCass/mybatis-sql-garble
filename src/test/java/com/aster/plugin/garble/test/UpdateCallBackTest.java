@@ -67,8 +67,8 @@ public class UpdateCallBackTest {
             Assert.assertEquals(555, code.longValue());
         }
         //这里是回调函数验证正确性 不好写Assert 需要观察日志打印是否为
-        // 1:{"`garble`.`garble_company`":["1","2"]}
-        // 2:{"`garble`.`garble_company`":["1","2"]}
+        // 1:{"garble_company":["1","2"]}
+        // 2:{"garble_company":["1","2"]}
 
         log.info("[op:updateRowCallBackSimple] update 6 no call back");
         mapper.updateAlone6();
@@ -118,8 +118,8 @@ public class UpdateCallBackTest {
             Assert.assertEquals(222, code.longValue());
         }
         //这里是回调函数验证正确性 不好写Assert 需要观察日志打印是否为
-        // 1:{"`garble`.`garble_company`":["1","2"]}
-        // 2:{"`garble`.`garble_company`":["1","2"]}
+        // 1:{"garble_company":["1","2"]}
+        // 2:{"garble_company":["1","2"]}
         log.info("[op:updateRowCallBackOther] update 3 no call back");
         mapper.updateAlone3();
         sqlSession.commit();
@@ -151,8 +151,8 @@ public class UpdateCallBackTest {
             Assert.assertEquals("工作xxx", task);
         }
         //这里是回调函数验证正确性 不好写Assert 需要观察日志打印是否为
-        // 1:{"`garble_else`.`garble_task`":["4","5"]}
-        // 2:{"`garble_else`.`garble_task`":["4","5"]}
+        // 1:{"garble_else.garble_task":["4","5"]}
+        // 2:{"garble_else.garble_task":["4","5"]}
         log.info("[op:updateRowCallBackOther] data rollback");
 
         mapper.updateAloneBack1();

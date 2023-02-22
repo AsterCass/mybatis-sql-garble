@@ -35,6 +35,14 @@ public class GarbleTable {
         return String.format("%s.%s", this.schemaName, this.tableName);
     }
 
+    public String getSelfAdaptionName(String defaultSchemaName) {
+        if (null == schemaName || schemaName.equals(defaultSchemaName)) {
+            return tableName;
+        } else {
+            return getSimpleName();
+        }
+    }
+
     public void setTableName(String tableName) {
         if (null != tableName) {
             this.tableName = tableName.replace("`", "").toLowerCase();

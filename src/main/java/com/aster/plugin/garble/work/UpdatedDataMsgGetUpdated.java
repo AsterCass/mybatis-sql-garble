@@ -5,6 +5,7 @@ import com.aster.plugin.garble.sql.SelectSqlCube;
 import com.aster.plugin.garble.sql.UpdateSqlCube;
 import com.aster.plugin.garble.util.ExecutorUtil;
 import com.aster.plugin.garble.util.MappedStatementUtil;
+import com.aster.plugin.garble.util.SqlUtil;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
@@ -37,6 +38,7 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
                     monitoredTableUpdateFlagColMap);
             //获取更新行
             Map<String, List<String>> updatedColMap = new HashMap<>();
+            Map<String, List<String>> outputUpdatedColMap = new HashMap<>();
             for (String table : sqlMap.keySet()) {
                 BoundSql newBoundSql = new BoundSql(
                         mappedStatement.getConfiguration(), sqlMap.get(table), new ArrayList<>(), new Object());
@@ -50,6 +52,9 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
                 List<String> resultList = ExecutorUtil.executeSelectRow(
                         sqlMap.get(table), executor, getUpdatedRowsMs, newBoundSql, null);
                 if (null != resultList && 0 != resultList.size()) {
+                    outputUpdatedColMap.put(
+                            SqlUtil.getGarbleTableFromFullName(schema, table).getSelfAdaptionName(schema),
+                            resultList);
                     updatedColMap.put(table, resultList);
                 }
             }
@@ -70,7 +75,8 @@ public class UpdatedDataMsgGetUpdated extends UpdatedDataMsgAbstract {
                 ExecutorUtil.executeUpdatedRow(rollBackMap.get(table), executor, getUpdatedRowsMs);
             }
 
-            return updatedColMap;
+
+            return outputUpdatedColMap;
         } catch (Exception ex) {
             ex.printStackTrace();
             return new HashMap<>();
