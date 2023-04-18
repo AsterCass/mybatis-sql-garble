@@ -21,11 +21,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * mybatis基本运行时属性
@@ -95,6 +91,7 @@ public class MybatisRuntimeProperty {
             } else if (null != connection.getCatalog() && 0 != connection.getCatalog().length()) {
                 schema = connection.getCatalog();
             } else {
+                connection.close();
                 throw new GarbleRuntimeException("connect schema get fail");
             }
             connection.close();

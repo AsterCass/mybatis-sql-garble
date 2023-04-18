@@ -86,8 +86,10 @@ public class GarbleTable {
             } else if (null != con.getCatalog() && 0 != con.getCatalog().length()) {
                 schemaName = con.getCatalog();
             } else {
+                con.close();
                 throw new GarbleRuntimeException("connect schema get fail");
             }
+            con.close();
         } catch (Exception ex) {
             throw new GarbleRuntimeException("无法获取数据库连接");
         }
