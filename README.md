@@ -16,18 +16,29 @@
 ## 日程中功能
 
 1. 支持联表更新的数据鉴权
-2. 测试与mybatis plus等其他拦截器的兼容性
-3. 获取鉴权方法使用正则匹配代替原本的list参数，简化多数据表的鉴权的配置成本
-4. 识别@select和@update等注解和实际的sql是否匹配，目前不匹配也可以运行，但是会造成鉴权配置紊乱（select会读update的配置之类）
 
+```sql
+update table_1, table_2
+set table_1.col_1 = 1,
+    table_2.col_2 =2
+where table_1.id = table_2.a_id
+```
+
+2. 测试与mybatis plus等其他拦截器的兼容性
+3. 识别@select和@update等注解和实际的sql是否匹配，目前不匹配也可以运行，但是会造成鉴权配置紊乱（select会读update的配置之类）
 
 ## 挂起的功能
+
 1. 交集鉴权支持数据单个列存jsonList的情况, 目前仅支持传入的权限写为List
+
 > __Note__
 > 麻烦再议
-2. 支持多字段鉴权（多字段同时满足对应的鉴权方法才能鉴权成功, 授权也可以同时授权多个字段） 
+
+2. 支持多字段鉴权（多字段同时满足对应的鉴权方法才能鉴权成功, 授权也可以同时授权多个字段）
+
 > __Note__
 > 更麻烦，再议
+
 3. 支持在update语句中添加select子查询的查询鉴权
 > __Note__
 > 目前在update中的select子查询的语句鉴权是采用了update中配置的鉴权策略而不是select中的
