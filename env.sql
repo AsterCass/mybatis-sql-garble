@@ -86,7 +86,7 @@ CREATE TABLE `garble_task`
     `e_id`          int(11) NOT NULL,
     `t_name`        varchar(50) DEFAULT NULL,
     `update_record` int(4)      DEFAULT 0,
-    `auth_code_col`        varchar(50) DEFAULT NULL,
+    `auth_code_col` varchar(50) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -95,7 +95,7 @@ CREATE TABLE `garble_task`
 insert into garble_task(t_name, e_id, auth_code_col)
 values ('工作1', 11, '123');
 insert into garble_task(t_name, e_id, auth_code_col)
-values ('工作2', 11, '123');
+values ('工作2', 11, '1234');
 insert into garble_task(t_name, e_id, auth_code_col)
 values ('工作3', 11, '123');
 insert into garble_task(t_name, e_id, auth_code_col)
@@ -151,14 +151,14 @@ CREATE TABLE `garble_task`
     `e_id`          int(11) NOT NULL,
     `t_name`        varchar(50) DEFAULT NULL,
     `update_record` int(4)      DEFAULT 0,
-    `auth_code_col`        varchar(50) DEFAULT NULL,
+    `auth_code_col` varchar(50) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4;
 
 insert into garble_task(t_name, e_id, auth_code_col)
-values ('工作1', 110, '1234');
+values ('工作1', 110, '123');
 insert into garble_task(t_name, e_id, auth_code_col)
 values ('工作2', 110, '1234');
 insert into garble_task(t_name, e_id, auth_code_col)

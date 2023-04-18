@@ -32,9 +32,9 @@ public class AuthUpdateTest {
             sqlSession.commit();
             List<GarbleTask> taskList = simpleMapper.selectUpdatedTask();
             Assert.assertNotNull(taskList);
-            Assert.assertEquals(taskList.size(), 3);
+            Assert.assertEquals(taskList.size(), 4);
             for (GarbleTask garbleTask : taskList) {
-                Assert.assertTrue(Arrays.asList(11L, 12L, 13L).contains(garbleTask.getId()));
+                Assert.assertTrue(Arrays.asList(2L, 11L, 12L, 13L).contains(garbleTask.getId()));
             }
             simpleMapper.updateCallBack();
             sqlSession.commit();
