@@ -18,6 +18,7 @@
 1. 支持联表更新的数据鉴权
 2. 测试与mybatis plus等其他拦截器的兼容性
 3. 获取鉴权方法使用正则匹配代替原本的list参数，简化多数据表的鉴权的配置成本
+4. 识别@select和@update等注解和实际的sql是否匹配，目前不匹配也可以运行，但是会造成鉴权配置紊乱（select会读update的配置之类）
 
 
 ## 挂起的功能
@@ -30,7 +31,7 @@
 3. 支持在update语句中添加select子查询的查询鉴权
 > __Note__
 > 目前在update中的select子查询的语句鉴权是采用了update中配置的鉴权策略而不是select中的
-如果两者配置相同，那么则没有问题，如果update语句中select子查询需要使用select的鉴权配置需要跨配置域操作，比较麻烦
+> 如果两者配置相同，那么则没有问题，如果update语句中select子查询需要使用select的鉴权配置需要跨配置域操作，比较麻烦
 4. 使用更新/插入/查询鉴权可以通过继承不同的方法实现配置不同获取鉴权数据的目的，
 而不是通过在注解中配置type的方式，减少配置项，同时支持默认获取鉴权数据的方法
 > __Note__
@@ -275,13 +276,12 @@ garble:
 ## 注意事项
 
 1. 目前只支持mysql
-2. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到
+2. 目前要求数据权限列必须要有权限标识,如果权限标识为null意味着该行不会在任何情况下被检索到,
+   如果需要跳出权限校验使用excluded-mapper-path配置
 3. 无论是sql-garble-spring-boot还是mybatis-sql-garble中的@Test部分
-测试用例相关代码中为了尽可能覆盖更多逻辑，部分地方配置有冗余、不够简便，需要用户注意区隔
+   测试用例相关代码中为了尽可能覆盖更多逻辑，部分地方配置有冗余、不够简便，需要用户注意区隔
 4. **【important】mybatis的\<select\>标签和mapper文件中@Select标识不要写错, 在正常情况下可能没有影响, 
 但是在鉴权逻辑中 @Select @Update这种标识是区分鉴权方式的 会导致鉴权配置紊乱的问题**
-
-
 
 
 ## 功能简述
@@ -298,25 +298,13 @@ garble:
 最后将之前行重置回 update_record = 0, 并且找到继承 DealWithUpdatedInterface 的方法回调将跟新行返回
 
 也就是说在更新监控表内执行sql, 其实相当于执行了3此sql, 一次查询以及两次更新,
-如果希望提高更新效率首先将monitored-table-map的value值配置为主键, 再者依据update_record建立索引
+如果希望提高更新效率将monitored-table-map的value值配置为主键，或者对该字段构造索引
 
 ### 数据查询鉴权
 
-```sql
-CREATE TABLE your_schema.your_table
-(
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   -- your cols
-   PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+依然是使用env.sql中的测试数据
 
-
-ALTER TABLE your_schema.your_table
-   ADD your_auth_code varchar(50) NULL COMMENT '权限标识code';
-```
-
-在配置文件配置完成, sql列增加完成后, 还需要继承AuthenticationCodeInterface
+在满足**文件配置完成**且**数据表有鉴权列**后, 还需要继承AuthenticationCodeInterface
 实现authenticationCodeBuilder方法以及增加@AuthenticationCodeBuilder注解.
 在该功能在配置文件中被声明需要时, 继承AuthenticationCodeInterface的文件被扫描,
 查询实时获取鉴权code, 根据用户定义策略方法进行匹配
@@ -325,76 +313,112 @@ ALTER TABLE your_schema.your_table
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 
 @Service
-public class QueryAuthService implements AuthenticationCodeInterface {
+public class AuthTaskService implements AuthenticationCodeInterface {
+
+
    /**
-    * 获取鉴权code，用于和配置字段相比较
+    * 后去权限code，用于和配置字段相比较
     * {@link AuthenticationStrategyEnum}
+    * <p>
     * 如果使用的是AuthenticationStrategyEnum.BOOLEAN_AND需要传入的为纯数字的字符串
+    * <p>
+    * 如果使用的是AuthenticationStrategyEnum.INTERSECTION 需要传入的为可解析的ListString类型的字符串,
+    * 数据需要为ListString或者单独的String字符串
+    * <p>
     * 方法将会在查询监控表的时候依据指定的及authentication strategy，根据此方法的的返回值进行鉴权
     *
     * @return 鉴权code
     */
    @Override
-   @AuthenticationCodeBuilder(type = 2, tables = {"user"})
+   @AuthenticationCodeBuilder(type = 2, tables = {"^.*garble_task$"})
    public String authenticationCodeBuilder() {
-      return "12345";
+      return JSON.toJSONString(Collections.singletonList("123"));
    }
 }
 ```
 
-这里展示使用等式鉴权的配置
+这里展示使用交集鉴权的配置
 
 ```yaml
 garble:
-   #是否开启拦截器
    valid: true
-   #拦截器所含功能 GarbleFunctionEnum
    garble-function-list:
       - 2
-   #鉴权   
+   #鉴权
    auth:
       #查询鉴权
       select:
          #监控表列表
          monitored-table-list:
-            - "user"
-         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
-         default-auth-col-name: "auth_code"
-         #监控表和权限策略，当monitored-table-auth-strategy-map无法查询到需要监控表的权限策略的时候，使用默认权限测率
-         default-auth-strategy: 1
+            - "garble_task"
+         #监控表的默认权限标记列
+         default-auth-col-name: "auth_code_col"
+         #监控表和权限策略
+         default-auth-strategy: 3
 ```
 
 数据库状态
 
 ```text
-id |name|ext|update_record|auth_code|
----+----+---+-------------+---------+
-  1|张老大 |11 |            0|         |
-  2|张老二 |22 |            0|12345    |
-  3|张老三 |33 |            0|         |
-  4|张老四 |44 |            0|         |
-  5|张老五 |55 |            0|         |
-  6|张老六 |66 |            0|         |
-  7|张老七 |77 |            0|         |
-  8|张老八 |88 |            0|         |
+id|e_id|t_name|update_record|auth_code_col|
+--+----+------+-------------+-------------+
+ 1|  11|工作1   |            0|123          |
+ 2|  11|工作2   |            0|1234         |
+ 3|  11|工作3   |            0|123          |
+ 4|  22|工作4   |            0|123          |
+ 5|  22|工作5   |            0|123          |
+ 6|  44|工作6   |            0|123          |
+ 7|  55|工作7   |            0|123          |
+ 8|  66|工作8   |            0|123          |
+ 9|  77|工作9   |            0|123          |
+10|  77|工作9   |            0|123          |
+11|  77|工作9   |            0|1234         |
+12|  77|工作9   |            0|1234         |
+13|  88|工作10  |            0|1234         |
+14|  88|工作10  |            0|123          |
+15|  88|工作10  |            0|123          |
+16|  99|工作11  |            0|123          |
+17|1010|工作12  |            0|123          |
+18|1212|工作13  |            0|123          |
+19|1313|工作14  |            0|123          |
+20|1414|工作15  |            0|123          |
+21|1515|工作16  |            0|123          |
+22|1515|工作17  |            0|123          |
+23|1515|工作18  |            0|123          |
+24|1515|工作19  |            0|123          |
 ```
 
 查询全部数据
 
 ```java
-public class BaseTest {
-   public void test() {
-      //get userMapper...
-      List<UserEntity> list = userMapper.selectAll();
-      System.out.println(JSON.toJSONString(list));
+import tk.mybatis.mapper.common.Mapper;
+
+@org.apache.ibatis.annotations.Mapper
+public interface GarbleTaskMapper extends Mapper<GarbleTask> {
+}
+```
+
+```java
+public class AuthSelectTest {
+
+   @Resource
+   private GarbleTaskMapper garbleTaskMapper;
+   
+    @Test
+    public void test() {
+       List<GarbleTask> allAuthTaskList = garbleTaskMapper.selectAll();
+       Assert.assertNotNull(allAuthTaskList);
+       Assert.assertEquals(allAuthTaskList.size(), 20);
    }
 }
 ```
 
-结果
+sql log
 
 ```text
-[{"ext":"22","id":2,"name":"张老二"}]
+Preparing: SELECT id, e_id, t_name, update_record, auth_code_col FROM garble_task WHERE garble_task.auth_code_col IN ('123')
+Parameters: 
+Total: 20
 ```
 
 ### 数据更新鉴权
