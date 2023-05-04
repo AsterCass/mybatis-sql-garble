@@ -148,7 +148,7 @@ public class SqlUtil {
 
         List<GarbleTable> garbleTableList = new ArrayList<>();
         Table priTable;
-        List<Join> joins;
+        List<Join> joins = new ArrayList<>();
         //table and join's 赋值
         if (stateModel instanceof PlainSelect) {
             FromItem fromItem = ((PlainSelect) stateModel).getFromItem();
@@ -162,7 +162,13 @@ public class SqlUtil {
         } else if (stateModel instanceof Update) {
             Update update = (Update) stateModel;
             priTable = update.getTable();
-            joins = ((Update) stateModel).getJoins();
+            if (null != update.getJoins()) {
+                joins.addAll(update.getJoins());
+            }
+            if (null != update.getStartJoins()) {
+                joins.addAll(update.getStartJoins());
+            }
+
         } else {
             throw new GarbleParamException("解析Sql当前层级类型接鉴别错误");
         }

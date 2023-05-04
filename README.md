@@ -9,23 +9,15 @@
    3. 交集鉴权, 传入String形式的List, 如果数据对应字段有一个想匹配则有该权限
 3. 支持数据插入自动写入权限
 4. 支持数据更新鉴权
+   1. 支持联表更新的数据鉴权
 5. 其他
    1. 兼容page-helper测试完成
    2. 兼容不同schema相同数据表名的监控
 
 ## 日程中功能
 
-1. 支持联表更新的数据鉴权
-
-```sql
-update table_1, table_2
-set table_1.col_1 = 1,
-    table_2.col_2 =2
-where table_1.id = table_2.a_id
-```
-
-2. 测试与mybatis plus等其他拦截器的兼容性
-3. 识别@select和@update等注解和实际的sql是否匹配，目前不匹配也可以运行，但是会造成鉴权配置紊乱（select会读update的配置之类）
+1. 测试与mybatis plus等其他拦截器的兼容性
+2. 识别@select和@update等注解和实际的sql是否匹配，目前不匹配也可以运行，但是会造成鉴权配置紊乱（select会读update的配置之类）
 
 ## 挂起的功能
 

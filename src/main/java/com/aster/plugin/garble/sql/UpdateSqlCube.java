@@ -125,9 +125,6 @@ public class UpdateSqlCube extends BaseSqlCube {
                 List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
                         tableList.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
                                 .contains(table.getFullName())).collect(Collectors.toList());
-                if (currentCrossTableList.size() > 1) {
-                    throw new GarbleRuntimeException("目前暂时不支持同时更新多表的鉴权");
-                }
                 List<Column> columns = new ArrayList<>();
                 //添加col
                 if (null != updateStatement.getUpdateSets() && 0 != currentCrossTableList.size()) {
@@ -139,16 +136,17 @@ public class UpdateSqlCube extends BaseSqlCube {
                         }
                     }
                     //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
-                    String updateFlagColName =
-                            monitoredTableUpdateColMap.get(currentCrossTableList.get(0).getFullName());
-                    if (columns.stream().anyMatch(cell -> cell.getColumnName().equals(updateFlagColName))) {
-                        return sql;
-                    }
                     List<UpdateSet> updateVol = new ArrayList<>();
-                    updateVol.add(new UpdateSet(
-                            new Column(currentCrossTableList.get(0).getTable(), updateFlagColName),
-                            new StringValue(monitoredTableUpdateColValueMap
-                                    .get(currentCrossTableList.get(0).getFullName()))));
+                    for (GarbleTable crossTable : currentCrossTableList) {
+                        String updateFlagColName =
+                                monitoredTableUpdateColMap.get(crossTable.getFullName());
+                        if (columns.stream().anyMatch(cell -> cell.getColumnName().equals(updateFlagColName))) {
+                            return sql;
+                        }
+                        updateVol.add(new UpdateSet(
+                                new Column(crossTable.getTable(), updateFlagColName),
+                                new StringValue(monitoredTableUpdateColValueMap.get(crossTable.getFullName()))));
+                    }
                     updateStatement.getUpdateSets().addAll(updateVol);
                 }
                 return updateStatement.toString();
