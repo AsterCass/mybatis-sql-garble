@@ -2,6 +2,7 @@ package com.aster.plugin.garble.sql;
 
 import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
+import com.aster.plugin.garble.util.SqlUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author astercasc
@@ -68,6 +70,7 @@ public class UpdateSqlCube extends BaseSqlCube {
     /**
      * 获取更新表的全名和别名的Map
      */
+    @Deprecated
     public static Map<GarbleTable, String> getUpdateTableAliasMap(String sql, String defaultSchema) {
         try {
             Statement statement = CCJSqlParserUtil.parse(sql);
@@ -113,46 +116,43 @@ public class UpdateSqlCube extends BaseSqlCube {
                                       Map<String, String> monitoredTableUpdateColMap,
                                       Map<String, String> monitoredTableUpdateColValueMap) {
         try {
-            List<GarbleTable> localTableList = new ArrayList<>(tableList);
-            Map<GarbleTable, String> nameAliasMap = UpdateSqlCube.getUpdateTableAliasMap(sql, defaultSchema);
             //sql解析
             Statement statement = CCJSqlParserUtil.parse(sql);
             if (statement instanceof Update) {
                 Update updateStatement = (Update) statement;
-                //添加set
-                if (null != updateStatement.getUpdateSets() && 0 != updateStatement.getUpdateSets().size()) {
-                    List<UpdateSet> updateVol = new ArrayList<>();
-                    for (UpdateSet updateSet : updateStatement.getUpdateSets()) {
-                        for (int count = 0; count < updateSet.getColumns().size(); ++count) {
-                            //包含默认
-                            Table table = updateSet.getColumns().get(count).getTable();
-                            //更新列set中如果没有table那么使用的就是update后跟的table
-                            if (null == table) {
-                                table = updateStatement.getTable();
-                            }
-                            GarbleTable thisTable = new GarbleTable(table.getName(),
-                                    table.getSchemaName(), defaultSchema);
-                            //如果没有alias会取到sql标记中的名称
-                            String aliasName = nameAliasMap.get(thisTable);
-                            if (localTableList.contains(thisTable)) {
-                                String updateFlagColName = monitoredTableUpdateColMap.get(thisTable.getFullName());
-                                //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
-                                if (updateSet.getColumns().get(count).getColumnName().equals(updateFlagColName)) {
-                                    return sql;
-                                }
-                                updateVol.add(new UpdateSet(
-                                        new Column(new Table(aliasName), updateFlagColName),
-                                        new StringValue(monitoredTableUpdateColValueMap.get(thisTable.getFullName()))));
-                                //防止由于多字段更新，导致的多次更新标志位
-                                localTableList.remove(thisTable);
-                            }
+                //本层的sql中包含的tale, 不包含下层的子查询
+                List<GarbleTable> sqlTableList = SqlUtil.getTableNameMapInSqlBody(updateStatement, defaultSchema);
+                List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
+                        tableList.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
+                                .contains(table.getFullName())).collect(Collectors.toList());
+                if (currentCrossTableList.size() > 1) {
+                    throw new GarbleRuntimeException("目前暂时不支持同时更新多表的鉴权");
+                }
+                List<Column> columns = new ArrayList<>();
+                //添加col
+                if (null != updateStatement.getUpdateSets() && 0 != currentCrossTableList.size()) {
+                    List<UpdateSet> updateSets = updateStatement.getUpdateSets();
+                    for (UpdateSet updateSet : updateSets) {
+                        if (null != updateSet && null != updateSet.getColumns()
+                                && 0 != updateSet.getColumns().size()) {
+                            columns.addAll(updateSet.getColumns());
                         }
                     }
+                    //如果更新语句本身带有更新标志位，那么不对sql进行处理，但是回滚和后置操作不受影响
+                    String updateFlagColName =
+                            monitoredTableUpdateColMap.get(currentCrossTableList.get(0).getFullName());
+                    if (columns.stream().anyMatch(cell -> cell.getColumnName().equals(updateFlagColName))) {
+                        return sql;
+                    }
+                    List<UpdateSet> updateVol = new ArrayList<>();
+                    updateVol.add(new UpdateSet(
+                            new Column(currentCrossTableList.get(0).getTable(), updateFlagColName),
+                            new StringValue(monitoredTableUpdateColValueMap
+                                    .get(currentCrossTableList.get(0).getFullName()))));
                     updateStatement.getUpdateSets().addAll(updateVol);
                 }
                 return updateStatement.toString();
             }
-
         } catch (JSQLParserException jsqlParserException) {
             jsqlParserException.printStackTrace();
         }

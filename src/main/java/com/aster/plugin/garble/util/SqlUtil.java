@@ -1,7 +1,14 @@
 package com.aster.plugin.garble.util;
 
 import com.aster.plugin.garble.bean.GarbleTable;
+import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
+import net.sf.jsqlparser.Model;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.select.FromItem;
+import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.update.Update;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.util.ArrayList;
@@ -132,6 +139,58 @@ public class SqlUtil {
             }
         }
         return garbleTableList;
+    }
+
+    /**
+     * 获取本层的sql中包含的tale
+     */
+    public static List<GarbleTable> getTableNameMapInSqlBody(Model stateModel, String defaultSchema) {
+
+        List<GarbleTable> garbleTableList = new ArrayList<>();
+        Table priTable;
+        List<Join> joins;
+        //table and join's 赋值
+        if (stateModel instanceof PlainSelect) {
+            FromItem fromItem = ((PlainSelect) stateModel).getFromItem();
+            joins = ((PlainSelect) stateModel).getJoins();
+            if (fromItem instanceof Table) {
+                priTable = (Table) fromItem;
+            } else {
+                throw new GarbleParamException("查询语句FormItem解析失败");
+            }
+
+        } else if (stateModel instanceof Update) {
+            Update update = (Update) stateModel;
+            priTable = update.getTable();
+            joins = ((Update) stateModel).getJoins();
+        } else {
+            throw new GarbleParamException("解析Sql当前层级类型接鉴别错误");
+        }
+
+        //pri table
+        garbleTableList.add(getGarbleTableFromTable(priTable, defaultSchema));
+
+        //join tables
+        if (null != joins && 0 != joins.size()) {
+            for (Join join : joins) {
+                if (join.getRightItem() instanceof Table) {
+                    Table joinTable = (Table) join.getRightItem();
+                    garbleTableList.add(getGarbleTableFromTable(joinTable, defaultSchema));
+                } else {
+                    throw new GarbleParamException("查询语句JoinFormItem解析失败");
+                }
+            }
+        }
+        return garbleTableList;
+    }
+
+    private static GarbleTable getGarbleTableFromTable(Table table, String defaultSchema) {
+        String schema = null == table.getSchemaName() ? defaultSchema : table.getSchemaName();
+        if (null == table.getAlias()) {
+            return new GarbleTable(table, table.getName(), schema, null);
+        } else {
+            return new GarbleTable(table, table.getName(), schema, table.getAlias().getName());
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.aster.plugin.garble.bean.GarbleTable;
 import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
 import com.aster.plugin.garble.exception.GarbleParamException;
 import com.aster.plugin.garble.exception.GarbleRuntimeException;
+import com.aster.plugin.garble.util.SqlUtil;
 import net.sf.jsqlparser.Model;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -18,9 +19,6 @@ import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.select.FromItem;
-import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
@@ -82,7 +80,7 @@ public class BaseSqlWhereCube {
     public void crossTableBuilder(Model sqlModel) {
         try {
             //本层的sql中包含的tale, 不包含下层的子查询
-            List<GarbleTable> sqlTableList = getTableNameMapInSqlBody(sqlModel);
+            List<GarbleTable> sqlTableList = SqlUtil.getTableNameMapInSqlBody(sqlModel, defaultSchema);
             List<GarbleTable> currentCrossTableList = sqlTableList.stream().filter(table ->
                     crossGarbleTableSet.stream().map(GarbleTable::getFullName).collect(Collectors.toList())
                             .contains(table.getFullName())).collect(Collectors.toList());
@@ -117,49 +115,6 @@ public class BaseSqlWhereCube {
         } catch (GarbleParamException ex) {
             throw new GarbleParamException(ex.getMessage() + " SQL: " + sqlModel);
         }
-    }
-
-    /**
-     * 获取本层的sql中包含的tale
-     */
-    private List<GarbleTable> getTableNameMapInSqlBody(Model stateModel) {
-
-        List<GarbleTable> garbleTableList = new ArrayList<>();
-        Table priTable;
-        List<Join> joins;
-        //table and join's 赋值
-        if (stateModel instanceof PlainSelect) {
-            FromItem fromItem = ((PlainSelect) stateModel).getFromItem();
-            joins = ((PlainSelect) stateModel).getJoins();
-            if (fromItem instanceof Table) {
-                priTable = (Table) fromItem;
-            } else {
-                throw new GarbleParamException("查询语句FormItem解析失败");
-            }
-
-        } else if (stateModel instanceof Update) {
-            Update update = (Update) stateModel;
-            priTable = update.getTable();
-            joins = ((Update) stateModel).getJoins();
-        } else {
-            throw new GarbleParamException("解析Sql当前层级类型接鉴别错误");
-        }
-
-        //pri table
-        garbleTableList.add(getGarbleTableFromTable(priTable));
-
-        //join tables
-        if (null != joins && 0 != joins.size()) {
-            for (Join join : joins) {
-                if (join.getRightItem() instanceof Table) {
-                    Table joinTable = (Table) join.getRightItem();
-                    garbleTableList.add(getGarbleTableFromTable(joinTable));
-                } else {
-                    throw new GarbleParamException("查询语句JoinFormItem解析失败");
-                }
-            }
-        }
-        return garbleTableList;
     }
 
     private void getSubTableInWhere(Expression whereExpression) {
@@ -282,15 +237,6 @@ public class BaseSqlWhereCube {
             return andExpression;
         }
         return null;
-    }
-
-    private GarbleTable getGarbleTableFromTable(Table table) {
-        String schema = null == table.getSchemaName() ? defaultSchema : table.getSchemaName();
-        if (null == table.getAlias()) {
-            return new GarbleTable(table, table.getName(), schema, null);
-        } else {
-            return new GarbleTable(table, table.getName(), schema, table.getAlias().getName());
-        }
     }
 
 
