@@ -3,16 +3,17 @@
 ## 目前支持功能
 
 1. 指定监控表数据更新返回更新行指定字段, 支持通过方法获取回调并且自定义后续处理
-2. 支持数据查询鉴权功能, 目前支持的鉴权方法
+2. 支持数据查询行鉴权功能, 目前支持的鉴权方法
    1. 同值鉴权: 通过自定义方法回调获取鉴权code, 将code和指定列比较相同即为有该权限
    2. 比特与鉴权: 通过自定义方法回调鉴权code, 将code和指定列比较比特位取与如果大于0即为有该权限
-   3. 交集鉴权, 传入String形式的List, 如果数据对应字段有一个想匹配则有该权限
+   3. 交集鉴权, 传入jsonString形式的List, 如果数据对应字段有一个想匹配则有该权限
 3. 支持数据插入自动写入权限
 4. 支持数据更新鉴权
    1. 支持联表更新的数据鉴权
 5. 其他
    1. 兼容page-helper测试完成
-   2. 兼容不同schema相同数据表名的监控
+   2. 兼容tk.mybatis测试完成
+   3. 兼容不同schema相同数据表名的监控
 
 ## 日程中功能
 
@@ -242,7 +243,7 @@ garble:
          #在此map中的的sql不受到监控，即使包含监控表
          excluded-mapper-path:
             - "com.aster.mapper.ExcludeMapperRed"
-      #更新授权
+      #插入授权
       insert:
          #标记实现AuthenticationCodeInterface接口的方法路径，加快加快初始化速度，可以不赋值
          auth-code-path: "com.baidu"
@@ -426,9 +427,106 @@ Total: 20
 
 ### 数据更新鉴权
 
+和查询鉴权一样，首先我们需要定义不同表的鉴权的方法，更新鉴权的type为1
+
+```java
+import com.aster.plugin.garble.enums.AuthenticationStrategyEnum;
+
+@Service
+public class AuthUpdateTaskService implements AuthenticationCodeInterface {
+
+
+   /**
+    * 后去权限code，用于和配置字段相比较
+    * {@link AuthenticationStrategyEnum}
+    * <p>
+    * 如果使用的是AuthenticationStrategyEnum.BOOLEAN_AND需要传入的为纯数字的字符串
+    * <p>
+    * 如果使用的是AuthenticationStrategyEnum.INTERSECTION 需要传入的为可解析的ListString类型的字符串,
+    * 数据需要为ListString或者单独的String字符串
+    * <p>
+    * 方法将会在查询监控表的时候依据指定的及authentication strategy，根据此方法的的返回值进行鉴权
+    *
+    * @return 鉴权code
+    */
+   @Override
+   @AuthenticationCodeBuilder(type = 1, tables = {"^.*garble_task$"})
+   public String authenticationCodeBuilder() {
+      return JSON.toJSONString(Collections.singletonList("123"));
+   }
+
+}
+```
+
+配置文件，我们以交集鉴权举例
+
+```yaml
+garble:
+   valid: true
+   garble-function-list:
+      - 4
+   #鉴权
+   auth:
+      #更新鉴权
+      update:
+         #监控表列表
+         monitored-table-list:
+            - "garble_task"
+         #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
+         default-auth-col-name: "auth_code_col"
+         #监控表和权限策略
+         default-auth-strategy: 3
+```
+
+数据库状态
+
+```text
+id|e_id|t_name|update_record|auth_code_col|
+--+----+------+-------------+-------------+
+1|  11|工作1   |            0|123          |
+2|  11|工作2   |            0|1234         |
+3|  11|工作3   |            0|123          |
+4|  22|工作4   |            0|123          |
+5|  22|工作5   |            0|123          |
+6|  44|工作6   |            0|123          |
+7|  55|工作7   |            0|123          |
+8|  66|工作8   |            0|123          |
+9|  77|工作9   |            0|123          |
+10|  77|工作9   |            0|123          |
+11|  77|工作9   |            0|1234         |
+12|  77|工作9   |            0|1234         |
+13|  88|工作10  |            0|1234         |
+14|  88|工作10  |            0|123          |
+15|  88|工作10  |            0|123          |
+16|  99|工作11  |            0|123          |
+17|1010|工作12  |            0|123          |
+18|1212|工作13  |            0|123          |
+```
+
+执行语句
+
+```java
+
+@org.apache.ibatis.annotations.Mapper
+public interface GarbleTaskMapper extends Mapper<GarbleTask> {
+
+   @Update("UPDATE garble_task SET t_name = '工作100' WHERE e_id = 88 ")
+   void updateAuthElseTask();
+
+}
+```
+
+可以观测到实际执行语句
+
+```text
+==>  Preparing: UPDATE garble_task SET t_name = ? WHERE (((e_id = ?))) AND garble_task.auth_code_col IN ('123')
+==>  Parameters: 工作100(String), 88(Integer)
+<==  Updates: 2
+```
+
 ### 数据插入授权
 
-测速数据库配置信息和【数据查询鉴权】相同, 同样需要继承AuthenticationCodeInterface,
+插入授权和上述相同, 需要继承AuthenticationCodeInterface,
 实现authenticationCodeBuilder, type 使用 AuthenticationTypeEnum.INSERT 表明这个是插入的获取权限的方法,
 tables 为作用域, 需要保证在auth.insert配置文件中的每个table都有自己的作用域
 
@@ -450,9 +548,9 @@ public class InsertAuthService implements AuthenticationCodeInterface {
     * @return 鉴权code
     */
    @Override
-   @AuthenticationCodeBuilder(type = 3, tables = {"user"})
+   @AuthenticationCodeBuilder(type = 3, tables = {"^.*garble_task$"})
    public String authenticationCodeBuilder() {
-      return "1234";
+      return "123";
    }
 }
 
@@ -467,22 +565,33 @@ garble:
    #拦截器所含功能 GarbleFunctionEnum
    garble-function-list:
       - 3
-   #鉴权   
+   #鉴权
    auth:
-      #查询鉴权
-      select:
+      #插入授权
+      insert:
          #监控表列表
          monitored-table-list:
-            - "user"
+            - "garble_task"
          #监控表的默认权限标记列，当monitored-table-update-flag-col-map无法查询到需要监控表的权限标记列的时候，使用默认权限标记列
-         default-auth-col-name: "auth_code"
+         default-auth-col-name: "auth_code_col"
 ```
 
-此时插入所有监控表数据都会增加对于权限字段的授权譬如
+插入数据
+
+```java
+
+@org.apache.ibatis.annotations.Mapper
+public interface GarbleTaskMapper extends Mapper<GarbleTask> {
+   @Insert("insert into garble_task(id, t_name, e_id) values (#{id}, '工作30x', 3000)")
+   void insertAuthSimple(@Value("id") Long id);
+}
+```
+
+可以观测到实际执行语句
 
 ```text
-insert into user (id, `name`, ext) values (123,  'szss', 'sss')
-->
-insert into user (id, `name`, ext, auth_code) values (123,  'szss', 'sss', '1234')
+==>  Preparing: INSERT INTO garble_task (id, t_name, e_id, auth_code_col) VALUES (?, '工作30x', 3000, 123)
+==> Parameters: 30(Long)
+==    Updates: 1
 ```
 
